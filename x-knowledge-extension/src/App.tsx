@@ -106,6 +106,7 @@ function App() {
   // New state for filtering and searching
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'time' | 'retweets' | 'likes'>('time')
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -353,8 +354,20 @@ function App() {
       }
 
       return true
-    })
-  }, [bookmarks, activeCategory, searchQuery])
+    }).sort((a, b) => {
+      // Sort logic
+      if (sortBy === 'time') {
+        const timeA = new Date(a.createdAt).getTime();
+        const timeB = new Date(b.createdAt).getTime();
+        return timeB - timeA; // Descending
+      } else if (sortBy === 'retweets') {
+        return (b.metrics.retweetCount || 0) - (a.metrics.retweetCount || 0); // Descending
+      } else if (sortBy === 'likes') {
+        return (b.metrics.likeCount || 0) - (a.metrics.likeCount || 0); // Descending
+      }
+      return 0;
+    });
+  }, [bookmarks, activeCategory, searchQuery, sortBy])
 
   // Virtual Scrolling State
   const listRef = useRef<any>(null);
@@ -518,6 +531,15 @@ function App() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'time' | 'retweets' | 'likes')}
+                className="px-3 py-2 bg-x-bgHover border-transparent rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none cursor-pointer text-x-text"
+              >
+                <option value="time">Latest</option>
+                <option value="retweets">Most Retweeted</option>
+                <option value="likes">Most Liked</option>
+              </select>
             </div>
 
             {/* List */}
