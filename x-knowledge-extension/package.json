@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LaplaceYoung/Xknowledge.git"
+  },
+  "homepage": "https://github.com/LaplaceYoung/Xknowledge#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

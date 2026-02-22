@@ -8,6 +8,7 @@
     "48": "icon-48.png",
     "128": "icon-128.png"
   },
+  "homepage_url": "https://github.com/LaplaceYoung/Xknowledge",
   "permissions": [
     "storage",
     "activeTab",
