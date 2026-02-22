@@ -13,6 +13,7 @@ import { VariableSizeList as List } from 'react-window'
 // @ts-ignore
 import { AutoSizer } from 'react-virtualized-auto-sizer'
 import { TweetCard } from './components/TweetCard'
+import html2canvas from 'html2canvas'
 import './App.css'
 
 function App() {
@@ -107,6 +108,9 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'time' | 'retweets' | 'likes'>('time')
+
+  // UI state
+  const [isGeneratingImage, setIsGeneratingImage] = useState<string | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -254,6 +258,42 @@ function App() {
     // Open URI
     window.location.href = obsUri;
     showToast('已尝试唤起 Obsidian！', 'info');
+  };
+
+  const handleGenerateImage = async (tweet: ParsedTweet) => {
+    const cardEl = document.getElementById(`tweet-card-${tweet.id}`);
+    if (!cardEl) return;
+
+    try {
+      setIsGeneratingImage(tweet.id);
+      showToast('正在生成无白边的高清分享图...', 'info');
+
+      // Slight delay to ensure UI updates are flushed
+      await new Promise(r => setTimeout(r, 100));
+
+      const canvas = await html2canvas(cardEl, {
+        useCORS: true,
+        scale: 2, // High DPI
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const dateStr = new Date().toISOString().split('T')[0];
+      const safeAuthorName = tweet.authorName.replace(/[\/\?<>\\:\*\|"]/g, '_');
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `X-knowledge-${dateStr}-${safeAuthorName}.png`;
+      a.click();
+
+      showToast('分享图已生成并下载！', 'success');
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+      showToast('生成图片失败', 'error');
+    } finally {
+      setIsGeneratingImage(null);
+    }
   };
 
   const handlePushToNotion = async (tweet: ParsedTweet) => {
@@ -597,6 +637,8 @@ function App() {
                             onCopyMarkdown={handleCopyMarkdown}
                             onPushToObsidian={handlePushToObsidian}
                             onPushToNotion={handlePushToNotion}
+                            onGenerateImage={handleGenerateImage}
+                            isGeneratingImage={isGeneratingImage === filteredBookmarks[index].id}
                             onUpdateTags={handleUpdateTags}
                             onImageClick={setLightboxImage}
                             onHeightReady={setSize}

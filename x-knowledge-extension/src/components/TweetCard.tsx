@@ -27,6 +27,8 @@ interface TweetCardProps {
   onCopyMarkdown: (tweet: ParsedTweet) => void;
   onPushToObsidian?: (tweet: ParsedTweet) => void;
   onPushToNotion: (tweet: ParsedTweet) => void;
+  onGenerateImage?: (tweet: ParsedTweet) => void;
+  isGeneratingImage?: boolean;
   onUpdateTags?: (id: string, newTags: string[]) => void;
   onImageClick: (url: string) => void;
   // Optional callback for react-window to report height
@@ -46,6 +48,8 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   onCopyMarkdown,
   onPushToObsidian,
   onPushToNotion,
+  onGenerateImage,
+  isGeneratingImage,
   onUpdateTags,
   onImageClick,
   onHeightReady,
@@ -89,7 +93,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
 
   return (
     <div style={style}>
-      <div ref={rowRef} className="bg-x-bg border border-x-border rounded-2xl p-4 shadow-sm hover:shadow transition-shadow mb-4">
+      <div id={`tweet-card-${tweet.id}`} ref={rowRef} className="bg-x-bg border border-x-border rounded-2xl p-4 shadow-sm hover:shadow transition-shadow mb-4">
         <div className="flex items-center space-x-3 mb-3">
           {tweet.authorAvatar && (
             <CachedImage srcUrl={tweet.authorAvatar} alt={tweet.authorName} className="w-10 h-10 rounded-full object-cover" />
@@ -246,6 +250,27 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                 ) : (
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M4.459 4.208c.746-.386 1.344-.458 1.932-.458.825 0 2.296.262 4.417 1.571l7.859 4.88c.996.619 1.48.968 1.48 1.54 0 .445-.42 1.127-1.391 1.761l-7.792 5.093c-1.558 1.018-2.628 1.144-3.353 1.144-.813 0-1.464-.175-2.071-.43l-3.39-1.411c-.551-.23-.846-.628-.846-1.102 0-.323.167-.672.486-.976l6.766-6.44-5.263-1.638c-.524-.163-.827-.506-.827-.935 0-.337.169-.64.489-.884l1.504-1.126zm1.189 1.996l-1.385 1.037 6.131 1.91c.784.244 1.258.746 1.258 1.332 0 .425-.213.843-.591 1.2l-6.848 6.517 2.946 1.226c.465.194.945.32 1.565.32.553 0 1.41-.122 2.684-.954l7.668-5.011c.74-.483 1.059-1.028 1.059-1.38 0-.356-.37-.621-1.166-1.116l-7.77-4.825c-1.89-1.166-3.136-1.401-3.816-1.401-.482 0-.962.063-1.735.462v.683h.001z" />
+                  </svg>
+                )}
+              </button>
+            )}
+
+            {onGenerateImage && (
+              <button
+                onClick={() => onGenerateImage(tweet)}
+                disabled={isGeneratingImage}
+                className="text-emerald-500 hover:text-emerald-600 font-medium disabled:opacity-50"
+                title="Generate Shareable Image"
+              >
+                {isGeneratingImage ? (
+                  <svg className="animate-spin h-4 w-4 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 )}
               </button>
