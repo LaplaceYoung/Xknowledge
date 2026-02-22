@@ -1,0 +1,51 @@
+[
+  {
+    "id": "8",
+    "title": "X (Twitter) 原生主题无缝同步",
+    "phase": "阶段六：高阶特性与生产级架构",
+    "priority": "low",
+    "status": "completed"
+  },
+  {
+    "id": "9",
+    "title": "Notion API 直连导入功能",
+    "phase": "阶段六：高阶特性与生产级架构",
+    "priority": "low",
+    "status": "completed"
+  },
+  {
+    "id": "6",
+    "title": "媒体资源本地化与 ZIP 导出方案",
+    "phase": "阶段六：高阶特性与生产级架构",
+    "priority": "low",
+    "status": "completed"
+  },
+  {
+    "id": "17",
+    "title": "开发完整的 `.zip` 离线包导出功能（包含图片/视频文件和链接替换）。",
+    "phase": "媒体与离线化 (Media & Offline)",
+    "priority": "medium",
+    "status": "completed"
+  },
+  {
+    "id": "19",
+    "title": "监听 X 主站 DOM，实现 Light/Dim/Dark 主题无缝自动切换。",
+    "phase": "UI/UX 体验升级 (UI/UX Polish)",
+    "priority": "medium",
+    "status": "completed"
+  },
+  {
+    "id": "32",
+    "title": "Notion API 直连配置与一键发送。",
+    "phase": "知识流转与交互管理 (Knowledge Flow & Management)",
+    "priority": "medium",
+    "status": "completed"
+  },
+  {
+    "id": "18",
+    "title": "在侧边栏增加图片点击放大的 Lightbox 预览功能。",
+    "phase": "媒体与离线化 (Media & Offline)",
+    "priority": "medium",
+    "status": "completed"
+  }
+]
