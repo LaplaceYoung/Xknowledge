@@ -8,12 +8,21 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [apiKey, setApiKey] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  const [apiProvider, setApiProvider] = useState<'siliconflow' | 'custom'>('siliconflow');
+  const [apiBaseUrl, setApiBaseUrl] = useState('');
+  const [apiModel, setApiModel] = useState('');
+
   // TODO: Implement the save function to store the API key in chrome.storage.sync
   // Call onComplete() when successfully saved
   const handleSave = async () => {
     setIsSaving(true);
     if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.set({ siliconFlowApiKey: apiKey.trim() }, () => {
+      chrome.storage.sync.set({
+        siliconFlowApiKey: apiKey.trim(),
+        apiProvider,
+        apiBaseUrl: apiBaseUrl.trim(),
+        apiModel: apiModel.trim()
+      }, () => {
         setIsSaving(false);
         onComplete();
       });
@@ -25,7 +34,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-x-bg p-8 text-center w-[700px] mx-auto">
+    <div className="flex flex-col items-center justify-center h-screen bg-x-bg p-8 text-center w-full max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-x-text mb-2">欢迎使用 X-knowledge</h1>
         <p className="text-x-textMuted">
@@ -39,17 +48,62 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           为了自动为您抓取的推文打标签、写摘要，我们需要配置 SiliconFlow API Key。数据仅保存在本地。
         </p>
 
-        <div className="mb-4 text-left">
-          <label className="block text-xs font-medium text-x-text mb-1">
-            SiliconFlow API Key
-          </label>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-..."
-            className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
-          />
+        <div className="mb-4 text-left space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-x-text mb-1">
+              API 提供商
+            </label>
+            <select
+              value={apiProvider}
+              onChange={(e) => setApiProvider(e.target.value as any)}
+              className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
+            >
+              <option value="siliconflow">SiliconFlow (默认)</option>
+              <option value="custom">自定义兼容 OpenAI 的接口</option>
+            </select>
+          </div>
+
+          {apiProvider === 'custom' && (
+            <>
+              <div>
+                <label className="block text-xs font-medium text-x-text mb-1">
+                  Base URL (非必填，默认 SiliconFlow)
+                </label>
+                <input
+                  type="text"
+                  value={apiBaseUrl}
+                  onChange={(e) => setApiBaseUrl(e.target.value)}
+                  placeholder="https://api.openai.com/v1/chat/completions"
+                  className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-x-text mb-1">
+                  模型名称 (非必填，默认 SiliconFlow 模型)
+                </label>
+                <input
+                  type="text"
+                  value={apiModel}
+                  onChange={(e) => setApiModel(e.target.value)}
+                  placeholder="gpt-3.5-turbo"
+                  className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
+                />
+              </div>
+            </>
+          )}
+
+          <div>
+            <label className="block text-xs font-medium text-x-text mb-1">
+              {apiProvider === 'siliconflow' ? 'SiliconFlow API Key' : 'API Key'}
+            </label>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-..."
+              className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
+            />
+          </div>
         </div>
 
         <button

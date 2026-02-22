@@ -15,13 +15,20 @@ function Options() {
   const [notionDatabaseId, setNotionDatabaseId] = useState('');
   const [saved, setSaved] = useState(false);
 
+  const [apiProvider, setApiProvider] = useState<'siliconflow' | 'custom'>('siliconflow');
+  const [apiBaseUrl, setApiBaseUrl] = useState('');
+  const [apiModel, setApiModel] = useState('');
+
   useEffect(() => {
     if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.get(['siliconFlowApiKey', 'customAIPrompt', 'notionToken', 'notionDatabaseId'], (result) => {
+      chrome.storage.sync.get(['siliconFlowApiKey', 'customAIPrompt', 'notionToken', 'notionDatabaseId', 'apiProvider', 'apiBaseUrl', 'apiModel'], (result) => {
         if (result.siliconFlowApiKey) setApiKey(result.siliconFlowApiKey as string);
         if (result.customAIPrompt) setCustomPrompt(result.customAIPrompt as string);
         if (result.notionToken) setNotionToken(result.notionToken as string);
         if (result.notionDatabaseId) setNotionDatabaseId(result.notionDatabaseId as string);
+        if (result.apiProvider) setApiProvider(result.apiProvider as 'siliconflow' | 'custom');
+        if (result.apiBaseUrl) setApiBaseUrl(result.apiBaseUrl as string);
+        if (result.apiModel) setApiModel(result.apiModel as string);
       });
     }
   }, []);
@@ -32,7 +39,10 @@ function Options() {
         siliconFlowApiKey: apiKey.trim(),
         customAIPrompt: customPrompt.trim(),
         notionToken: notionToken.trim(),
-        notionDatabaseId: notionDatabaseId.trim()
+        notionDatabaseId: notionDatabaseId.trim(),
+        apiProvider,
+        apiBaseUrl: apiBaseUrl.trim(),
+        apiModel: apiModel.trim()
       }, () => {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
@@ -54,18 +64,66 @@ function Options() {
 
         <div className="space-y-6">
           {/* API Key Section */}
-          <div>
-            <label htmlFor="apiKey" className="block text-sm font-bold text-x-text mb-2">
-              SiliconFlow API Key
-            </label>
-            <input
-              type="password"
-              id="apiKey"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-..."
-              className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
-            />
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="apiProvider" className="block text-sm font-bold text-x-text mb-2">
+                API 提供商
+              </label>
+              <select
+                id="apiProvider"
+                value={apiProvider}
+                onChange={(e) => setApiProvider(e.target.value as 'siliconflow' | 'custom')}
+                className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+              >
+                <option value="siliconflow">SiliconFlow (默认)</option>
+                <option value="custom">自定义兼容 OpenAI 的接口</option>
+              </select>
+            </div>
+
+            {apiProvider === 'custom' && (
+              <>
+                <div>
+                  <label htmlFor="apiBaseUrl" className="block text-sm font-bold text-x-text mb-2">
+                    Base URL (非必填，默认 SiliconFlow)
+                  </label>
+                  <input
+                    type="text"
+                    id="apiBaseUrl"
+                    value={apiBaseUrl}
+                    onChange={(e) => setApiBaseUrl(e.target.value)}
+                    placeholder="https://api.openai.com/v1/chat/completions"
+                    className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="apiModel" className="block text-sm font-bold text-x-text mb-2">
+                    模型名称 (非必填，默认 SiliconFlow 模型)
+                  </label>
+                  <input
+                    type="text"
+                    id="apiModel"
+                    value={apiModel}
+                    onChange={(e) => setApiModel(e.target.value)}
+                    placeholder="gpt-3.5-turbo"
+                    className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+                  />
+                </div>
+              </>
+            )}
+
+            <div>
+              <label htmlFor="apiKey" className="block text-sm font-bold text-x-text mb-2">
+                {apiProvider === 'siliconflow' ? 'SiliconFlow API Key' : 'API Key'}
+              </label>
+              <input
+                type="password"
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-..."
+                className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+              />
+            </div>
           </div>
 
           {/* Notion API Section */}
@@ -75,8 +133,8 @@ function Options() {
               Configure Notion to sync your bookmarks directly to a database. You need an Internal Integration Token and the target Database ID.
             </p>
             <div className="bg-blue-50/10 border border-blue-100/20 p-3 rounded-xl text-xs text-x-textMuted mb-4">
-              <strong>Database Setup Requirements:</strong><br/>
-              Your target Notion database MUST have these exact property names and types:<br/>
+              <strong>Database Setup Requirements:</strong><br />
+              Your target Notion database MUST have these exact property names and types:<br />
               <ul className="list-disc pl-4 mt-1">
                 <li><code>Name</code> (Title)</li>
                 <li><code>URL</code> (URL)</li>

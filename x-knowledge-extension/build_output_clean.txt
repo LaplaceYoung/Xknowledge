@@ -1,0 +1,31 @@
+
+> x-knowledge-extension@0.0.0 build
+> tsc -b && vite build
+
+[33m[crx:content-scripts] Some content-scripts don't support HMR because the world is MAIN:
+  /src/content/inject.ts[39m
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 63 modules transformed.
+[31mx[39m Build failed in 975ms
+[31merror during build:
+[31msrc/App.tsx (12:9): "VariableSizeList" is not exported by "node_modules/react-window/dist/react-window.js", imported by "src/App.tsx".[31m
+file: [36mF:/xknowledge/xknowledge/x-knowledge-extension/src/App.tsx:12:9[31m
+[33m
+10: import { useToast } from './contexts/ToastContext'
+11: // @ts-ignore
+12: import { VariableSizeList as List } from 'react-window'
+             ^
+13: // @ts-ignore
+14: import { AutoSizer } from 'react-virtualized-auto-sizer'
+[31m
+    at getRollupError (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/parseAst.js:402:41)
+    at error (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/parseAst.js:398:42)
+    at Module.error (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:17040:16)
+    at Module.traceVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:17452:29)
+    at ModuleScope.findVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:15070:39)
+    at FunctionScope.findVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at FunctionBodyScope.findVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at ReturnValueScope.findVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at FunctionBodyScope.findVariable (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:5673:38)
+    at Identifier.bind (file:///F:/xknowledge/xknowledge/x-knowledge-extension/node_modules/vite/node_modules/rollup/dist/es/shared/node-entry.js:5447:40)[39m

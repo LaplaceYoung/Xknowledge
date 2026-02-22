@@ -3,8 +3,24 @@
   "name": "X-knowledge",
   "version": "1.0.0",
   "description": "A personal knowledge management tool for X (Twitter) bookmarks.",
-  "permissions": ["storage", "activeTab", "scripting", "sidePanel", "unlimitedStorage"],
-  "host_permissions": ["https://x.com/*", "https://twitter.com/*", "https://api.notion.com/*", "*://*.twimg.com/*"],
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://api.notion.com/*",
+    "*://*.twimg.com/*"
+  ],
   "action": {
     "default_title": "Open X-knowledge Side Panel"
   },
@@ -21,15 +37,25 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://x.com/*", "https://twitter.com/*"],
-      "js": ["src/content/index.ts"],
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "src/content/index.ts"
+      ],
       "run_at": "document_start"
-    },
+    }
+  ],
+  "web_accessible_resources": [
     {
-      "matches": ["https://x.com/*", "https://twitter.com/*"],
-      "js": ["src/content/inject.ts"],
-      "world": "MAIN",
-      "run_at": "document_start"
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "resources": [
+        "interceptor.js"
+      ]
     }
   ]
 }

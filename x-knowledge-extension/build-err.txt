@@ -1,0 +1,130 @@
+﻿
+> x-knowledge-extension@0.0.0 build
+> tsc -b && vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32m鉁?[39m 61 modules transformed.
+node.exe : [31mx[39m 
+Build failed in 903ms
+所在位置 行:1 字符: 1
++ & "C:\Program Files\n
+odejs/node.exe" "C:\Pro
+gram Files\nodejs/node_
+mo ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31mx[39m B   
+ uild failed in 903    
+ms:String) [], Rem    o
+teException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[31merror during build
+:
+[31msrc/App.tsx (14:7)
+: "default" is not expo
+rted by "node_modules/r
+eact-virtualized-auto-s
+izer/dist/react-virtual
+ized-auto-sizer.js", im
+ported by "src/App.tsx"
+.[31m
+file: [36mF:/xknowledg
+e/xknowledge/x-knowledg
+e-extension/src/App.tsx
+:14:7[31m
+[33m
+12: import { List } fro
+m 'react-window'
+13: // @ts-ignore - aut
+o-sizer 榛樿瀵煎嚭鍏煎鎬?14: 
+import AutoSizer from '
+react-virtualized-auto-
+sizer'
+           ^
+15: 
+16: import { TweetCard 
+} from './components/Tw
+eetCard'
+[31m
+    at getRollupError (
+file:///F:/xknowledge/x
+knowledge/x-knowledge-e
+xtension/node_modules/v
+ite/node_modules/rollup
+/dist/es/shared/parseAs
+t.js:402:41)
+    at error (file:///F
+:/xknowledge/xknowledge
+/x-knowledge-extension/
+node_modules/vite/node_
+modules/rollup/dist/es/
+shared/parseAst.js:398:
+42)
+    at Module.error (fi
+le:///F:/xknowledge/xkn
+owledge/x-knowledge-ext
+ension/node_modules/vit
+e/node_modules/rollup/d
+ist/es/shared/node-entr
+y.js:17040:16)
+    at Module.traceVari
+able (file:///F:/xknowl
+edge/xknowledge/x-knowl
+edge-extension/node_mod
+ules/vite/node_modules/
+rollup/dist/es/shared/n
+ode-entry.js:17452:29)
+    at ModuleScope.find
+Variable (file:///F:/xk
+nowledge/xknowledge/x-k
+nowledge-extension/node
+_modules/vite/node_modu
+les/rollup/dist/es/shar
+ed/node-entry.js:15070:
+39)
+    at FunctionScope.fi
+ndVariable (file:///F:/
+xknowledge/xknowledge/x
+-knowledge-extension/no
+de_modules/vite/node_mo
+dules/rollup/dist/es/sh
+ared/node-entry.js:5673
+:38)
+    at FunctionBodyScop
+e.findVariable (file://
+/F:/xknowledge/xknowled
+ge/x-knowledge-extensio
+n/node_modules/vite/nod
+e_modules/rollup/dist/e
+s/shared/node-entry.js:
+5673:38)
+    at Identifier.bind 
+(file:///F:/xknowledge/
+xknowledge/x-knowledge-
+extension/node_modules/
+vite/node_modules/rollu
+p/dist/es/shared/node-e
+ntry.js:5447:40)
+    at CallExpression.b
+ind (file:///F:/xknowle
+dge/xknowledge/x-knowle
+dge-extension/node_modu
+les/vite/node_modules/r
+ollup/dist/es/shared/no
+de-entry.js:2825:28)
+    at CallExpression.b
+ind (file:///F:/xknowle
+dge/xknowledge/x-knowle
+dge-extension/node_modu
+les/vite/node_modules/r
+ollup/dist/es/shared/no
+de-entry.js:12179:15)[
+39m
