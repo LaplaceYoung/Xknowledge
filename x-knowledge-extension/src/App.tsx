@@ -241,6 +241,21 @@ function App() {
     }
   };
 
+  const handlePushToObsidian = (tweet: ParsedTweet) => {
+    const mdContent = generateMarkdown([tweet]);
+    const dateStr = new Date(tweet.createdAt).toISOString().split('T')[0];
+    // Sanitize filename
+    const safeAuthorName = tweet.authorName.replace(/[\/\?<>\\:\*\|"]/g, '_');
+    const fileName = `X-knowledge/${dateStr}-${safeAuthorName}`;
+
+    // Construct Obsidian URI
+    const obsUri = `obsidian://new?file=${encodeURIComponent(fileName)}&content=${encodeURIComponent(mdContent)}`;
+
+    // Open URI
+    window.location.href = obsUri;
+    showToast('已尝试唤起 Obsidian！', 'info');
+  };
+
   const handlePushToNotion = async (tweet: ParsedTweet) => {
     if (!notionToken || !notionDbId) {
       showToast('请先在设置页配置 Notion Token 和 Database ID', 'warning');
@@ -580,6 +595,7 @@ function App() {
                             onAnalyze={handleAnalyze}
                             onDelete={handleDelete}
                             onCopyMarkdown={handleCopyMarkdown}
+                            onPushToObsidian={handlePushToObsidian}
                             onPushToNotion={handlePushToNotion}
                             onUpdateTags={handleUpdateTags}
                             onImageClick={setLightboxImage}
