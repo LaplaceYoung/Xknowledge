@@ -1,5 +1,7 @@
 # X-knowledge
 
+[English](README.md)
+
 **X (Twitter) 专属智能知识库扩展程序**
 
 X-knowledge 是一款为高度依赖 X (Twitter) 获取信息的用户设计的浏览器扩展程序。它能够无缝抓取您在 X 上的书签，利用 AI 自动打标签和生成摘要，并支持导出为 Markdown、JSON 甚至直接推送到 Notion 或 Obsidian。
