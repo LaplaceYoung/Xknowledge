@@ -1,5 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ParsedTweet } from '../utils/twitterParser';
+import { useMediaCache } from '../hooks/useMediaCache';
+
+// --- Subcomponents for Cached Media ---
+const CachedImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement> & { srcUrl: string }> = ({ srcUrl, ...props }) => {
+  const cachedSrc = useMediaCache(srcUrl);
+  return <img src={cachedSrc || srcUrl} {...props} />;
+};
+
+const CachedVideo: React.FC<React.VideoHTMLAttributes<HTMLVideoElement> & { srcUrl: string, posterUrl?: string }> = ({ srcUrl, posterUrl, ...props }) => {
+  const cachedSrc = useMediaCache(srcUrl);
+  const cachedPoster = useMediaCache(posterUrl);
+  return <video src={cachedSrc || srcUrl} poster={cachedPoster || posterUrl} {...props} />;
+};
+// --------------------------------------
 
 interface TweetCardProps {
   tweet: ParsedTweet;
@@ -76,7 +90,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
       <div ref={rowRef} className="bg-x-bg border border-x-border rounded-2xl p-4 shadow-sm hover:shadow transition-shadow mb-4">
         <div className="flex items-center space-x-3 mb-3">
           {tweet.authorAvatar && (
-            <img src={tweet.authorAvatar} alt={tweet.authorName} className="w-10 h-10 rounded-full" />
+            <CachedImage srcUrl={tweet.authorAvatar} alt={tweet.authorName} className="w-10 h-10 rounded-full object-cover" />
           )}
           <div>
             <div className="font-bold text-sm text-x-text">{tweet.authorName}</div>
@@ -142,8 +156,8 @@ export const TweetCard: React.FC<TweetCardProps> = ({
             {tweet.media.map((m, i) => (
               <div key={i} className="flex-shrink-0">
                 {m.type === 'photo' ? (
-                  <img
-                    src={m.url}
+                  <CachedImage
+                    srcUrl={m.url}
                     alt="media"
                     className="h-32 rounded-2xl object-cover border border-x-border cursor-pointer hover:opacity-90 transition-opacity"
                     onClick={() => onImageClick(m.url)}
@@ -155,11 +169,11 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                     }}
                   />
                 ) : (
-                  <video
-                    src={m.url}
-                    poster={m.previewUrl}
+                  <CachedVideo
+                    srcUrl={m.url}
+                    posterUrl={m.previewUrl}
                     controls
-                    className="h-32 rounded-2xl object-cover border border-x-border"
+                    className="h-32 rounded-2xl object-cover border border-x-border bg-black"
                     onLoadedData={() => {
                       if (rowRef.current && onHeightReady) {
                         onHeightReady(index, rowRef.current.getBoundingClientRect().height + 16);
