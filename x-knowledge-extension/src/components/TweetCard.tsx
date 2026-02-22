@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ParsedTweet } from '../utils/twitterParser';
 
 interface TweetCardProps {
@@ -12,6 +12,7 @@ interface TweetCardProps {
   onDelete: (id: string) => void;
   onCopyMarkdown: (tweet: ParsedTweet) => void;
   onPushToNotion: (tweet: ParsedTweet) => void;
+  onUpdateTags?: (id: string, newTags: string[]) => void;
   onImageClick: (url: string) => void;
   // Optional callback for react-window to report height
   onHeightReady?: (index: number, height: number) => void;
@@ -29,11 +30,32 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   onDelete,
   onCopyMarkdown,
   onPushToNotion,
+  onUpdateTags,
   onImageClick,
   onHeightReady,
   style,
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
+  const [isEditingTags, setIsEditingTags] = useState(false);
+  const [editTagsInput, setEditTagsInput] = useState('');
+
+  const handleEditTagsStart = () => {
+    if (tweet.aiAnalysis) {
+      setEditTagsInput(tweet.aiAnalysis.tags.join(', '));
+      setIsEditingTags(true);
+    }
+  };
+
+  const handleEditTagsSave = () => {
+    if (onUpdateTags && tweet.aiAnalysis) {
+      const newTags = editTagsInput
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+      onUpdateTags(tweet.id, newTags);
+    }
+    setIsEditingTags(false);
+  };
 
   useEffect(() => {
     if (rowRef.current && onHeightReady) {
@@ -68,13 +90,42 @@ export const TweetCard: React.FC<TweetCardProps> = ({
               <span className="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-1 rounded-full">
                 {tweet.aiAnalysis.category}
               </span>
-              <div className="flex gap-1 flex-wrap">
-                {tweet.aiAnalysis.tags.map((tag, i) => (
-                  <span key={i} className="text-[10px] text-x-primary bg-x-bg border border-blue-100 px-1.5 py-0.5 rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+
+              {isEditingTags ? (
+                <div className="flex items-center gap-1 w-full mt-1">
+                  <input
+                    type="text"
+                    value={editTagsInput}
+                    onChange={(e) => setEditTagsInput(e.target.value)}
+                    className="flex-1 text-xs bg-white border border-blue-200 rounded px-2 py-1 outline-none focus:border-x-primary focus:ring-1 focus:ring-x-primary text-x-text"
+                    placeholder="Enter tags separated by commas"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleEditTagsSave();
+                      if (e.key === 'Escape') setIsEditingTags(false);
+                    }}
+                  />
+                  <button onClick={handleEditTagsSave} className="text-green-600 hover:text-green-700 p-1" title="Save Tags">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  </button>
+                  <button onClick={() => setIsEditingTags(false)} className="text-red-500 hover:text-red-600 p-1" title="Cancel">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-1 flex-wrap items-center group/tags">
+                  {tweet.aiAnalysis.tags.map((tag, i) => (
+                    <span key={i} className="text-[10px] text-x-primary bg-x-bg border border-blue-100 px-1.5 py-0.5 rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                  {onUpdateTags && (
+                    <button onClick={handleEditTagsStart} className="opacity-0 group-hover/tags:opacity-100 transition-opacity text-blue-400 hover:text-blue-600 ml-1 p-0.5" title="Edit Tags">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             <p className="text-sm text-x-text font-medium leading-relaxed">
               {tweet.aiAnalysis.summary}
@@ -166,7 +217,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                   </svg>
                 ) : (
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M4.459 4.208c.746-.386 1.344-.458 1.932-.458.825 0 2.296.262 4.417 1.571l7.859 4.88c.996.619 1.48.968 1.48 1.54 0 .445-.42 1.127-1.391 1.761l-7.792 5.093c-1.558 1.018-2.628 1.144-3.353 1.144-.813 0-1.464-.175-2.071-.43l-3.39-1.411c-.551-.23-.846-.628-.846-1.102 0-.323.167-.672.486-.976l6.766-6.44-5.263-1.638c-.524-.163-.827-.506-.827-.935 0-.337.169-.64.489-.884l1.504-1.126zm1.189 1.996l-1.385 1.037 6.131 1.91c.784.244 1.258.746 1.258 1.332 0 .425-.213.843-.591 1.2l-6.848 6.517 2.946 1.226c.465.194.945.32 1.565.32.553 0 1.41-.122 2.684-.954l7.668-5.011c.74-.483 1.059-1.028 1.059-1.38 0-.356-.37-.621-1.166-1.116l-7.77-4.825c-1.89-1.166-3.136-1.401-3.816-1.401-.482 0-.962.063-1.735.462v.683h.001z"/>
+                    <path d="M4.459 4.208c.746-.386 1.344-.458 1.932-.458.825 0 2.296.262 4.417 1.571l7.859 4.88c.996.619 1.48.968 1.48 1.54 0 .445-.42 1.127-1.391 1.761l-7.792 5.093c-1.558 1.018-2.628 1.144-3.353 1.144-.813 0-1.464-.175-2.071-.43l-3.39-1.411c-.551-.23-.846-.628-.846-1.102 0-.323.167-.672.486-.976l6.766-6.44-5.263-1.638c-.524-.163-.827-.506-.827-.935 0-.337.169-.64.489-.884l1.504-1.126zm1.189 1.996l-1.385 1.037 6.131 1.91c.784.244 1.258.746 1.258 1.332 0 .425-.213.843-.591 1.2l-6.848 6.517 2.946 1.226c.465.194.945.32 1.565.32.553 0 1.41-.122 2.684-.954l7.668-5.011c.74-.483 1.059-1.028 1.059-1.38 0-.356-.37-.621-1.166-1.116l-7.77-4.825c-1.89-1.166-3.136-1.401-3.816-1.401-.482 0-.962.063-1.735.462v.683h.001z" />
                   </svg>
                 )}
               </button>
