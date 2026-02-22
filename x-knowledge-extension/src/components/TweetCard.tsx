@@ -25,6 +25,7 @@ interface TweetCardProps {
   onAnalyze: (tweet: ParsedTweet) => void;
   onDelete: (id: string) => void;
   onCopyMarkdown: (tweet: ParsedTweet) => void;
+  onPushToObsidian?: (tweet: ParsedTweet) => void;
   onPushToNotion: (tweet: ParsedTweet) => void;
   onUpdateTags?: (id: string, newTags: string[]) => void;
   onImageClick: (url: string) => void;
@@ -43,6 +44,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   onAnalyze,
   onDelete,
   onCopyMarkdown,
+  onPushToObsidian,
   onPushToNotion,
   onUpdateTags,
   onImageClick,
@@ -216,6 +218,18 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </button>
+
+            {onPushToObsidian && (
+              <button
+                onClick={() => onPushToObsidian(tweet)}
+                className="text-purple-500 hover:text-purple-600 font-medium"
+                title="Send to Obsidian"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M5.42 1.488L1.614 6.643l.89 12.33 6.623 3.65 9.098-6.07 4.14-11.238-5.322-3.873-11.623.046zM6.55 3.332h8.046l3.52 2.56-4.52 10.435-4.2-12.003-2.846-1zM3.444 8.272L8.59 13.91l-5.694-5.232 4.908 9.53-4.516-9.742.155-.194z" />
+                </svg>
+              </button>
+            )}
 
             {notionToken && notionDbId && (
               <button
