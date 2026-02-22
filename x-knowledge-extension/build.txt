@@ -1,0 +1,2 @@
+src/App.tsx(11,10): error TS2305: Module '"react-window"' has no exported member 'VariableSizeList'.
+src/App.tsx(516,16): error TS2322: Type '{ children: ({ height, width }: { height: any; width: any; }) => Element; }' is not assignable to type 'IntrinsicAttributes & AutoSizerProps'.
