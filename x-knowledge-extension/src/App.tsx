@@ -108,6 +108,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'time' | 'retweets' | 'likes'>('time')
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
 
   // UI state
   const [isGeneratingImage, setIsGeneratingImage] = useState<string | null>(null)
@@ -408,6 +410,20 @@ function App() {
         if (!textMatch && !authorMatch && !tagMatch) return false
       }
 
+      // 3. Date Range filter
+      if (startDate || endDate) {
+        const twTime = new Date(tweet.createdAt).getTime()
+        if (startDate) {
+          const startTime = new Date(startDate).getTime()
+          if (twTime < startTime) return false
+        }
+        if (endDate) {
+          // Add 23:59:59 to include the whole end day
+          const endTime = new Date(endDate + 'T23:59:59.999').getTime()
+          if (twTime > endTime) return false
+        }
+      }
+
       return true
     }).sort((a, b) => {
       // Sort logic
@@ -422,7 +438,7 @@ function App() {
       }
       return 0;
     });
-  }, [bookmarks, activeCategory, searchQuery, sortBy])
+  }, [bookmarks, activeCategory, searchQuery, sortBy, startDate, endDate])
 
   // Virtual Scrolling State
   const listRef = useRef<any>(null);
@@ -595,6 +611,32 @@ function App() {
                 <option value="retweets">Most Retweeted</option>
                 <option value="likes">Most Liked</option>
               </select>
+            </div>
+
+            {/* Advanced Filters */}
+            <div className="px-4 py-2 bg-x-bg border-b border-x-border flex items-center gap-3 text-sm">
+              <span className="text-x-textMuted font-medium">Date Range:</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="px-2 py-1 bg-x-bgHover border-transparent rounded-md focus:ring-1 focus:ring-x-primary outline-none text-x-text"
+              />
+              <span className="text-x-textMuted">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="px-2 py-1 bg-x-bgHover border-transparent rounded-md focus:ring-1 focus:ring-x-primary outline-none text-x-text"
+              />
+              {(startDate || endDate) && (
+                <button
+                  onClick={() => { setStartDate(''); setEndDate(''); }}
+                  className="ml-2 text-xs text-red-500 hover:text-red-700 font-medium"
+                >
+                  Clear Range
+                </button>
+              )}
             </div>
 
             {/* List */}
