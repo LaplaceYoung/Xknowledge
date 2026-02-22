@@ -34,6 +34,10 @@ interface TweetCardProps {
   // Optional callback for react-window to report height
   onHeightReady?: (index: number, height: number) => void;
   style?: React.CSSProperties;
+  isSelected?: boolean;
+  onToggleSelect?: (id: string, selected: boolean) => void;
+  onClickContent?: (id: string) => void;
+  onTagClick?: (tag: string) => void;
 }
 
 export const TweetCard: React.FC<TweetCardProps> = ({
@@ -54,6 +58,10 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   onImageClick,
   onHeightReady,
   style,
+  isSelected = false,
+  onToggleSelect,
+  onClickContent,
+  onTagClick,
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isEditingTags, setIsEditingTags] = useState(false);
@@ -93,21 +101,42 @@ export const TweetCard: React.FC<TweetCardProps> = ({
 
   return (
     <div style={style}>
-      <div id={`tweet-card-${tweet.id}`} ref={rowRef} className="bg-x-bg border border-x-border rounded-2xl p-4 shadow-sm hover:shadow transition-shadow mb-4">
+      <div
+        id={`tweet-card-${tweet.id}`}
+        ref={rowRef}
+        className={`bg-x-bg border-b border-x-border px-4 py-3 hover:bg-x-bgHover transition-colors ${isSelected ? 'bg-x-primary/5' : ''}`}
+      >
         <div className="flex items-center space-x-3 mb-3">
+          {onToggleSelect && (
+            <div
+              className="flex items-center justify-center p-2 -ml-2 rounded-full hover:bg-x-primary/10 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSelect(tweet.id, !isSelected);
+              }}
+            >
+              <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'bg-x-primary border-x-primary' : 'border-x-border'}`}>
+                {isSelected && (
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+            </div>
+          )}
           {tweet.authorAvatar && (
             <CachedImage srcUrl={tweet.authorAvatar} alt={tweet.authorName} className="w-10 h-10 rounded-full object-cover" />
           )}
-          <div>
-            <div className="font-bold text-sm text-x-text">{tweet.authorName}</div>
-            <div className="text-xs text-x-textMuted">@{tweet.authorHandle}</div>
+          <div className="flex-1 cursor-pointer" onClick={() => onClickContent && onClickContent(tweet.id)}>
+            <div className="font-bold text-sm text-x-text hover:underline">{tweet.authorName}</div>
+            <div className="text-xs text-x-textMuted hover:text-x-text transition-colors">@{tweet.authorHandle}</div>
           </div>
         </div>
 
         {tweet.aiAnalysis && (
-          <div className="mb-3 p-3 bg-x-primary/10/50 rounded-xl border border-blue-100/50">
+          <div className="mb-3 p-3 bg-x-primary/5 rounded-xl border border-x-border">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-1 rounded-full">
+              <span className="text-xs font-bold text-x-primary bg-x-primary/10 px-2 py-1 rounded-full">
                 {tweet.aiAnalysis.category}
               </span>
 
@@ -117,7 +146,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                     type="text"
                     value={editTagsInput}
                     onChange={(e) => setEditTagsInput(e.target.value)}
-                    className="flex-1 text-xs bg-white border border-blue-200 rounded px-2 py-1 outline-none focus:border-x-primary focus:ring-1 focus:ring-x-primary text-x-text"
+                    className="flex-1 text-xs bg-x-bgHover border border-x-border rounded px-2 py-1 outline-none focus:border-x-primary focus:ring-1 focus:ring-x-primary text-x-text"
                     placeholder="Enter tags separated by commas"
                     autoFocus
                     onKeyDown={(e) => {
@@ -135,7 +164,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
               ) : (
                 <div className="flex gap-1 flex-wrap items-center group/tags">
                   {tweet.aiAnalysis.tags.map((tag, i) => (
-                    <span key={i} className="text-[10px] text-x-primary bg-x-bg border border-blue-100 px-1.5 py-0.5 rounded-full">
+                    <span key={i} className="text-[10px] text-x-primary bg-x-primary/10 border border-x-primary/20 px-1.5 py-0.5 rounded-full">
                       {tag}
                     </span>
                   ))}
