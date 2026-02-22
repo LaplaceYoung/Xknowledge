@@ -1,5 +1,7 @@
 # X-knowledge
 
+[中文文档](README-zh.md)
+
 **Your Intelligent X (Twitter) Knowledge Base Extension**
 
 X-knowledge is a browser extension designed for users who heavily rely on X (Twitter) for information. It seamlessly captures your bookmarks on X, uses AI to automatically tag and summarize them, and supports exporting to Markdown, JSON, or syncing directly to Notion or Obsidian.
