@@ -57,7 +57,16 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           disabled={!apiKey || isSaving}
           className="w-full bg-x-primary hover:bg-x-primaryHover disabled:bg-blue-300 text-white font-medium py-2 px-4 rounded-2xl transition-colors flex justify-center items-center"
         >
-          {isSaving ? '保存中...' : '开始使用 ✨'}
+          {isSaving ? (
+            '保存中...'
+          ) : (
+            <>
+              开始使用
+              <svg className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </>
+          )}
         </button>
 
         <div className="mt-4 text-xs text-x-textMuted text-left flex items-center justify-between">
