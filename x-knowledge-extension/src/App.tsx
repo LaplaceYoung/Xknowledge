@@ -100,6 +100,8 @@ function App() {
 
   // Lightbox state
   const [lightboxImage, setLightboxImage] = useState<string | null>(null)
+  // Float to top state
+  const [showScrollTop, setShowScrollTop] = useState(false)
 
   // New state for filtering and searching
   const [searchQuery, setSearchQuery] = useState('')
@@ -207,6 +209,24 @@ function App() {
       await db.tweets.delete(id);
     } catch (err) {
       console.error('Failed to delete tweet', err);
+    }
+  };
+
+  const handleUpdateTags = async (id: string, newTags: string[]) => {
+    try {
+      const tweet = await db.tweets.get(id);
+      if (tweet && tweet.aiAnalysis) {
+        await db.tweets.update(id, {
+          aiAnalysis: {
+            ...tweet.aiAnalysis,
+            tags: newTags
+          }
+        });
+        showToast('已更新标签', 'success');
+      }
+    } catch (err) {
+      console.error('Failed to update tags', err);
+      showToast('更新标签失败', 'error');
     }
   };
 
@@ -525,6 +545,7 @@ function App() {
                         itemSize={getSize}
                         width={width}
                         itemData={filteredBookmarks}
+                        onScroll={({ scrollOffset }) => setShowScrollTop(scrollOffset > 500)}
                       >
                         {({ index, style }) => (
                           <TweetCard
@@ -538,6 +559,7 @@ function App() {
                             onDelete={handleDelete}
                             onCopyMarkdown={handleCopyMarkdown}
                             onPushToNotion={handlePushToNotion}
+                            onUpdateTags={handleUpdateTags}
                             onImageClick={setLightboxImage}
                             onHeightReady={setSize}
                             style={style as React.CSSProperties}
@@ -546,6 +568,18 @@ function App() {
                       </List>
                     )}
                   </AutoSizer>
+                  {/* Floating Scroll to Top Button */}
+                  {showScrollTop && (
+                    <button
+                      onClick={() => listRef.current?.scrollToItem(0)}
+                      className="absolute bottom-6 right-6 p-3 bg-x-primary text-white rounded-full shadow-lg hover:bg-x-primaryHover hover:shadow-xl transition-all duration-300 z-40 transform hover:-translate-y-1"
+                      title="Back to Top"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               )}
             </div>

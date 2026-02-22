@@ -71,10 +71,10 @@
 
 ### UI/UX 体验升级 (UI/UX Polish)
 * [x] Task 19: 监听 X 主站 DOM，实现 Light/Dim/Dark 主题无缝自动切换。
-* [ ] Task 20: 引入 react-window 实现书签列表的虚拟滚动 (Virtual Scrolling)，解决卡顿。
-* [ ] Task 21: 增加“回到顶部”悬浮按钮。
-* [ ] Task 22: 添加全局 Toast 提示组件（例如“书签已保存”、“分析完成”）。
-* [ ] Task 23: 优化侧边栏滚动条样式，使其与 macOS/Twitter 原生滚动条一致。
+* [x] Task 20: 引入 react-window 实现书签列表的虚拟滚动 (Virtual Scrolling)，解决卡顿。
+* [x] Task 21: 增加“回到顶部”悬浮按钮。
+* [x] Task 22: 添加全局 Toast 提示组件（例如“书签已保存”、“分析完成”）。
+* [x] Task 23: 优化侧边栏滚动条样式，使其与 macOS/Twitter 原生滚动条一致。
 
 ### AI 深度定制 (AI Customization)
 * [x] Task 24: 在设置页提供 AI Prompt 自定义输入框。
