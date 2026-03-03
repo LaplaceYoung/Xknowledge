@@ -614,6 +614,11 @@ function App() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
+              <div className="mt-2 text-xs text-x-textMuted">
+                Showing {filteredBookmarks.length} of {bookmarks.length}
+                {searchQuery.trim() ? ` for "${searchQuery.trim()}"` : ''}
+                {(startDate || endDate) ? ' (date filtered)' : ''}
+              </div>
             </div>
 
             {/* 绛涢€夋爮 - X 椋庢牸鏍囩椤?*/}
