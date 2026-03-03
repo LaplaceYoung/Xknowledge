@@ -118,7 +118,7 @@ ${text}`;
       }
       console.warn('[X-knowledge] Parsed JSON missing required fields:', parsed);
       return null;
-    } catch (parseError) {
+    } catch {
       console.error('Failed to parse AI response as JSON:', content);
       return null;
     }

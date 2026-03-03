@@ -12,8 +12,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [apiBaseUrl, setApiBaseUrl] = useState('');
   const [apiModel, setApiModel] = useState('');
 
-  // TODO: Implement the save function to store the API key in chrome.storage.sync
-  // Call onComplete() when successfully saved
   const handleSave = async () => {
     setIsSaving(true);
     if (chrome && chrome.storage && chrome.storage.sync) {
@@ -55,7 +53,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </label>
             <select
               value={apiProvider}
-              onChange={(e) => setApiProvider(e.target.value as any)}
+              onChange={(e) => setApiProvider(e.target.value as 'siliconflow' | 'custom')}
               className="w-full px-4 py-2 bg-x-bg border border-x-border rounded-2xl text-sm focus:bg-x-bg focus:border-x-primary focus:ring-2 focus:ring-x-primary/30 transition-all outline-none"
             >
               <option value="siliconflow">SiliconFlow (默认)</option>

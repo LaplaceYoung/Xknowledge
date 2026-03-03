@@ -59,7 +59,9 @@ function broadcastTheme() {
       type: 'THEME_CHANGED',
       payload: theme
     }, () => {
-      if (chrome.runtime.lastError) { }
+      if (chrome.runtime.lastError) {
+        void chrome.runtime.lastError;
+      }
     });
   }
 }

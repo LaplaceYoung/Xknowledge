@@ -14,12 +14,6 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onCha
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (value) {
-            setViewDate(new Date(value));
-        }
-    }, [value]);
-
-    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -88,7 +82,12 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onCha
         <div className="relative" ref={containerRef}>
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    if (!isOpen && value) {
+                        setViewDate(new Date(value));
+                    }
+                    setIsOpen(!isOpen);
+                }}
                 className="flex items-center gap-2 px-3 py-1.5 bg-transparent border border-x-border rounded-lg text-x-text text-[13px] font-medium transition-colors hover:bg-x-bgHover min-w-[120px] justify-between cursor-pointer"
             >
                 <span>{displayValue || placeholder}</span>

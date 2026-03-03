@@ -4,7 +4,7 @@ export async function pushToNotion(tweet: ParsedTweet, token: string, dbId: stri
   const url = 'https://api.notion.com/v1/pages';
 
   // Format properties
-  const properties: any = {
+  const properties: Record<string, unknown> = {
     "Name": {
       "title": [
         {
@@ -41,7 +41,7 @@ export async function pushToNotion(tweet: ParsedTweet, token: string, dbId: stri
   }
 
   // Format content blocks
-  const children: any[] = [];
+  const children: Array<Record<string, unknown>> = [];
 
   // Add AI Summary if exists
   if (tweet.aiAnalysis) {

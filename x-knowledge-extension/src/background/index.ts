@@ -1,4 +1,4 @@
-import { parseBookmarks, ParsedTweet } from '../utils/twitterParser';
+﻿import { parseBookmarks, ParsedTweet } from '../utils/twitterParser';
 import { db } from '../utils/db';
 
 async function cacheMediaForTweets(tweets: ParsedTweet[]) {
@@ -55,51 +55,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const sourceUrl = message.sourceUrl ? ` from ${message.sourceUrl.split('?')[0]}` : '';
     console.log(`[X-knowledge] Background received bookmarks payload${sourceUrl}`);
 
-    // ===== 调试：转储原始数据结构，找到用户信息路径 =====
-    const dumpStructure = (obj: any, path: string, depth: number) => {
-      if (!obj || typeof obj !== 'object' || depth > 6) return;
-      const keys = Object.keys(obj);
-      if (keys.length > 20) {
-        console.log(`[DEBUG] ${path} => {${keys.slice(0, 10).join(', ')}... (${keys.length} keys)}`);
-      } else {
-        console.log(`[DEBUG] ${path} => {${keys.join(', ')}}`);
-      }
-      // 标记关键字段
-      if (obj.__typename) console.log(`[DEBUG] ${path}.__typename = "${obj.__typename}"`);
-      if (obj.screen_name) console.log(`[DEBUG] ★★★ 找到 screen_name 在 ${path}.screen_name = "${obj.screen_name}"`);
-      if (obj.name && obj.screen_name) console.log(`[DEBUG] ★★★ 找到用户 name 在 ${path}.name = "${obj.name}"`);
-      for (const key of keys) {
-        if (typeof obj[key] === 'object' && obj[key] !== null) {
-          dumpStructure(obj[key], `${path}.${key}`, depth + 1);
-        }
-      }
-    };
-
-    // 找到第一个 tweet entry 并转储
-    try {
-      const payload = message.payload;
-      // 尝试遍历到书签时间线的第一个条目
-      const instructions = payload?.data?.bookmark_timeline_v2?.timeline?.instructions
-        || payload?.data?.bookmarkTimeline?.timeline?.instructions
-        || [];
-      for (const inst of instructions) {
-        if (inst.entries && inst.entries.length > 0) {
-          const firstEntry = inst.entries[0];
-          console.log('[DEBUG] ====== 第一个书签条目的完整结构 ======');
-          dumpStructure(firstEntry, 'entry', 0);
-          console.log('[DEBUG] ====== 结构转储结束 ======');
-          break;
-        }
-      }
-      if (instructions.length === 0) {
-        console.log('[DEBUG] 未找到 instructions，顶层 keys:', Object.keys(payload?.data || payload));
-        dumpStructure(payload, 'payload', 0);
-      }
-    } catch (e) {
-      console.error('[DEBUG] 结构转储出错:', e);
-    }
-    // ===== 调试结束 =====
-
+    // ===== 璋冭瘯锛氳浆鍌ㄥ師濮嬫暟鎹粨鏋勶紝鎵惧埌鐢ㄦ埛淇℃伅璺緞 =====
     const newParsed = parseBookmarks([message.payload]);
     console.log(`[X-knowledge] Background parsed ${newParsed.length} tweets from payload.`);
 
@@ -119,8 +75,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await db.tweets.bulkPut(uniqueNew);
         console.log(`[X-knowledge] Saved ${uniqueNew.length} new bookmarks to IndexedDB.`);
 
-        // 通知侧边栏刷新数据（useLiveQuery 无法感知跨上下文的 IndexedDB 写入）
-        chrome.runtime.sendMessage({ type: 'BOOKMARKS_UPDATED', count: uniqueNew.length }).catch(() => { });
+        // 閫氱煡渚ц竟鏍忓埛鏂版暟鎹紙useLiveQuery 鏃犳硶鎰熺煡璺ㄤ笂涓嬫枃鐨?IndexedDB 鍐欏叆锛?        chrome.runtime.sendMessage({ type: 'BOOKMARKS_UPDATED', count: uniqueNew.length }).catch(() => { });
 
         // Fire and forget media caching
         cacheMediaForTweets(uniqueNew).catch(err => {
@@ -143,3 +98,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 console.log('[X-knowledge] Background script loaded.');
+

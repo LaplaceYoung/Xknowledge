@@ -37,7 +37,6 @@ interface TweetCardProps {
   isSelected?: boolean;
   onToggleSelect?: (id: string, selected: boolean) => void;
   onClickContent?: (id: string) => void;
-  onTagClick?: (tag: string) => void;
 }
 
 export const TweetCard: React.FC<TweetCardProps> = ({
@@ -61,7 +60,6 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   isSelected = false,
   onToggleSelect,
   onClickContent,
-  onTagClick,
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isEditingTags, setIsEditingTags] = useState(false);

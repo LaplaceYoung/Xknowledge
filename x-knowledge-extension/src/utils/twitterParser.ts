@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Media {
   type: 'photo' | 'video' | 'animated_gif';
   url: string;
@@ -37,7 +38,7 @@ export function parseBookmarks(rawPayloads: any[]): ParsedTweet[] {
 
     // 保留所有层级引用用于后续用户信息查找
     const originalInput = tweetResult;
-    let result = tweetResult.result || tweetResult;
+    const result = tweetResult.result || tweetResult;
     let tweet = result.tweet || result;
 
     if (tweet.result) {
