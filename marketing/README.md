@@ -14,13 +14,17 @@ Open `http://localhost:8080/marketing/`.
 
 ## Deploy Options
 
-1. Cloudflare Pages:
+1. GitHub Pages (already wired in this repo):
+   - Workflow: `.github/workflows/deploy-marketing-pages.yml`
+   - Trigger: push to `main` with changes under `marketing/`
+   - Expected URL: `https://laplaceyoung.github.io/Xknowledge/`
+2. Cloudflare Pages:
    - Root directory: repository root
    - Build command: none
    - Output directory: `marketing`
-2. Netlify:
+3. Netlify:
    - Publish directory: `marketing`
-3. Vercel:
+4. Vercel:
    - Framework preset: `Other`
    - Output directory: `marketing`
 

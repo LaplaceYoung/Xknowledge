@@ -73,3 +73,13 @@ npm run build
 ## 许可协议
 
 [MIT License](LICENSE)
+
+## 远端部署与质量门禁（新增）
+
+- 营销页自动发布（GitHub Pages）:
+  - 工作流: `.github/workflows/deploy-marketing-pages.yml`
+  - 发布目录: `marketing/`
+  - 访问地址: `https://laplaceyoung.github.io/Xknowledge/`
+- 扩展 CI 门禁:
+  - 工作流: `.github/workflows/extension-ci.yml`
+  - 检查项: `npm run lint` 与 `npm run build`

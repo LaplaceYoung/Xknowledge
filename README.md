@@ -37,22 +37,37 @@ git clone https://github.com/LaplaceYoung/Xknowledge.git
 cd Xknowledge
 ```
 
-2. Install dependencies
+2. Enter extension workspace
+```bash
+cd x-knowledge-extension
+```
+
+3. Install dependencies
 ```bash
 npm install
 ```
 
-3. Run dev server
+4. Run dev server
 ```bash
 npm run dev
 ```
 
-4. Build extension
+5. Build extension
 ```bash
 npm run build
 ```
 
 After building, go to Chrome's `chrome://extensions/` page, enable "Developer mode", and click "Load unpacked" to select the `dist` directory.
+
+## Remote Deployment
+
+- Marketing page auto deployment:
+  - Workflow: `.github/workflows/deploy-marketing-pages.yml`
+  - Publish source: `marketing/`
+  - URL: `https://laplaceyoung.github.io/Xknowledge/`
+- Extension quality gate:
+  - Workflow: `.github/workflows/extension-ci.yml`
+  - Checks: `npm run lint` + `npm run build`
 
 ## Configuration Guide
 

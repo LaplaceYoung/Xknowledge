@@ -15,6 +15,31 @@ const CachedVideo: React.FC<React.VideoHTMLAttributes<HTMLVideoElement> & { srcU
 };
 // --------------------------------------
 
+const escapeRegExp = (value: string): string => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+const renderHighlightedText = (text: string, query: string): React.ReactNode => {
+  const keyword = query.trim();
+  if (!keyword) return text;
+
+  const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'ig');
+  const parts = text.split(regex);
+  const normalizedKeyword = keyword.toLowerCase();
+
+  if (parts.length === 1) return text;
+
+  return parts.map((part, idx) => (
+    part.toLowerCase() === normalizedKeyword ? (
+      <mark key={`${part}-${idx}`} className="bg-yellow-200/80 text-x-text px-0.5 rounded">
+        {part}
+      </mark>
+    ) : (
+      <React.Fragment key={`${part}-${idx}`}>{part}</React.Fragment>
+    )
+  ));
+};
+
 interface TweetCardProps {
   tweet: ParsedTweet;
   index: number;
@@ -37,6 +62,7 @@ interface TweetCardProps {
   isSelected?: boolean;
   onToggleSelect?: (id: string, selected: boolean) => void;
   onClickContent?: (id: string) => void;
+  searchQuery?: string;
 }
 
 export const TweetCard: React.FC<TweetCardProps> = ({
@@ -60,6 +86,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
   isSelected = false,
   onToggleSelect,
   onClickContent,
+  searchQuery = '',
 }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isEditingTags, setIsEditingTags] = useState(false);
@@ -126,7 +153,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
             <CachedImage srcUrl={tweet.authorAvatar} alt={tweet.authorName} className="w-10 h-10 rounded-full object-cover" />
           )}
           <div className="flex-1 cursor-pointer" onClick={() => onClickContent && onClickContent(tweet.id)}>
-            <div className="font-bold text-sm text-x-text hover:underline">{tweet.authorName}</div>
+            <div className="font-bold text-sm text-x-text hover:underline">{renderHighlightedText(tweet.authorName, searchQuery)}</div>
             <div className="text-xs text-x-textMuted hover:text-x-text transition-colors">@{tweet.authorHandle}</div>
           </div>
         </div>
@@ -163,7 +190,7 @@ export const TweetCard: React.FC<TweetCardProps> = ({
                 <div className="flex gap-1 flex-wrap items-center group/tags">
                   {tweet.aiAnalysis.tags.map((tag, i) => (
                     <span key={i} className="text-[10px] text-x-primary bg-x-primary/10 border border-x-primary/20 px-1.5 py-0.5 rounded-full">
-                      {tag}
+                      {renderHighlightedText(tag, searchQuery)}
                     </span>
                   ))}
                   {onUpdateTags && (
@@ -175,13 +202,13 @@ export const TweetCard: React.FC<TweetCardProps> = ({
               )}
             </div>
             <p className="text-sm text-x-text font-medium leading-relaxed">
-              {tweet.aiAnalysis.summary}
+              {renderHighlightedText(tweet.aiAnalysis.summary, searchQuery)}
             </p>
           </div>
         )}
 
         <p className="text-sm text-x-text whitespace-pre-wrap mb-3 leading-relaxed">
-          {tweet.text}
+          {renderHighlightedText(tweet.text, searchQuery)}
         </p>
 
         {tweet.media && tweet.media.length > 0 && (

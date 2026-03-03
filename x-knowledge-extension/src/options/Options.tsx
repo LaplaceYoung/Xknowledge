@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { loadSettings, saveSettings } from '../utils/settingsStorage';
 
 const DEFAULT_PROMPT = `请分析以下推文内容，返回严格的 JSON 格式数据，不要包含任何 Markdown 标记（如 \`\`\`json），只需返回纯 JSON 字符串。
 JSON 结构如下：
@@ -18,35 +19,50 @@ function Options() {
   const [apiProvider, setApiProvider] = useState<'siliconflow' | 'custom'>('siliconflow');
   const [apiBaseUrl, setApiBaseUrl] = useState('');
   const [apiModel, setApiModel] = useState('');
+  const [syncSecretsEnabled, setSyncSecretsEnabled] = useState(false);
 
   useEffect(() => {
-    if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.get(['siliconFlowApiKey', 'customAIPrompt', 'notionToken', 'notionDatabaseId', 'apiProvider', 'apiBaseUrl', 'apiModel'], (result) => {
-        if (result.siliconFlowApiKey) setApiKey(result.siliconFlowApiKey as string);
-        if (result.customAIPrompt) setCustomPrompt(result.customAIPrompt as string);
-        if (result.notionToken) setNotionToken(result.notionToken as string);
-        if (result.notionDatabaseId) setNotionDatabaseId(result.notionDatabaseId as string);
-        if (result.apiProvider) setApiProvider(result.apiProvider as 'siliconflow' | 'custom');
-        if (result.apiBaseUrl) setApiBaseUrl(result.apiBaseUrl as string);
-        if (result.apiModel) setApiModel(result.apiModel as string);
-      });
-    }
+    let isCancelled = false;
+
+    const load = async () => {
+      try {
+        const settings = await loadSettings();
+        if (isCancelled) return;
+        setApiKey(settings.siliconFlowApiKey);
+        setCustomPrompt(settings.customAIPrompt);
+        setNotionToken(settings.notionToken);
+        setNotionDatabaseId(settings.notionDatabaseId);
+        setApiProvider(settings.apiProvider);
+        setApiBaseUrl(settings.apiBaseUrl);
+        setApiModel(settings.apiModel);
+        setSyncSecretsEnabled(settings.syncSecretsEnabled);
+      } catch (err) {
+        console.error('[X-knowledge] Failed to load settings:', err);
+      }
+    };
+
+    load();
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
-  const handleSave = () => {
-    if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.set({
+  const handleSave = async () => {
+    try {
+      await saveSettings({
         siliconFlowApiKey: apiKey.trim(),
         customAIPrompt: customPrompt.trim(),
         notionToken: notionToken.trim(),
         notionDatabaseId: notionDatabaseId.trim(),
         apiProvider,
         apiBaseUrl: apiBaseUrl.trim(),
-        apiModel: apiModel.trim()
-      }, () => {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        apiModel: apiModel.trim(),
+        syncSecretsEnabled
       });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('[X-knowledge] Failed to save settings:', err);
     }
   };
 
@@ -124,6 +140,18 @@ function Options() {
                 className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
               />
             </div>
+
+            <label className="flex items-start gap-3 bg-amber-50/10 border border-amber-200/20 rounded-xl p-3">
+              <input
+                type="checkbox"
+                checked={syncSecretsEnabled}
+                onChange={(e) => setSyncSecretsEnabled(e.target.checked)}
+                className="mt-0.5"
+              />
+              <span className="text-xs text-x-textMuted leading-relaxed">
+                Enable cross-device sync for API Key and Notion Token. Disabled by default for safer local-only secret storage.
+              </span>
+            </label>
           </div>
 
           {/* Notion API Section */}

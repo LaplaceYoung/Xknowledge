@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { updateSettings } from '../utils/settingsStorage';
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -14,20 +15,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.set({
+    try {
+      await updateSettings({
         siliconFlowApiKey: apiKey.trim(),
         apiProvider,
         apiBaseUrl: apiBaseUrl.trim(),
-        apiModel: apiModel.trim()
-      }, () => {
-        setIsSaving(false);
-        onComplete();
+        apiModel: apiModel.trim(),
+        syncSecretsEnabled: false
       });
-    } else {
-      // Local dev fallback
       setIsSaving(false);
       onComplete();
+    } catch (err) {
+      console.error('[X-knowledge] Failed to save onboarding settings:', err);
+      setIsSaving(false);
     }
   };
 

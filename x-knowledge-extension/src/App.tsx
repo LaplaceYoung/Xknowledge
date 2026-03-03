@@ -6,6 +6,7 @@ import { pushToNotion } from './utils/notionExport'
 import { exportToZip } from './utils/zipExport'
 import { CustomDatePicker } from './components/CustomDatePicker'
 import { db } from './utils/db'
+import { loadSettings } from './utils/settingsStorage'
 
 import { Onboarding } from './components/Onboarding'
 import { useToast } from './contexts/ToastContext'
@@ -70,17 +71,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Check if API key is already configured
-    if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.get(['siliconFlowApiKey', 'notionToken', 'notionDatabaseId'], (result) => {
-        setIsApiKeyConfigured(!!result.siliconFlowApiKey);
-        setNotionToken((result.notionToken as string) || null);
-        setNotionDbId((result.notionDatabaseId as string) || null);
-      });
-    } else {
-      // For local development without extension environment
+    let isCancelled = false;
+
+    const initSettings = async () => {
+      try {
+        const settings = await loadSettings();
+        if (isCancelled) return;
+        setIsApiKeyConfigured(!!settings.siliconFlowApiKey);
+        setNotionToken(settings.notionToken || null);
+        setNotionDbId(settings.notionDatabaseId || null);
+      } catch (err) {
+        console.error('[X-knowledge] Failed to initialize settings:', err);
+        if (!isCancelled) setIsApiKeyConfigured(false);
+      }
+    };
+
+    if (typeof chrome === 'undefined' || !chrome.storage) {
       setIsApiKeyConfigured(false);
+      return;
     }
+
+    initSettings();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   // Manual refresh replaces useLiveQuery because background writes are cross-context.
@@ -138,6 +153,7 @@ function App() {
   // Float to top state
   // New state for filtering and searching
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeTagFilter, setActiveTagFilter] = useState('')
   const activeCategory: string = 'all'
   const [sortBy, setSortBy] = useState<'time' | 'retweets' | 'likes'>('time')
   const [showSortDropdown, setShowSortDropdown] = useState(false)
@@ -446,6 +462,23 @@ function App() {
     setAnalyzingId(null);
     setIsBatchAnalyzing(false);    batchStateRef.current = { isRunning: false, isPaused: false };
   };
+
+  const popularTags = useMemo(() => {
+    const tagCounter = new Map<string, number>();
+    for (const tweet of bookmarks) {
+      if (!tweet.aiAnalysis?.tags) continue;
+      for (const tag of tweet.aiAnalysis.tags) {
+        const normalized = tag.trim();
+        if (!normalized) continue;
+        tagCounter.set(normalized, (tagCounter.get(normalized) || 0) + 1);
+      }
+    }
+
+    return Array.from(tagCounter.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8);
+  }, [bookmarks]);
+
   // Derived state: Filtered bookmarks
   const filteredBookmarks = useMemo(() => {
     return bookmarks.filter(tweet => {
@@ -465,7 +498,13 @@ function App() {
         if (!textMatch && !authorMatch && !tagMatch) return false
       }
 
-      // 3. Date Range filter
+      // 3. Popular tag filter
+      if (activeTagFilter) {
+        const tagMatched = tweet.aiAnalysis?.tags.some((tag) => tag.toLowerCase() === activeTagFilter.toLowerCase());
+        if (!tagMatched) return false;
+      }
+
+      // 4. Date Range filter
       if (startDate || endDate) {
         const twTime = new Date(tweet.createdAt).getTime()
         if (startDate) {
@@ -493,7 +532,7 @@ function App() {
       }
       return 0;
     });
-  }, [bookmarks, searchQuery, sortBy, startDate, endDate])
+  }, [bookmarks, searchQuery, sortBy, startDate, endDate, activeTagFilter])
 
   return (
     <>
@@ -617,8 +656,31 @@ function App() {
               <div className="mt-2 text-xs text-x-textMuted">
                 Showing {filteredBookmarks.length} of {bookmarks.length}
                 {searchQuery.trim() ? ` for "${searchQuery.trim()}"` : ''}
+                {activeTagFilter ? ` tagged ${activeTagFilter}` : ''}
                 {(startDate || endDate) ? ' (date filtered)' : ''}
               </div>
+              {popularTags.length > 0 && (
+                <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">Top Tags</span>
+                  {popularTags.map(([tag, count]) => {
+                    const active = activeTagFilter.toLowerCase() === tag.toLowerCase();
+                    return (
+                      <button
+                        key={tag}
+                        onClick={() => setActiveTagFilter(active ? '' : tag)}
+                        className={`text-[11px] px-2 py-1 rounded-full border whitespace-nowrap transition-colors ${
+                          active
+                            ? 'bg-x-primary text-white border-x-primary'
+                            : 'bg-x-bgHover text-x-textMuted border-x-border hover:text-x-text'
+                        }`}
+                        title={`Filter by ${tag}`}
+                      >
+                        {tag} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* 绛涢€夋爮 - X 椋庢牸鏍囩椤?*/}
@@ -729,6 +791,7 @@ function App() {
                       isGeneratingImage={isGeneratingImage === tweet.id}
                       onUpdateTags={handleUpdateTags}
                       onImageClick={setLightboxImage}
+                      searchQuery={searchQuery}
                     />
                   ))}
                 </div>

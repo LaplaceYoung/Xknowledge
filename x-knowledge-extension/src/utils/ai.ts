@@ -1,3 +1,5 @@
+import { loadSettings } from './settingsStorage';
+
 export interface AIAnalysisResult {
   category: string;
   summary: string;
@@ -17,19 +19,24 @@ interface StorageConfig {
 
 const getStorageConfig = (): Promise<StorageConfig> => {
   return new Promise((resolve) => {
-    if (chrome && chrome.storage && chrome.storage.sync) {
-      chrome.storage.sync.get(['siliconFlowApiKey', 'customAIPrompt', 'apiProvider', 'apiBaseUrl', 'apiModel'], (result) => {
-        resolve({
-          apiKey: (result.siliconFlowApiKey as string) || null,
-          customPrompt: (result.customAIPrompt as string) || null,
-          apiProvider: (result.apiProvider as string) || 'siliconflow',
-          apiBaseUrl: (result.apiBaseUrl as string) || '',
-          apiModel: (result.apiModel as string) || ''
-        });
-      });
-    } else {
+    if (typeof chrome === 'undefined' || !chrome.storage) {
       resolve({ apiKey: null, customPrompt: null, apiProvider: 'siliconflow' });
+      return;
     }
+
+    loadSettings()
+      .then((settings) => {
+        resolve({
+          apiKey: settings.siliconFlowApiKey || null,
+          customPrompt: settings.customAIPrompt || null,
+          apiProvider: settings.apiProvider || 'siliconflow',
+          apiBaseUrl: settings.apiBaseUrl || '',
+          apiModel: settings.apiModel || ''
+        });
+      })
+      .catch(() => {
+        resolve({ apiKey: null, customPrompt: null, apiProvider: 'siliconflow' });
+      });
   });
 };
 
