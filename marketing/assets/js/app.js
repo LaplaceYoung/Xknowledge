@@ -99,6 +99,45 @@
       });
   };
 
+  const initFaq = () => {
+    document.querySelectorAll('.faq-item').forEach((item) => {
+      const btn = item.querySelector('.faq-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const willOpen = item.getAttribute('data-open') !== 'true';
+        item.setAttribute('data-open', willOpen ? 'true' : 'false');
+        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      });
+    });
+  };
+
+  const initShareLink = () => {
+    const btn = document.getElementById('shareLinkBtn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      const successText = (window.XK_I18N && window.XK_I18N.t && window.XK_I18N.t('runtime.copySuccess')) || 'Page link copied';
+      const failText = (window.XK_I18N && window.XK_I18N.t && window.XK_I18N.t('runtime.copyFail')) || 'Copy failed';
+      const original = btn.textContent || '';
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        btn.textContent = String(successText);
+      } catch {
+        btn.textContent = String(failText);
+      }
+      window.setTimeout(() => {
+        if (window.XK_I18N && window.XK_I18N.apply) window.XK_I18N.apply();
+        else btn.textContent = original;
+      }, 1400);
+    });
+  };
+
+  const syncThemeColor = () => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    meta.setAttribute('content', dark ? '#000000' : '#ffffff');
+  };
+
   const init = () => {
     if (window.XK_THEME && window.XK_THEME.init) window.XK_THEME.init();
     if (window.XK_I18N && window.XK_I18N.init) window.XK_I18N.init();
@@ -107,9 +146,19 @@
     initReveal();
     initCounters();
     initRepoMeta();
+    initFaq();
+    initShareLink();
+    syncThemeColor();
     window.addEventListener('xk:langchange', () => {
       preserveInternalLang();
       initRepoMeta();
+    });
+    window.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.hasAttribute('data-theme-value')) {
+        window.setTimeout(syncThemeColor, 0);
+      }
     });
   };
 

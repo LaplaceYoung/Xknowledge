@@ -75,6 +75,64 @@
           g3d: '摆脱原生滚动，建立可检索知识层。',
           read: '阅读指南'
         },
+        trust: {
+          title: '参考优秀产品叙事结构',
+          desc: '借鉴头部创作者和效率工具的页面方法：价值先行、证据驱动、CTA 低摩擦。'
+        },
+        compare: {
+          title: '为什么不只用原生书签？',
+          desc: 'X 原生书签解决“存”，X-knowledge 解决“找、管、用”。',
+          h1: '能力项',
+          h2: 'X 原生书签',
+          h3: 'X-knowledge',
+          r1c1: '语义检索',
+          r1c2: '仅基础文本查找',
+          r1c3: 'AI 标签 + 摘要 + 过滤',
+          r2c1: '批处理能力',
+          r2c2: '无队列控制',
+          r2c3: '暂停 / 恢复 / 失败重试',
+          r3c1: '可迁移性',
+          r3c2: '平台内封闭',
+          r3c3: 'Markdown / Notion / Obsidian / ZIP',
+          r4c1: '数据策略',
+          r4c2: '平台绑定',
+          r4c3: '默认本地优先'
+        },
+        testimonials: {
+          title: '真实使用场景',
+          desc: '来自内容创作与产品研究流程中的高频需求。',
+          q1: '“再也不用在书签列表里反复滚动，周报素材 5 分钟就能整理完。”',
+          a1: '产品经理 · AI 工具方向',
+          q2: '“标签和摘要让趋势挖掘效率比原生 X 高很多。”',
+          a2: '独立创作者 · 增长方向',
+          q3: '“同步到 Notion 后，团队有了统一的情报面板。”',
+          a3: '创业团队运营 · 研究流程'
+        },
+        activation: {
+          title: '10 分钟内完成激活',
+          desc: '将上手流程压缩到首次价值：采集、结构化、导出。',
+          c1t: '1) 在 Chrome 加载扩展',
+          c1d: '开启开发者模式后一键加载。',
+          c2t: '2) 打开 X 书签开始采集',
+          c2d: '直接从现有书签列表获取数据。',
+          c3t: '3) 执行 AI 批处理并导出',
+          c3d: '生成元数据后导入你的知识工具栈。'
+        },
+        referral: {
+          title: '分享给团队，统一知识分类法',
+          desc: '复制当前语言版本页面链接，快速完成团队对齐。',
+          copy: '复制页面链接'
+        },
+        faq: {
+          title: '常见问题',
+          desc: '安装前你最关心的问题。',
+          q1: '支持 x.com 和 twitter.com 吗？',
+          a1: '支持，扩展兼容两个域名。',
+          q2: 'API Key 会默认上传吗？',
+          a2: '不会，默认本地保存，跨端同步需要手动开启。',
+          q3: '已有书签可以直接迁移吗？',
+          a3: '可以，直接从 X 书签时间线批量采集。'
+        },
         cta: {
           title: '从书签堆积，走向可复用知识流。',
           desc: '适合在 X 进行研究、产品情报和内容生产的个人与团队。',
@@ -87,7 +145,9 @@
           docs: '文档'
         },
         runtime: {
-          repoFallback: '面向 X 知识管理的开源扩展'
+          repoFallback: '面向 X 知识管理的开源扩展',
+          copySuccess: '页面链接已复制',
+          copyFail: '复制失败，请手动复制地址'
         }
       },
       en: {
@@ -161,6 +221,64 @@
           g3d: 'Move beyond native scroll with a searchable layer.',
           read: 'Read Guide'
         },
+        trust: {
+          title: 'Benchmark-inspired product narrative',
+          desc: 'Pattern references from top creator and product tools: clear value, proof-first modules, and low-friction CTA flow.'
+        },
+        compare: {
+          title: 'Why not just use native bookmarks?',
+          desc: 'X native bookmarks are storage; X-knowledge adds retrieval and operations.',
+          h1: 'Capability',
+          h2: 'Native X Bookmarks',
+          h3: 'X-knowledge',
+          r1c1: 'Semantic search',
+          r1c2: 'Basic text scan only',
+          r1c3: 'AI tags + summary + filters',
+          r2c1: 'Batch operations',
+          r2c2: 'No queue controls',
+          r2c3: 'Pause / resume / retry failed',
+          r3c1: 'Portability',
+          r3c2: 'Locked in platform',
+          r3c3: 'Markdown / Notion / Obsidian / ZIP',
+          r4c1: 'Data policy',
+          r4c2: 'Platform-bound',
+          r4c3: 'Local-first by default'
+        },
+        testimonials: {
+          title: 'What builders use it for',
+          desc: 'Validated use-cases collected from creator workflows and product research routines.',
+          q1: '"I stopped losing references in bookmark scroll. Weekly research export takes 5 minutes now."',
+          a1: 'Product manager · AI tooling',
+          q2: '"Tags and summaries make trend digging way faster than native X."',
+          a2: 'Indie creator · Growth',
+          q3: '"Notion sync gave our team a shared signal board from personal bookmarks."',
+          a3: 'Startup operator · Research ops'
+        },
+        activation: {
+          title: 'Activation in under 10 minutes',
+          desc: 'Compress onboarding to first value: capture, classify, and export.',
+          c1t: '1) Load extension in Chrome',
+          c1d: 'Enable developer mode and load unpacked in one step.',
+          c2t: '2) Open X bookmarks to ingest',
+          c2d: 'Start capture immediately from your existing bookmark list.',
+          c3t: '3) Run AI batch and export',
+          c3d: 'Generate metadata and ship to your note stack.'
+        },
+        referral: {
+          title: 'Share with your team and keep taxonomy aligned',
+          desc: 'Copy this page link with your language setting and onboard collaborators fast.',
+          copy: 'Copy Page Link'
+        },
+        faq: {
+          title: 'FAQ',
+          desc: 'Practical answers before installation.',
+          q1: 'Does this work on x.com and twitter.com?',
+          a1: 'Yes. The extension supports both domains.',
+          q2: 'Will my API key be uploaded by default?',
+          a2: 'No. Keys are local-first by default, and sync is opt-in.',
+          q3: 'Can I migrate existing bookmarks?',
+          a3: 'Yes. Existing bookmarks can be ingested directly from your X bookmark timeline.'
+        },
         cta: {
           title: 'Move from bookmark chaos to reusable knowledge flow.',
           desc: 'Built for creators, researchers, and product teams running intelligence loops on X.',
@@ -173,7 +291,9 @@
           docs: 'Docs'
         },
         runtime: {
-          repoFallback: 'Open-source extension for serious X knowledge workflows'
+          repoFallback: 'Open-source extension for serious X knowledge workflows',
+          copySuccess: 'Page link copied',
+          copyFail: 'Copy failed, please copy the URL manually'
         }
       }
     },
