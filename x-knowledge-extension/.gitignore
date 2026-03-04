@@ -12,6 +12,26 @@ dist
 dist-ssr
 *.local
 
+# Packaging/signing artifacts
+dist.crx
+dist.pem
+*.zip
+
+# Local diagnostics and temporary outputs
+feedback.json
+task.md
+image.png
+image-1.png
+image-2.png
+build*.txt
+build*.log
+err.txt
+vite_out.txt
+
+# Agent notes
+.claude/
+my-video/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
