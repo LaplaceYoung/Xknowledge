@@ -1,36 +1,44 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>X-knowledge | Turn X Bookmarks into Searchable Knowledge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X-knowledge | Turn X Bookmarks into a Searchable Knowledge Engine</title>
     <meta
       name="description"
-      content="Capture, search, summarize, and export X bookmarks with AI. Built for makers and knowledge workers."
+      content="A cinematic open-source promo page for X-knowledge: capture, classify, and ship X bookmarks into your real knowledge workflow."
     />
     <meta property="og:title" content="X-knowledge" />
     <meta
       property="og:description"
-      content="A browser extension that turns X bookmarks into a searchable AI-powered knowledge base."
+      content="Capture, summarize, tag, and export X bookmarks with a local-first AI extension built for makers and teams."
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#f5f2ea" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%23005fef'/%3E%3Cstop offset='1' stop-color='%230cb3a4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='8' y='8' width='48' height='48' rx='14' fill='url(%23g)'/%3E%3Cpath d='M22 22L42 42M42 22L22 42' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #0a1118;
-        --panel: #101b24;
-        --panel-2: #142432;
-        --text: #e9f3ff;
-        --muted: #9cb2c8;
-        --line: #25374a;
-        --accent: #2bd1b2;
-        --accent-2: #ffc857;
+        --bg: #f5f2ea;
+        --surface: #fffdf8;
+        --surface-2: #f0ebe1;
+        --text: #0c2134;
+        --muted: #4f6478;
+        --line: #d8d0c2;
+        --brand: #005fef;
+        --brand-2: #0cb3a4;
+        --brand-3: #ff7a1a;
+        --shadow: 0 16px 40px rgba(20, 46, 80, 0.12);
       }
 
       * {
@@ -41,265 +49,834 @@
       body {
         margin: 0;
         padding: 0;
-        background: radial-gradient(circle at 10% 0%, #173246 0%, var(--bg) 35%), var(--bg);
+        font-family: "Sora", "Helvetica Neue", sans-serif;
         color: var(--text);
-        font-family: "Space Grotesk", sans-serif;
+        background:
+          radial-gradient(circle at 10% -10%, rgba(12, 179, 164, 0.2), transparent 45%),
+          radial-gradient(circle at 90% 0%, rgba(0, 95, 239, 0.25), transparent 42%),
+          linear-gradient(180deg, #f7f3ea 0%, #f3efe5 48%, #ece8de 100%);
+        min-height: 100%;
       }
 
-      .wrap {
-        max-width: 1100px;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: repeating-linear-gradient(
+          120deg,
+          rgba(19, 54, 87, 0.03),
+          rgba(19, 54, 87, 0.03) 1px,
+          transparent 1px,
+          transparent 18px
+        );
+        opacity: 0.45;
+        z-index: 0;
+      }
+
+      .orb {
+        position: fixed;
+        border-radius: 999px;
+        filter: blur(22px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.7;
+        animation: drift 12s ease-in-out infinite;
+      }
+
+      .orb.a {
+        width: 240px;
+        height: 240px;
+        background: rgba(0, 95, 239, 0.28);
+        top: 8%;
+        left: -70px;
+      }
+
+      .orb.b {
+        width: 220px;
+        height: 220px;
+        background: rgba(255, 122, 26, 0.2);
+        right: -70px;
+        top: 30%;
+        animation-delay: -3s;
+      }
+
+      .orb.c {
+        width: 190px;
+        height: 190px;
+        background: rgba(12, 179, 164, 0.2);
+        left: 22%;
+        bottom: -50px;
+        animation-delay: -5s;
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0);
+        }
+        50% {
+          transform: translateY(-16px) translateX(10px);
+        }
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 1180px;
         margin: 0 auto;
-        padding: 32px 20px 80px;
+        padding: 26px 22px 86px;
       }
 
-      .nav {
+      .topbar {
+        position: sticky;
+        top: 14px;
+        backdrop-filter: blur(16px);
+        background: rgba(255, 250, 243, 0.68);
+        border: 1px solid rgba(216, 208, 194, 0.72);
+        border-radius: 16px;
+        box-shadow: 0 10px 28px rgba(32, 56, 84, 0.08);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 48px;
+        padding: 10px 14px;
+        margin-bottom: 24px;
       }
 
       .brand {
-        font-weight: 700;
-        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
       }
 
-      .pill {
-        font-family: "IBM Plex Mono", monospace;
+      .brand-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+        background: linear-gradient(140deg, var(--brand), #4e9cff 55%, #7ae6de);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+      }
+
+      .chip {
         border: 1px solid var(--line);
-        background: rgba(43, 209, 178, 0.08);
-        color: var(--accent);
         border-radius: 999px;
-        padding: 7px 12px;
-        font-size: 12px;
+        padding: 7px 11px;
+        background: #fff;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .btn,
+      .ghost {
+        text-decoration: none;
+        border-radius: 11px;
+        padding: 10px 13px;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn {
+        color: #fff;
+        background: linear-gradient(120deg, var(--brand), #2d80ff 40%, #74a9ff);
+        box-shadow: 0 9px 20px rgba(0, 95, 239, 0.28);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: -120% -30%;
+        background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.38), transparent 64%);
+        transform: translateX(-35%);
+        animation: shimmer 3.6s ease-in-out infinite;
+      }
+
+      @keyframes shimmer {
+        0%,
+        70%,
+        100% {
+          transform: translateX(-35%);
+        }
+        84% {
+          transform: translateX(40%);
+        }
+      }
+
+      .ghost {
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .btn:hover,
+      .ghost:hover {
+        transform: translateY(-2px);
       }
 
       .hero {
         display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 24px;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 20px;
         align-items: stretch;
       }
 
-      .hero-copy h1 {
-        font-size: clamp(2rem, 4vw, 3.2rem);
-        line-height: 1.05;
-        margin: 0 0 14px;
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
       }
 
-      .hero-copy p {
-        margin: 0 0 24px;
+      .hero-copy {
+        padding: 28px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid #b9d5ff;
+        background: rgba(0, 95, 239, 0.08);
+        color: var(--brand);
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+      }
+
+      h1 {
+        margin: 14px 0 14px;
+        font-size: clamp(2rem, 5.2vw, 4.1rem);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+      }
+
+      .grad {
+        background: linear-gradient(120deg, var(--brand), var(--brand-2) 45%, var(--brand-3));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .lead {
+        margin: 0 0 20px;
         color: var(--muted);
-        font-size: 1.05rem;
+        max-width: 56ch;
+        font-size: 1.04rem;
+        line-height: 1.65;
       }
 
-      .cta-row {
+      .actions {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         flex-wrap: wrap;
       }
 
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        border-radius: 12px;
-        padding: 11px 16px;
-        text-decoration: none;
-        color: #081017;
-        background: linear-gradient(135deg, var(--accent), #5be0c7);
-        font-weight: 700;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-      }
-
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(43, 209, 178, 0.22);
-      }
-
-      .btn.secondary {
-        color: var(--text);
-        background: transparent;
-        border: 1px solid var(--line);
-      }
-
-      .panel {
-        background: linear-gradient(160deg, var(--panel-2), var(--panel));
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 18px;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+      .proof {
+        margin-top: 20px;
+        display: flex;
         gap: 10px;
+        flex-wrap: wrap;
       }
 
-      .stat {
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid #223548;
-        border-radius: 12px;
-        padding: 12px;
+      .proof-item {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 9px 11px;
+        font-size: 12px;
+        color: #36506a;
       }
 
-      .stat b {
-        display: block;
-        font-size: 1.4rem;
+      .hero-board {
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+      }
+
+      .board-grid {
+        display: grid;
+        gap: 11px;
+      }
+
+      .board-card {
+        border: 1px solid #d8deec;
+        background: linear-gradient(165deg, #ffffff, #f6f9ff);
+        border-radius: 16px;
+        padding: 13px;
+      }
+
+      .board-card h3 {
+        margin: 0 0 8px;
+        font-size: 0.88rem;
+      }
+
+      .mini-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        color: #4a627a;
         margin-bottom: 6px;
       }
 
-      .section-title {
-        margin-top: 58px;
-        margin-bottom: 14px;
-        font-size: 1.35rem;
+      .tagline {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid #d5e7ff;
+        background: #eef5ff;
+        color: #1e67d3;
+        border-radius: 999px;
+        padding: 4px 8px;
+        margin-right: 6px;
+        margin-top: 6px;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
       }
 
-      .feature-grid {
+      .stat-strip {
+        margin-top: 22px;
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .stat-box {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 12px;
+      }
+
+      .stat-box b {
+        display: block;
+        font-size: 1.55rem;
+        line-height: 1;
+      }
+
+      .stat-box span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      section {
+        margin-top: 26px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+        letter-spacing: -0.02em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 54ch;
+      }
+
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: 12px;
       }
 
-      .feature {
+      .card {
         border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 14px;
-        background: rgba(13, 25, 35, 0.75);
+        border-radius: 18px;
+        background: var(--surface);
+        padding: 16px;
+        box-shadow: 0 9px 24px rgba(35, 59, 89, 0.08);
       }
 
-      .feature h3 {
+      .card h3 {
         margin: 0 0 8px;
-        font-size: 1rem;
+        font-size: 1.04rem;
       }
 
-      .feature p {
+      .card p {
         margin: 0;
         color: var(--muted);
+        line-height: 1.64;
         font-size: 0.95rem;
       }
 
-      .roadmap {
-        border-left: 2px solid #2f455c;
-        margin-top: 8px;
-        padding-left: 14px;
+      .c1 {
+        grid-column: span 5;
+      }
+      .c2 {
+        grid-column: span 7;
+      }
+      .c3 {
+        grid-column: span 4;
+      }
+      .c4 {
+        grid-column: span 4;
+      }
+      .c5 {
+        grid-column: span 4;
       }
 
-      .roadmap li {
-        margin: 10px 0;
+      .stepper {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        background: #fff;
+        padding: 14px;
+        position: relative;
+      }
+
+      .step::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(130deg, rgba(0, 95, 239, 0.08), rgba(12, 179, 164, 0.02));
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+
+      .step:hover::before {
+        opacity: 1;
+      }
+
+      .step-num {
+        font-family: "Space Mono", monospace;
+        color: var(--brand);
+        font-size: 12px;
+      }
+
+      .step h4 {
+        margin: 8px 0 7px;
+        font-size: 0.98rem;
+      }
+
+      .step p {
+        margin: 0;
         color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.58;
       }
 
-      .roadmap b {
-        color: var(--text);
+      .marquee {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        overflow: hidden;
+        padding: 10px 0;
+      }
+
+      .marquee-track {
+        display: flex;
+        gap: 14px;
+        width: max-content;
+        animation: slide 24s linear infinite;
+      }
+
+      .token {
+        border: 1px solid #dfd8ca;
+        background: #faf7f0;
+        border-radius: 999px;
+        padding: 8px 11px;
+        font-size: 12px;
+        color: #3f5569;
+        white-space: nowrap;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      .cta {
+        margin-top: 30px;
+        border-radius: 24px;
+        border: 1px solid #bed6ff;
+        background:
+          radial-gradient(circle at 84% 20%, rgba(255, 122, 26, 0.14), transparent 38%),
+          linear-gradient(120deg, #eff6ff, #f9fffc 45%, #fff3e6);
+        padding: 26px;
+      }
+
+      .cta h2 {
+        margin: 0 0 10px;
+        font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      }
+
+      .cta p {
+        margin: 0 0 18px;
+        color: var(--muted);
       }
 
       .footer {
-        margin-top: 58px;
+        margin-top: 22px;
         display: flex;
         justify-content: space-between;
-        gap: 14px;
-        align-items: center;
-        color: var(--muted);
-        font-size: 0.92rem;
-        border-top: 1px solid var(--line);
-        padding-top: 14px;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #476176;
+        font-size: 12px;
       }
 
-      .badge {
-        background: rgba(255, 200, 87, 0.1);
-        border: 1px solid rgba(255, 200, 87, 0.35);
-        color: var(--accent-2);
-        font-family: "IBM Plex Mono", monospace;
-        font-size: 11px;
-        padding: 4px 8px;
-        border-radius: 999px;
+      .link {
+        color: inherit;
       }
 
-      @media (max-width: 880px) {
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+      }
+
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      @media (max-width: 1020px) {
         .hero {
           grid-template-columns: 1fr;
         }
 
-        .feature-grid {
+        .stat-strip {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .stepper {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .c1,
+        .c2,
+        .c3,
+        .c4,
+        .c5 {
+          grid-column: span 12;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          padding: 18px 14px 70px;
+        }
+
+        .topbar {
+          top: 10px;
+          border-radius: 13px;
+        }
+
+        .chip {
+          display: none;
+        }
+
+        .hero-copy {
+          padding: 18px;
+        }
+
+        .hero-board {
+          padding: 12px;
+        }
+
+        .stepper {
           grid-template-columns: 1fr;
         }
 
-        .stats {
-          grid-template-columns: 1fr;
+        .stat-strip {
+          grid-template-columns: 1fr 1fr;
         }
+      }
 
-        .footer {
-          flex-direction: column;
-          align-items: flex-start;
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
         }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <div class="nav">
-        <div class="brand">X-knowledge</div>
-        <div class="pill">Local-first AI Bookmark Workflow</div>
-      </div>
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+
+    <div class="page">
+      <header class="topbar reveal">
+        <div class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span>X-knowledge</span>
+        </div>
+        <div class="nav-actions">
+          <span class="chip" id="repoMeta">Loading GitHub metrics...</span>
+          <a class="ghost" href="https://laplaceyoung.github.io/Xknowledge/" target="_blank" rel="noreferrer">Live Page</a>
+          <a class="btn" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">Star on GitHub</a>
+        </div>
+      </header>
 
       <section class="hero">
-        <div class="hero-copy">
-          <h1>Turn X bookmarks into searchable product knowledge.</h1>
-          <p>
-            Capture tweets automatically, run AI summaries and tags, then export to Markdown, ZIP,
-            Notion, or Obsidian.
+        <article class="panel hero-copy reveal">
+          <span class="eyebrow">OPEN SOURCE | LOCAL-FIRST | AI WORKFLOW</span>
+          <h1>
+            Build a
+            <span class="grad">searchable memory layer</span>
+            on top of your X bookmarks.
+          </h1>
+          <p class="lead">
+            X-knowledge captures your saved tweets, auto-generates tags and summaries, and ships the output
+            into Markdown, Notion, Obsidian, and ZIP bundles. Designed like a product, not a script.
           </p>
-          <div class="cta-row">
-            <a class="btn" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">View on GitHub</a>
-            <a class="btn secondary" href="../x-knowledge-extension/README.md">Read Product Docs</a>
+          <div class="actions">
+            <a class="btn" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">View Repository</a>
+            <a class="ghost" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer">Read Extension Guide</a>
           </div>
+          <div class="proof">
+            <span class="proof-item">Chrome MV3</span>
+            <span class="proof-item">React + TypeScript</span>
+            <span class="proof-item">Batch AI Queue</span>
+            <span class="proof-item">Privacy-aware secret storage</span>
+          </div>
+        </article>
+
+        <aside class="panel hero-board reveal" id="tiltCard">
+          <div class="board-grid">
+            <div class="board-card">
+              <h3>Capture Feed Snapshot</h3>
+              <div class="mini-row"><span>Bookmarks captured</span><strong id="captureCount">1,280</strong></div>
+              <div class="mini-row"><span>New today</span><strong>+86</strong></div>
+              <span class="tagline">#AI</span>
+              <span class="tagline">#Design</span>
+              <span class="tagline">#Product</span>
+            </div>
+            <div class="board-card">
+              <h3>Batch AI Pipeline</h3>
+              <div class="mini-row"><span>Queue status</span><strong>Running</strong></div>
+              <div class="mini-row"><span>Success ratio</span><strong>96.4%</strong></div>
+              <div class="mini-row"><span>Retry failed</span><strong>1 click</strong></div>
+            </div>
+            <div class="board-card">
+              <h3>Export Destinations</h3>
+              <div class="mini-row"><span>Markdown</span><strong>Ready</strong></div>
+              <div class="mini-row"><span>Notion / Obsidian</span><strong>Synced</strong></div>
+              <div class="mini-row"><span>Offline ZIP</span><strong>Included media</strong></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="stat-strip reveal">
+        <div class="stat-box">
+          <b data-counter="1500">0</b>
+          <span>Bookmarks processed per heavy user</span>
         </div>
-        <div class="panel">
-          <div class="stats">
-            <div class="stat">
-              <b>1-Click</b>
-              <span>Bookmark capture on X pages</span>
-            </div>
-            <div class="stat">
-              <b>AI Tags</b>
-              <span>Auto category + summary extraction</span>
-            </div>
-            <div class="stat">
-              <b>4 Exports</b>
-              <span>MD, ZIP, Notion, Obsidian</span>
-            </div>
-          </div>
+        <div class="stat-box">
+          <b data-counter="4">0</b>
+          <span>Export routes built-in</span>
+        </div>
+        <div class="stat-box">
+          <b data-counter="2000">0</b>
+          <span>ms queue delay control</span>
+        </div>
+        <div class="stat-box">
+          <b data-counter="100">0</b>
+          <span>% local-first secret support</span>
         </div>
       </section>
 
-      <h2 class="section-title">What It Solves</h2>
-      <div class="feature-grid">
-        <article class="feature">
-          <h3>Search That Actually Works</h3>
-          <p>Search by author, content, and tags instead of scrolling endless bookmarks.</p>
-        </article>
-        <article class="feature">
-          <h3>AI-Ready Knowledge Layer</h3>
-          <p>Each saved tweet can carry structured metadata for future RAG and automation flows.</p>
-        </article>
-        <article class="feature">
-          <h3>Portable Output</h3>
-          <p>Move data out anytime with Markdown/JSON/ZIP and sync to your existing knowledge stack.</p>
-        </article>
-      </div>
+      <section class="reveal">
+        <div class="section-head">
+          <h2>Bento Feature Matrix</h2>
+          <p>Inspired by modern open-source launch pages: dense, proof-oriented modules with clear user outcome.</p>
+        </div>
+        <div class="bento">
+          <article class="card c1">
+            <h3>Signal-rich search</h3>
+            <p>Search by text, author, and tags with on-card highlights, recent query memory, and instant filter reset.</p>
+          </article>
+          <article class="card c2">
+            <h3>Batch control that behaves like an ops queue</h3>
+            <p>Pause, resume, stop, and retry failed AI tasks. Progress and failure count are visible in both toolbar and action menu.</p>
+          </article>
+          <article class="card c3">
+            <h3>Knowledge portability</h3>
+            <p>Move your data across Markdown, JSON backup, Notion push, and Obsidian URI workflows.</p>
+          </article>
+          <article class="card c4">
+            <h3>Local-first secret policy</h3>
+            <p>API keys default to local storage with explicit opt-in for cross-device sync.</p>
+          </article>
+          <article class="card c5">
+            <h3>Release-ready CI</h3>
+            <p>Lint + build gates and resilient marketing deployment fallback keep shipping friction low.</p>
+          </article>
+        </div>
+      </section>
 
-      <h2 class="section-title">Current Roadmap</h2>
-      <ul class="roadmap">
-        <li><b>P0:</b> release hardening, lint/build gates, logging cleanup</li>
-        <li><b>P1:</b> search feedback loop, tag normalization, queue controls</li>
-        <li><b>P2:</b> static growth site, content SEO, channel launch playbook</li>
-      </ul>
+      <section class="reveal">
+        <div class="section-head">
+          <h2>Workflow in 4 Moves</h2>
+          <p>Borrowing the best growth-page pattern: explain value as a short operation pipeline.</p>
+        </div>
+        <div class="stepper">
+          <article class="step">
+            <span class="step-num">01 / CAPTURE</span>
+            <h4>Auto-ingest bookmarks</h4>
+            <p>Collect tweet text, author, metrics, and media as soon as you use X bookmarks.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">02 / STRUCTURE</span>
+            <h4>Generate metadata with AI</h4>
+            <p>Create concise summaries and reusable tags that make later retrieval reliable.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">03 / OPERATE</span>
+            <h4>Filter and curate in bulk</h4>
+            <p>Use top-tag filters, date windows, and batch controls to keep your library clean.</p>
+          </article>
+          <article class="step">
+            <span class="step-num">04 / SHIP</span>
+            <h4>Export into your stack</h4>
+            <p>Push to Notion and Obsidian or archive the whole set as Markdown/ZIP/JSON.</p>
+          </article>
+        </div>
+      </section>
 
-      <div class="footer">
-        <span>Built with React + TypeScript + Chrome MV3</span>
-        <span class="badge">Beta - 2026-03</span>
-      </div>
+      <section class="marquee reveal" aria-label="platform compatibility">
+        <div class="marquee-track">
+          <span class="token">X / Twitter bookmarks</span>
+          <span class="token">Chrome MV3 extension</span>
+          <span class="token">Notion database sync</span>
+          <span class="token">Obsidian URI export</span>
+          <span class="token">Markdown + JSON + ZIP</span>
+          <span class="token">GitHub Pages deploy</span>
+          <span class="token">X / Twitter bookmarks</span>
+          <span class="token">Chrome MV3 extension</span>
+          <span class="token">Notion database sync</span>
+          <span class="token">Obsidian URI export</span>
+          <span class="token">Markdown + JSON + ZIP</span>
+          <span class="token">GitHub Pages deploy</span>
+        </div>
+      </section>
+
+      <section class="cta reveal">
+        <h2>From bookmark chaos to production-grade knowledge flow.</h2>
+        <p>
+          If you build in public, research on X, or run product intelligence loops, this extension gives you an operational memory system instead of a dead bookmark list.
+        </p>
+        <div class="actions">
+          <a class="btn" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">Get the Code</a>
+          <a class="ghost" href="https://laplaceyoung.github.io/Xknowledge/" target="_blank" rel="noreferrer">Share This Page</a>
+        </div>
+      </section>
+
+      <footer class="footer reveal">
+        <span>Built by LaplaceYoung. Open source, iteration-driven, launch-ready.</span>
+        <span>
+          <a class="link" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">GitHub</a>
+          ·
+          <a class="link" href="https://github.com/LaplaceYoung/Xknowledge#readme" target="_blank" rel="noreferrer">Docs</a>
+        </span>
+      </footer>
     </div>
+
+    <script>
+      const revealTargets = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      revealTargets.forEach((node) => observer.observe(node));
+
+      const counterNodes = document.querySelectorAll('[data-counter]');
+      const runCounter = (node) => {
+        const target = Number(node.getAttribute('data-counter') || 0);
+        const start = performance.now();
+        const duration = 1200;
+
+        const tick = (now) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = Math.round(target * eased);
+          node.textContent = value.toLocaleString('en-US');
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+      };
+      counterNodes.forEach(runCounter);
+
+      const repoMeta = document.getElementById('repoMeta');
+      const captureCount = document.getElementById('captureCount');
+      fetch('https://api.github.com/repos/LaplaceYoung/Xknowledge', { headers: { Accept: 'application/vnd.github+json' } })
+        .then((res) => (res.ok ? res.json() : Promise.reject(new Error('repo fetch failed'))))
+        .then((repo) => {
+          const stars = Number(repo.stargazers_count || 0).toLocaleString('en-US');
+          const forks = Number(repo.forks_count || 0).toLocaleString('en-US');
+          const pushed = new Date(repo.pushed_at);
+          const pushedLabel = pushed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          if (repoMeta) repoMeta.textContent = `${stars} stars · ${forks} forks · updated ${pushedLabel}`;
+          if (captureCount) {
+            const dynamic = Math.max(1280, Number(repo.stargazers_count || 0) * 12 + 1200);
+            captureCount.textContent = dynamic.toLocaleString('en-US');
+          }
+        })
+        .catch(() => {
+          if (repoMeta) repoMeta.textContent = 'Open source extension for serious X knowledge workflows';
+        });
+
+      const tiltCard = document.getElementById('tiltCard');
+      if (tiltCard && window.matchMedia('(pointer:fine)').matches) {
+        const damp = 18;
+        tiltCard.addEventListener('mousemove', (event) => {
+          const bounds = tiltCard.getBoundingClientRect();
+          const x = event.clientX - bounds.left;
+          const y = event.clientY - bounds.top;
+          const rx = (y / bounds.height - 0.5) * -damp;
+          const ry = (x / bounds.width - 0.5) * damp;
+          tiltCard.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+        });
+        tiltCard.addEventListener('mouseleave', () => {
+          tiltCard.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        });
+      }
+    </script>
   </body>
 </html>

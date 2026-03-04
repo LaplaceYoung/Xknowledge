@@ -1,6 +1,12 @@
-# Marketing Landing Page
+﻿# Marketing Landing Page
 
 Static promotional page for `X-knowledge`.
+
+## Current Visual Direction
+
+- Cinematic hero + bento feature matrix inspired by top open-source product pages.
+- Motion system: ambient background drift, reveal-on-scroll, button shimmer, and interactive tilt panel.
+- Live repo signals: GitHub stars/forks/updated date fetched at runtime.
 
 ## Local Preview
 
@@ -33,6 +39,5 @@ Open `http://localhost:8080/marketing/`.
 
 ## Next Iteration
 
-- Replace static stats with live badges (GitHub stars, latest release)
 - Add product screenshots/GIF demos
-- Add bilingual copy switch (`EN` / `中文`)
+- Add bilingual copy switch (`EN` / `zh-CN`)
