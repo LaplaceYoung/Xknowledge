@@ -1,0 +1,294 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How to Sync X Bookmarks to Notion Database (AI Tags + Summary)</title>
+    <meta
+      name="description"
+      content="Practical guide to sync X bookmarks into Notion with AI-generated categories, summaries, and searchable metadata."
+    />
+    <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/guides/x-bookmarks-to-notion.html" />
+    <meta property="og:title" content="How to Sync X Bookmarks to Notion Database" />
+    <meta
+      property="og:description"
+      content="Configure Notion token, database schema, and push tweet insights from X-knowledge."
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://laplaceyoung.github.io/Xknowledge/guides/x-bookmarks-to-notion.html" />
+    <meta property="og:image" content="https://laplaceyoung.github.io/Xknowledge/assets/demo-2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f2e8;
+        --surface: #fffdf9;
+        --text: #0d2538;
+        --muted: #516779;
+        --line: #d8d0c2;
+        --brand: #005fef;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        background: radial-gradient(circle at 95% -10%, rgba(12, 179, 164, 0.16), transparent 35%), var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px 18px 80px;
+      }
+
+      .top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .home {
+        text-decoration: none;
+        color: var(--brand);
+        font-weight: 700;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        background: #fff;
+      }
+
+      .hero {
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 24px;
+        background: var(--surface);
+        box-shadow: 0 12px 28px rgba(26, 51, 80, 0.09);
+      }
+
+      h1 {
+        margin: 8px 0 10px;
+        font-size: clamp(1.8rem, 4.6vw, 3rem);
+        line-height: 1.08;
+      }
+
+      .lead {
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.72;
+      }
+
+      .cover {
+        margin-top: 16px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #d9deea;
+      }
+
+      .cover img {
+        width: 100%;
+        display: block;
+      }
+
+      section {
+        margin-top: 22px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--surface);
+        padding: 18px;
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 1.18rem;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        line-height: 1.68;
+      }
+
+      ul,
+      ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .schema {
+        border: 1px dashed #cad8f0;
+        border-radius: 12px;
+        background: #f8fbff;
+        padding: 12px;
+        margin-top: 10px;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        color: #34546e;
+        white-space: pre-wrap;
+      }
+
+      .cta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+
+      .btn,
+      .ghost {
+        text-decoration: none;
+        border-radius: 11px;
+        padding: 10px 14px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .btn {
+        background: linear-gradient(120deg, var(--brand), #3887ff);
+        color: #fff;
+      }
+
+      .ghost {
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .related {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .related a {
+        text-decoration: none;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fff;
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      @media (max-width: 760px) {
+        .related {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="top">
+        <a class="home" href="../index.html">← Back to X-knowledge Home</a>
+        <span class="pill">SEO GUIDE / NOTION</span>
+      </div>
+
+      <article class="hero">
+        <h1>How to Sync X Bookmarks to Notion</h1>
+        <p class="lead">
+          Build a searchable Notion database directly from your X bookmarks. This guide covers schema setup,
+          token configuration, and AI-enriched sync so each tweet becomes reusable knowledge.
+        </p>
+        <div class="cover">
+          <img src="../assets/demo-2.png" alt="X-knowledge settings page with Notion token configuration" />
+        </div>
+      </article>
+
+      <section>
+        <h2>Required Notion database schema</h2>
+        <p>Create a Notion database with the following fields before pushing bookmarks.</p>
+        <div class="schema">Name (Title)
+URL (URL)
+Date (Date)
+Category (Select)
+Tags (Multi-select)</div>
+      </section>
+
+      <section>
+        <h2>Sync setup in X-knowledge</h2>
+        <ol>
+          <li>Create a Notion internal integration and copy the token.</li>
+          <li>Share your target database with the integration.</li>
+          <li>Paste token + database ID in extension settings.</li>
+          <li>Open any captured bookmark and click "Push to Notion".</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>How teams use this</h2>
+        <ul>
+          <li>Product teams: capture competitor announcements and auto-tag by product area.</li>
+          <li>Growth teams: collect campaign references with category + tactic labels.</li>
+          <li>Research teams: centralize signal tweets with searchable summaries.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>FAQ</h2>
+        <ul>
+          <li><b>Can this replace Notion Web Clipper?</b> Yes for X bookmarks, with richer AI metadata and queue control.</li>
+          <li><b>Do I need cloud sync for secrets?</b> No, local-first storage is the default mode.</li>
+          <li><b>Can I export if Notion is unavailable?</b> Yes, markdown/JSON/ZIP remain available offline.</li>
+        </ul>
+        <div class="cta">
+          <a class="btn" data-utm="notion_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer">Install Extension</a>
+          <a class="ghost" data-utm="notion_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">View Source</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Related guides</h2>
+        <div class="related">
+          <a href="./x-bookmarks-to-obsidian.html">Export X bookmarks to Obsidian →</a>
+          <a href="./search-twitter-bookmarks-ai.html">Search Twitter bookmarks with AI →</a>
+        </div>
+      </section>
+    </div>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How to Sync X Bookmarks to Notion",
+        "description": "Practical guide to sync X bookmarks into Notion with AI-generated categories and summaries.",
+        "author": { "@type": "Person", "name": "LaplaceYoung" },
+        "publisher": { "@type": "Organization", "name": "X-knowledge" },
+        "mainEntityOfPage": "https://laplaceyoung.github.io/Xknowledge/guides/x-bookmarks-to-notion.html"
+      }
+    </script>
+
+    <script>
+      const base = {
+        utm_source: 'github_pages',
+        utm_medium: 'seo_guide',
+        utm_campaign: 'notion_workflow'
+      };
+
+      document.querySelectorAll('a[data-utm]').forEach((a) => {
+        if (!a.href.startsWith('http')) return;
+        const url = new URL(a.href);
+        Object.entries(base).forEach(([k, v]) => url.searchParams.set(k, v));
+        url.searchParams.set('utm_content', a.dataset.utm || 'guide_link');
+        a.href = url.toString();
+      });
+    </script>
+  </body>
+</html>
