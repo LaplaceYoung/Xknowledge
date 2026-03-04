@@ -4,8 +4,11 @@ Static promotional site for `X-knowledge` with launch-grade visual design and gr
 
 ## Current Build
 
-- Premium hero with real product screenshot reel (`marketing/assets/demo-*.png`).
-- Motion system: ambient drift, reveal-on-scroll, CTA shimmer, interactive tilt.
+- X/Twitter-inspired visual system with dual themes (`light` / `dark`).
+- Bilingual single-URL switching (`?lang=zh|en` + localStorage persistence).
+- Shared static architecture:
+  - `assets/css/{tokens,base,components,motion}.css`
+  - `assets/js/{theme,i18n,app}.js`
 - SEO long-tail guides:
   - `guides/x-bookmarks-to-obsidian.html`
   - `guides/x-bookmarks-to-notion.html`
@@ -48,6 +51,6 @@ Open:
 
 ## Next Iteration
 
-- Add bilingual copy switch (`EN` / `zh-CN`)
-- Replace screenshot reel with compressed product GIF/WebM for faster first paint
-- Add Chrome Web Store CTA after store listing is live
+- Replace static screenshot cards with compressed GIF/WebM demos for faster perceived onboarding.
+- Add Chrome Web Store CTA and listing badges once public.
+- Add hreflang strategy if split-route multilingual SEO is needed in the future.

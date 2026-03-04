@@ -3,888 +3,251 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>X-knowledge | AI Workspace for X Bookmarks</title>
+    <title>X-knowledge | Turn X Bookmarks into Searchable Knowledge</title>
     <meta
       name="description"
-      content="Turn X bookmarks into searchable knowledge with AI tags, batch workflows, and one-click exports to Markdown, Notion, and Obsidian."
+      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
     />
-    <meta property="og:title" content="X-knowledge | AI Workspace for X Bookmarks" />
+    <meta property="og:title" content="X-knowledge | Turn X Bookmarks into Searchable Knowledge" />
     <meta
       property="og:description"
-      content="Capture, classify, and ship your X bookmarks into a production-grade knowledge workflow."
+      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://laplaceyoung.github.io/Xknowledge/" />
     <meta property="og:image" content="https://laplaceyoung.github.io/Xknowledge/assets/demo-1.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#f5f2ea" />
+    <meta name="twitter:title" content="X-knowledge | Turn X Bookmarks into Searchable Knowledge" />
+    <meta
+      name="twitter:description"
+      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
+    />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/" />
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --bg: #f5f2ea;
-        --surface: #fffdf8;
-        --text: #0c2134;
-        --muted: #4f6478;
-        --line: #d8d0c2;
-        --brand: #005fef;
-        --brand-2: #0cb3a4;
-        --brand-3: #ff7a1a;
-        --shadow: 0 16px 40px rgba(20, 46, 80, 0.12);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Sora", "Helvetica Neue", sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at 10% -10%, rgba(12, 179, 164, 0.2), transparent 45%),
-          radial-gradient(circle at 90% 0%, rgba(0, 95, 239, 0.24), transparent 42%),
-          linear-gradient(180deg, #f7f3ea 0%, #f3efe5 48%, #ece8de 100%);
-        min-height: 100%;
-      }
-
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background-image: repeating-linear-gradient(
-          120deg,
-          rgba(19, 54, 87, 0.03),
-          rgba(19, 54, 87, 0.03) 1px,
-          transparent 1px,
-          transparent 18px
-        );
-        opacity: 0.45;
-        z-index: 0;
-      }
-
-      .orb {
-        position: fixed;
-        border-radius: 999px;
-        filter: blur(22px);
-        pointer-events: none;
-        z-index: 0;
-        opacity: 0.7;
-        animation: drift 12s ease-in-out infinite;
-      }
-
-      .orb.a {
-        width: 240px;
-        height: 240px;
-        background: rgba(0, 95, 239, 0.28);
-        top: 8%;
-        left: -70px;
-      }
-
-      .orb.b {
-        width: 220px;
-        height: 220px;
-        background: rgba(255, 122, 26, 0.2);
-        right: -70px;
-        top: 30%;
-        animation-delay: -3s;
-      }
-
-      .orb.c {
-        width: 190px;
-        height: 190px;
-        background: rgba(12, 179, 164, 0.2);
-        left: 22%;
-        bottom: -50px;
-        animation-delay: -5s;
-      }
-
-      @keyframes drift {
-        0%,
-        100% {
-          transform: translateY(0) translateX(0);
-        }
-        50% {
-          transform: translateY(-16px) translateX(10px);
-        }
-      }
-
-      .page {
-        position: relative;
-        z-index: 1;
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 26px 22px 86px;
-      }
-
-      .topbar {
-        position: sticky;
-        top: 14px;
-        backdrop-filter: blur(16px);
-        background: rgba(255, 250, 243, 0.68);
-        border: 1px solid rgba(216, 208, 194, 0.72);
-        border-radius: 16px;
-        box-shadow: 0 10px 28px rgba(32, 56, 84, 0.08);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 14px;
-        margin-bottom: 24px;
-      }
-
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        letter-spacing: 0.2px;
-      }
-
-      .brand-dot {
-        width: 28px;
-        height: 28px;
-        border-radius: 9px;
-        background: linear-gradient(140deg, var(--brand), #4e9cff 55%, #7ae6de);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-      }
-
-      .nav-actions {
-        display: flex;
-        gap: 9px;
-        align-items: center;
-      }
-
-      .chip {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 7px 11px;
-        background: #fff;
-        color: var(--muted);
-        font-family: "Space Mono", monospace;
-        font-size: 11px;
-        white-space: nowrap;
-      }
-
-      .btn,
-      .ghost {
-        text-decoration: none;
-        border-radius: 11px;
-        padding: 10px 13px;
-        font-weight: 700;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .btn {
-        color: #fff;
-        background: linear-gradient(120deg, var(--brand), #2d80ff 40%, #74a9ff);
-        box-shadow: 0 9px 20px rgba(0, 95, 239, 0.28);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .btn::after {
-        content: "";
-        position: absolute;
-        inset: -120% -30%;
-        background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.38), transparent 64%);
-        transform: translateX(-35%);
-        animation: shimmer 3.6s ease-in-out infinite;
-      }
-
-      @keyframes shimmer {
-        0%,
-        70%,
-        100% {
-          transform: translateX(-35%);
-        }
-        84% {
-          transform: translateX(40%);
-        }
-      }
-
-      .ghost {
-        color: var(--text);
-        border: 1px solid var(--line);
-        background: #fff;
-      }
-
-      .btn:hover,
-      .ghost:hover {
-        transform: translateY(-2px);
-      }
-
-      .hero {
-        display: grid;
-        grid-template-columns: 1.12fr 1fr;
-        gap: 20px;
-        align-items: stretch;
-      }
-
-      .panel {
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        background: var(--surface);
-        box-shadow: var(--shadow);
-      }
-
-      .hero-copy {
-        padding: 28px;
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        border: 1px solid #b9d5ff;
-        background: rgba(0, 95, 239, 0.08);
-        color: var(--brand);
-        border-radius: 999px;
-        padding: 7px 12px;
-        font-family: "Space Mono", monospace;
-        font-size: 11px;
-      }
-
-      h1 {
-        margin: 14px 0 14px;
-        font-size: clamp(2rem, 5.2vw, 4.1rem);
-        line-height: 1.02;
-        letter-spacing: -0.03em;
-      }
-
-      .grad {
-        background: linear-gradient(120deg, var(--brand), var(--brand-2) 45%, var(--brand-3));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-
-      .lead {
-        margin: 0 0 20px;
-        color: var(--muted);
-        max-width: 56ch;
-        font-size: 1.04rem;
-        line-height: 1.65;
-      }
-
-      .actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .proof {
-        margin-top: 20px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .proof-item {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: #fff;
-        padding: 9px 11px;
-        font-size: 12px;
-        color: #36506a;
-      }
-
-      .hero-board {
-        padding: 14px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .demo-stage {
-        position: relative;
-        aspect-ratio: 16 / 10;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid #d6d8db;
-        background: #111827;
-      }
-
-      .demo-slide {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        animation: reel 18s ease-in-out infinite;
-      }
-
-      .demo-slide:nth-child(1) {
-        animation-delay: 0s;
-      }
-
-      .demo-slide:nth-child(2) {
-        animation-delay: 6s;
-      }
-
-      .demo-slide:nth-child(3) {
-        animation-delay: 12s;
-      }
-
-      .demo-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      @keyframes reel {
-        0%,
-        8% {
-          opacity: 0;
-          transform: scale(1.03);
-        }
-        14%,
-        30% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        36%,
-        100% {
-          opacity: 0;
-          transform: scale(0.98);
-        }
-      }
-
-      .demo-caption {
-        margin-top: 10px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .demo-kpi {
-        border: 1px solid #d6dfef;
-        border-radius: 12px;
-        background: linear-gradient(165deg, #ffffff, #f6f9ff);
-        padding: 10px;
-      }
-
-      .demo-kpi b {
-        font-size: 1rem;
-        display: block;
-      }
-
-      .demo-kpi span {
-        color: #4a627a;
-        font-size: 11px;
-      }
-
-      .stat-strip {
-        margin-top: 22px;
-        display: grid;
-        gap: 10px;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .stat-box {
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 15px;
-        padding: 12px;
-      }
-
-      .stat-box b {
-        display: block;
-        font-size: 1.55rem;
-        line-height: 1;
-      }
-
-      .stat-box span {
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      section {
-        margin-top: 26px;
-      }
-
-      .section-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: end;
-        gap: 12px;
-        margin-bottom: 14px;
-      }
-
-      .section-head h2 {
-        margin: 0;
-        font-size: clamp(1.4rem, 2.8vw, 2.2rem);
-        letter-spacing: -0.02em;
-      }
-
-      .section-head p {
-        margin: 0;
-        color: var(--muted);
-        max-width: 54ch;
-      }
-
-      .bento {
-        display: grid;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .card {
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        background: var(--surface);
-        padding: 16px;
-        box-shadow: 0 9px 24px rgba(35, 59, 89, 0.08);
-      }
-
-      .card h3 {
-        margin: 0 0 8px;
-        font-size: 1.04rem;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.64;
-        font-size: 0.95rem;
-      }
-
-      .c1 { grid-column: span 5; }
-      .c2 { grid-column: span 7; }
-      .c3 { grid-column: span 4; }
-      .c4 { grid-column: span 4; }
-      .c5 { grid-column: span 4; }
-
-      .stepper {
-        display: grid;
-        gap: 12px;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .step {
-        border: 1px solid var(--line);
-        border-radius: 15px;
-        background: #fff;
-        padding: 14px;
-        position: relative;
-      }
-
-      .step::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(130deg, rgba(0, 95, 239, 0.08), rgba(12, 179, 164, 0.02));
-        opacity: 0;
-        transition: opacity 0.25s ease;
-      }
-
-      .step:hover::before { opacity: 1; }
-
-      .step-num {
-        font-family: "Space Mono", monospace;
-        color: var(--brand);
-        font-size: 12px;
-      }
-
-      .step h4 {
-        margin: 8px 0 7px;
-        font-size: 0.98rem;
-      }
-
-      .step p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 0.9rem;
-        line-height: 1.58;
-      }
-
-      .guide-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .guide {
-        border: 1px solid #cad8f0;
-        border-radius: 18px;
-        background: linear-gradient(150deg, #f7fbff, #fff);
-        padding: 16px;
-      }
-
-      .guide h3 {
-        margin: 0 0 8px;
-        font-size: 1rem;
-      }
-
-      .guide p {
-        margin: 0 0 12px;
-        color: var(--muted);
-        font-size: 0.93rem;
-        line-height: 1.62;
-      }
-
-      .guide a {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: var(--brand);
-        text-decoration: none;
-      }
-
-      .marquee {
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        background: #fff;
-        overflow: hidden;
-        padding: 10px 0;
-      }
-
-      .marquee-track {
-        display: flex;
-        gap: 14px;
-        width: max-content;
-        animation: slide 24s linear infinite;
-      }
-
-      .token {
-        border: 1px solid #dfd8ca;
-        background: #faf7f0;
-        border-radius: 999px;
-        padding: 8px 11px;
-        font-size: 12px;
-        color: #3f5569;
-        white-space: nowrap;
-      }
-
-      @keyframes slide {
-        from { transform: translateX(0); }
-        to { transform: translateX(-50%); }
-      }
-
-      .cta {
-        margin-top: 30px;
-        border-radius: 24px;
-        border: 1px solid #bed6ff;
-        background:
-          radial-gradient(circle at 84% 20%, rgba(255, 122, 26, 0.14), transparent 38%),
-          linear-gradient(120deg, #eff6ff, #f9fffc 45%, #fff3e6);
-        padding: 26px;
-      }
-
-      .cta h2 {
-        margin: 0 0 10px;
-        font-size: clamp(1.6rem, 3.2vw, 2.4rem);
-      }
-
-      .cta p {
-        margin: 0 0 18px;
-        color: var(--muted);
-      }
-
-      .footer {
-        margin-top: 22px;
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        color: #476176;
-        font-size: 12px;
-      }
-
-      .link { color: inherit; }
-
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px) scale(0.98);
-        transition: opacity 0.7s ease, transform 0.7s ease;
-      }
-
-      .reveal.in-view {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-
-      @media (max-width: 1020px) {
-        .hero {
-          grid-template-columns: 1fr;
-        }
-
-        .stat-strip {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .stepper {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .guide-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .c1,
-        .c2,
-        .c3,
-        .c4,
-        .c5 {
-          grid-column: span 12;
-        }
-      }
-
-      @media (max-width: 720px) {
-        .page {
-          padding: 18px 14px 70px;
-        }
-
-        .topbar {
-          top: 10px;
-          border-radius: 13px;
-        }
-
-        .chip {
-          display: none;
-        }
-
-        .hero-copy {
-          padding: 18px;
-        }
-
-        .hero-board {
-          padding: 12px;
-        }
-
-        .demo-caption {
-          grid-template-columns: 1fr;
-        }
-
-        .stepper {
-          grid-template-columns: 1fr;
-        }
-
-        .stat-strip {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          animation: none !important;
-          transition: none !important;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="./assets/css/tokens.css" />
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/components.css" />
+    <link rel="stylesheet" href="./assets/css/motion.css" />
   </head>
-  <body>
-    <div class="orb a"></div>
-    <div class="orb b"></div>
-    <div class="orb c"></div>
-
-    <div class="page">
-      <header class="topbar reveal">
-        <div class="brand">
-          <span class="brand-dot" aria-hidden="true"></span>
+  <body data-page="home">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="./index.html">
+          <span class="brand-mark">X</span>
           <span>X-knowledge</span>
+        </a>
+        <div class="controls">
+          <span class="badge" id="repoMeta" data-i18n="nav.repoLoading">Loading GitHub metrics...</span>
+          <div class="seg" role="group" aria-label="Theme switcher">
+            <button type="button" data-theme-value="light" data-i18n="controls.light" aria-pressed="false">Light</button>
+            <button type="button" data-theme-value="dark" data-i18n="controls.dark" aria-pressed="false">Dark</button>
+          </div>
+          <div class="seg" role="group" aria-label="Language switcher">
+            <button type="button" data-lang-value="zh" data-i18n="controls.zh" aria-pressed="false">中文</button>
+            <button type="button" data-lang-value="en" data-i18n="controls.en" aria-pressed="false">EN</button>
+          </div>
         </div>
-        <div class="nav-actions">
-          <span class="chip" id="repoMeta">Loading GitHub metrics...</span>
-          <a class="ghost" href="./guides/search-twitter-bookmarks-ai.html">SEO Guides</a>
-          <a class="btn" data-utm="topbar_star" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">Star on GitHub</a>
-        </div>
-      </header>
+      </div>
+    </header>
 
-      <section class="hero">
-        <article class="panel hero-copy reveal">
-          <span class="eyebrow">OPEN SOURCE | LOCAL-FIRST | AI WORKFLOW</span>
-          <h1>
-            Build a
-            <span class="grad">searchable memory layer</span>
-            on top of your X bookmarks.
-          </h1>
-          <p class="lead">
-            X-knowledge captures your saved tweets, auto-generates tags and summaries, and ships the output
-            into Markdown, Notion, Obsidian, and ZIP bundles. Designed like a product, not a script.
-          </p>
-          <div class="actions">
-            <a class="btn" data-utm="hero_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer">Install (Developer Mode)</a>
-            <a class="ghost" data-utm="hero_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">View Repository</a>
-          </div>
-          <div class="proof">
-            <span class="proof-item">Chrome MV3</span>
-            <span class="proof-item">React + TypeScript</span>
-            <span class="proof-item">Batch AI Queue</span>
-            <span class="proof-item">Privacy-aware secret storage</span>
-          </div>
-        </article>
-
-        <aside class="panel hero-board reveal" id="tiltCard">
-          <div class="demo-stage">
-            <div class="demo-slide"><img src="./assets/demo-1.png" alt="X-knowledge side panel search and analysis view" /></div>
-            <div class="demo-slide"><img src="./assets/demo-2.png" alt="X-knowledge options and AI configuration view" /></div>
-            <div class="demo-slide"><img src="./assets/demo-3.png" alt="X-knowledge bookmarks capture and export view" /></div>
-          </div>
-          <div class="demo-caption">
-            <div class="demo-kpi">
-              <b id="captureCount">1,280</b>
-              <span>Bookmarks captured</span>
-            </div>
-            <div class="demo-kpi">
-              <b>96.4%</b>
-              <span>AI batch success</span>
-            </div>
-            <div class="demo-kpi">
-              <b>1 click</b>
-              <span>Retry failed queue</span>
+    <main class="page">
+      <section class="hero reveal">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="hero-kicker" data-i18n="hero.kicker">X-native UX · Bilingual · Dual Themes</span>
+            <h1 data-i18n="hero.title">Turn bookmark clutter into an operational knowledge system.</h1>
+            <p data-i18n="hero.desc">
+              X-knowledge keeps your data local-first, then layers AI summaries and tags for retrieval, curation, and reuse.
+            </p>
+            <div class="actions">
+              <a
+                class="btn btn-primary"
+                data-utm="hero_install"
+                href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension"
+                target="_blank"
+                rel="noreferrer"
+                data-i18n="hero.install"
+              >
+                Install Extension
+              </a>
+              <a
+                class="btn btn-ghost"
+                data-utm="hero_repo"
+                href="https://github.com/LaplaceYoung/Xknowledge"
+                target="_blank"
+                rel="noreferrer"
+                data-i18n="hero.viewRepo"
+              >
+                View Repository
+              </a>
             </div>
           </div>
-        </aside>
-      </section>
-
-      <section class="stat-strip reveal">
-        <div class="stat-box">
-          <b data-counter="1500">0</b>
-          <span>Bookmarks processed per heavy user</span>
-        </div>
-        <div class="stat-box">
-          <b data-counter="4">0</b>
-          <span>Export routes built-in</span>
-        </div>
-        <div class="stat-box">
-          <b data-counter="2000">0</b>
-          <span>ms queue delay control</span>
-        </div>
-        <div class="stat-box">
-          <b data-counter="100">0</b>
-          <span>% local-first secret support</span>
-        </div>
-      </section>
-
-      <section class="reveal">
-        <div class="section-head">
-          <h2>Bento Feature Matrix</h2>
-          <p>Inspired by top open-source launch pages: dense, proof-oriented modules with clear user outcomes.</p>
-        </div>
-        <div class="bento">
-          <article class="card c1">
-            <h3>Signal-rich search</h3>
-            <p>Search by text, author, and tags with on-card highlights, recent query memory, and instant filter reset.</p>
-          </article>
-          <article class="card c2">
-            <h3>Batch control that behaves like an ops queue</h3>
-            <p>Pause, resume, stop, and retry failed AI tasks. Progress and failure count are visible in both toolbar and action menu.</p>
-          </article>
-          <article class="card c3">
-            <h3>Knowledge portability</h3>
-            <p>Move your data across Markdown, JSON backup, Notion push, and Obsidian URI workflows.</p>
-          </article>
-          <article class="card c4">
-            <h3>Local-first secret policy</h3>
-            <p>API keys default to local storage with explicit opt-in for cross-device sync.</p>
-          </article>
-          <article class="card c5">
-            <h3>Release-ready CI</h3>
-            <p>Lint + build gates and resilient marketing deployment fallback keep shipping friction low.</p>
-          </article>
+          <aside class="hero-media">
+            <div class="demo-card">
+              <img src="./assets/demo-1.png" width="960" height="540" alt="X-knowledge dashboard preview" />
+              <div class="metrics">
+                <div class="metric">
+                  <b id="captureCount">1,280</b>
+                  <span data-i18n="hero.cap">Bookmarks captured</span>
+                </div>
+                <div class="metric">
+                  <b>96.4%</b>
+                  <span data-i18n="hero.ai">AI batch success</span>
+                </div>
+                <div class="metric">
+                  <b>4</b>
+                  <span data-i18n="hero.export">Built-in export routes</span>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section class="reveal">
-        <div class="section-head">
-          <h2>Workflow in 4 Moves</h2>
-          <p>Explain value as a short operation pipeline users can mentally model in seconds.</p>
-        </div>
-        <div class="stepper">
-          <article class="step">
-            <span class="step-num">01 / CAPTURE</span>
-            <h4>Auto-ingest bookmarks</h4>
-            <p>Collect tweet text, author, metrics, and media as soon as you use X bookmarks.</p>
-          </article>
-          <article class="step">
-            <span class="step-num">02 / STRUCTURE</span>
-            <h4>Generate metadata with AI</h4>
-            <p>Create concise summaries and reusable tags that make later retrieval reliable.</p>
-          </article>
-          <article class="step">
-            <span class="step-num">03 / OPERATE</span>
-            <h4>Filter and curate in bulk</h4>
-            <p>Use top-tag filters, date windows, and batch controls to keep your library clean.</p>
-          </article>
-          <article class="step">
-            <span class="step-num">04 / SHIP</span>
-            <h4>Export into your stack</h4>
-            <p>Push to Notion and Obsidian or archive the whole set as Markdown/ZIP/JSON.</p>
-          </article>
+      <section class="section reveal">
+        <div class="strip">
+          <div class="strip-item">
+            <b data-counter="1500">0</b>
+            <span data-i18n="proof.s1">Bookmarks per power user</span>
+          </div>
+          <div class="strip-item">
+            <b data-counter="4">0</b>
+            <span data-i18n="proof.s2">Built-in export routes</span>
+          </div>
+          <div class="strip-item">
+            <b data-counter="2000">0</b>
+            <span data-i18n="proof.s3">Queue delay control</span>
+          </div>
+          <div class="strip-item">
+            <b data-counter="100">0</b>
+            <span data-i18n="proof.s4">Local-first key policy</span>
+          </div>
         </div>
       </section>
 
-      <section class="reveal" id="seo-guides">
-        <div class="section-head">
-          <h2>Use-Case Guides (SEO Landing Pages)</h2>
-          <p>Targeted tutorials for high-intent search queries and channel distribution.</p>
-        </div>
-        <div class="guide-grid">
-          <article class="guide">
-            <h3>Export X Bookmarks to Obsidian</h3>
-            <p>Learn the fastest path to convert saved tweets into markdown notes with clean tags and daily structure.</p>
-            <a href="./guides/x-bookmarks-to-obsidian.html">Read guide -></a>
-          </article>
-          <article class="guide">
-            <h3>Sync X Bookmarks to Notion</h3>
-            <p>Set up Notion database fields and push AI summaries with category and tag metadata.</p>
-            <a href="./guides/x-bookmarks-to-notion.html">Read guide -></a>
-          </article>
-          <article class="guide">
-            <h3>Search Twitter Bookmarks with AI</h3>
-            <p>Build a local-first bookmark search layer that scales beyond native X bookmark scrolling.</p>
-            <a href="./guides/search-twitter-bookmarks-ai.html">Read guide -></a>
-          </article>
-        </div>
-      </section>
-
-      <section class="marquee reveal" aria-label="platform compatibility">
-        <div class="marquee-track">
-          <span class="token">X / Twitter bookmarks</span>
-          <span class="token">Chrome MV3 extension</span>
-          <span class="token">Notion database sync</span>
-          <span class="token">Obsidian URI export</span>
-          <span class="token">Markdown + JSON + ZIP</span>
-          <span class="token">GitHub Pages deploy</span>
-          <span class="token">X / Twitter bookmarks</span>
-          <span class="token">Chrome MV3 extension</span>
-          <span class="token">Notion database sync</span>
-          <span class="token">Obsidian URI export</span>
-          <span class="token">Markdown + JSON + ZIP</span>
-          <span class="token">GitHub Pages deploy</span>
+      <section class="section reveal">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2 data-i18n="feature.title">Feature Matrix</h2>
+            <p data-i18n="feature.desc">Designed around X-style interaction rhythm with strong retrieval, batch processing, and export portability.</p>
+          </div>
+          <div class="grid cards">
+            <article class="card">
+              <h3 data-i18n="feature.c1t">Signal-rich search</h3>
+              <p data-i18n="feature.c1d">Filter by text, author, tags, and date with on-card highlights.</p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="feature.c2t">Batch queue control</h3>
+              <p data-i18n="feature.c2d">Pause, resume, stop, and retry failed AI tasks with visible progress.</p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="feature.c3t">Knowledge portability</h3>
+              <p data-i18n="feature.c3d">Export to Markdown, JSON, ZIP, Notion, and Obsidian workflows.</p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="feature.c4t">Clear secret policy</h3>
+              <p data-i18n="feature.c4d">API keys stay local by default, with explicit opt-in sync behavior.</p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="feature.c5t">Release-ready pipeline</h3>
+              <p data-i18n="feature.c5d">Extension and marketing pages ship through reliable iteration loops.</p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="feature.c6t">X-like interface</h3>
+              <p data-i18n="feature.c6d">Theme hierarchy and interaction feedback aligned with X native UI.</p>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section class="cta reveal">
-        <h2>From bookmark chaos to production-grade knowledge flow.</h2>
-        <p>
-          If you build in public, research on X, or run product intelligence loops, this extension gives you an operational memory system instead of a dead bookmark list.
-        </p>
-        <div class="actions">
-          <a class="btn" data-utm="cta_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer">Install Extension</a>
-          <a class="ghost" data-utm="cta_star" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">Star + Follow Updates</a>
+      <section class="section reveal">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2 data-i18n="workflow.title">4-step workflow</h2>
+            <p data-i18n="workflow.desc">A repeatable loop from capture to delivery.</p>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <code data-i18n="workflow.s1">Capture</code>
+              <p data-i18n="workflow.d1">Ingest tweet content, author, metrics, and media from bookmarks.</p>
+            </article>
+            <article class="step">
+              <code data-i18n="workflow.s2">Structure</code>
+              <p data-i18n="workflow.d2">Generate summaries, categories, and reusable tags with AI.</p>
+            </article>
+            <article class="step">
+              <code data-i18n="workflow.s3">Operate</code>
+              <p data-i18n="workflow.d3">Filter, review, and retry in bulk with date and tag controls.</p>
+            </article>
+            <article class="step">
+              <code data-i18n="workflow.s4">Ship</code>
+              <p data-i18n="workflow.d4">Export to Markdown, Notion, Obsidian, and archive formats.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="seo-guides">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2 data-i18n="guides.title">Use-case Guides</h2>
+            <p data-i18n="guides.desc">Practical pages for high-intent search scenarios.</p>
+          </div>
+          <div class="guides">
+            <a class="guide" href="./guides/x-bookmarks-to-obsidian.html">
+              <h3 data-i18n="guides.g1t">Export to Obsidian</h3>
+              <p data-i18n="guides.g1d">Convert saved tweets into structured markdown notes.</p>
+              <span data-i18n="guides.read">Read Guide</span>
+            </a>
+            <a class="guide" href="./guides/x-bookmarks-to-notion.html">
+              <h3 data-i18n="guides.g2t">Sync to Notion</h3>
+              <p data-i18n="guides.g2d">Map database fields and push AI summaries at scale.</p>
+              <span data-i18n="guides.read">Read Guide</span>
+            </a>
+            <a class="guide" href="./guides/search-twitter-bookmarks-ai.html">
+              <h3 data-i18n="guides.g3t">Search with AI</h3>
+              <p data-i18n="guides.g3d">Move beyond native scroll with a searchable layer.</p>
+              <span data-i18n="guides.read">Read Guide</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal cta">
+        <div class="section-inner">
+          <h2 data-i18n="cta.title">Move from bookmark chaos to reusable knowledge flow.</h2>
+          <p data-i18n="cta.desc">Built for creators, researchers, and product teams running intelligence loops on X.</p>
+          <div class="actions" style="justify-content:center;">
+            <a
+              class="btn btn-primary"
+              data-utm="cta_install"
+              href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension"
+              target="_blank"
+              rel="noreferrer"
+              data-i18n="cta.install"
+            >Install Extension</a>
+            <a
+              class="btn btn-ghost"
+              data-utm="cta_star"
+              href="https://github.com/LaplaceYoung/Xknowledge"
+              target="_blank"
+              rel="noreferrer"
+              data-i18n="cta.star"
+            >Star + Follow Updates</a>
+          </div>
         </div>
       </section>
 
       <footer class="footer reveal">
-        <span>Built by LaplaceYoung. Open source, iteration-driven, launch-ready.</span>
-        <span>
-          <a class="link" data-utm="footer_github" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">GitHub</a>
+        <p data-i18n="footer.copy">Built by LaplaceYoung. Open source, iteration-driven, launch-ready.</p>
+        <p>
+          <a data-i18n="footer.github" data-utm="footer_github" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">GitHub</a>
           ·
-          <a class="link" data-utm="footer_docs" href="https://github.com/LaplaceYoung/Xknowledge#readme" target="_blank" rel="noreferrer">Docs</a>
-        </span>
+          <a data-i18n="footer.docs" data-utm="footer_docs" href="https://github.com/LaplaceYoung/Xknowledge#readme" target="_blank" rel="noreferrer">Docs</a>
+        </p>
       </footer>
-    </div>
+    </main>
 
     <script type="application/ld+json">
       {
@@ -902,91 +265,8 @@
         }
       }
     </script>
-
-    <script>
-      const UTM_BASE = {
-        utm_source: 'github_pages',
-        utm_medium: 'organic',
-        utm_campaign: 'launch_2026_q1'
-      };
-
-      const withUTM = (url, content) => {
-        if (!url || !url.startsWith('http')) return url;
-        const out = new URL(url);
-        Object.entries(UTM_BASE).forEach(([k, v]) => out.searchParams.set(k, v));
-        if (content) out.searchParams.set('utm_content', content);
-        return out.toString();
-      };
-
-      document.querySelectorAll('a[data-utm]').forEach((node) => {
-        const content = node.getAttribute('data-utm') || '';
-        node.href = withUTM(node.href, content);
-      });
-
-      const revealTargets = document.querySelectorAll('.reveal');
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
-      revealTargets.forEach((node) => observer.observe(node));
-
-      const counterNodes = document.querySelectorAll('[data-counter]');
-      const runCounter = (node) => {
-        const target = Number(node.getAttribute('data-counter') || 0);
-        const start = performance.now();
-        const duration = 1200;
-        const tick = (now) => {
-          const progress = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const value = Math.round(target * eased);
-          node.textContent = value.toLocaleString('en-US');
-          if (progress < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      };
-      counterNodes.forEach(runCounter);
-
-      const repoMeta = document.getElementById('repoMeta');
-      const captureCount = document.getElementById('captureCount');
-      fetch('https://api.github.com/repos/LaplaceYoung/Xknowledge', { headers: { Accept: 'application/vnd.github+json' } })
-        .then((res) => (res.ok ? res.json() : Promise.reject(new Error('repo fetch failed'))))
-        .then((repo) => {
-          const stars = Number(repo.stargazers_count || 0).toLocaleString('en-US');
-          const forks = Number(repo.forks_count || 0).toLocaleString('en-US');
-          const pushed = new Date(repo.pushed_at);
-          const pushedLabel = pushed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          if (repoMeta) repoMeta.textContent = `${stars} stars · ${forks} forks · updated ${pushedLabel}`;
-          if (captureCount) {
-            const dynamic = Math.max(1280, Number(repo.stargazers_count || 0) * 12 + 1200);
-            captureCount.textContent = dynamic.toLocaleString('en-US');
-          }
-        })
-        .catch(() => {
-          if (repoMeta) repoMeta.textContent = 'Open source extension for serious X knowledge workflows';
-        });
-
-      const tiltCard = document.getElementById('tiltCard');
-      if (tiltCard && window.matchMedia('(pointer:fine)').matches) {
-        const damp = 15;
-        tiltCard.addEventListener('mousemove', (event) => {
-          const bounds = tiltCard.getBoundingClientRect();
-          const x = event.clientX - bounds.left;
-          const y = event.clientY - bounds.top;
-          const rx = (y / bounds.height - 0.5) * -damp;
-          const ry = (x / bounds.width - 0.5) * damp;
-          tiltCard.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
-        });
-        tiltCard.addEventListener('mouseleave', () => {
-          tiltCard.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
-        });
-      }
-    </script>
+    <script src="./assets/js/theme.js"></script>
+    <script src="./assets/js/i18n.js"></script>
+    <script src="./assets/js/app.js"></script>
   </body>
 </html>

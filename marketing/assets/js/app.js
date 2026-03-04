@@ -1,0 +1,121 @@
+﻿(() => {
+  const UTM_BASE = {
+    utm_source: 'github_pages',
+    utm_medium: 'organic',
+    utm_campaign: 'launch_2026_q1'
+  };
+
+  const withUTM = (url, content) => {
+    if (!url || !/^https?:/i.test(url)) return url;
+    const out = new URL(url);
+    Object.entries(UTM_BASE).forEach(([k, v]) => out.searchParams.set(k, v));
+    if (content) out.searchParams.set('utm_content', content);
+    return out.toString();
+  };
+
+  const applyUTM = () => {
+    document.querySelectorAll('a[data-utm]').forEach((node) => {
+      const content = node.getAttribute('data-utm') || '';
+      node.href = withUTM(node.href, content);
+    });
+  };
+
+  const preserveInternalLang = () => {
+    const lang = (window.XK_I18N && window.XK_I18N.getLang && window.XK_I18N.getLang()) || 'en';
+    document.querySelectorAll('a[href]').forEach((node) => {
+      const href = node.getAttribute('href') || '';
+      if (!href || href.startsWith('#') || /^https?:/i.test(href) || href.startsWith('mailto:')) return;
+      try {
+        const url = new URL(href, window.location.href);
+        url.searchParams.set('lang', lang);
+        node.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+      } catch {
+        // noop
+      }
+    });
+  };
+
+  const initReveal = () => {
+    const targets = document.querySelectorAll('.reveal');
+    if (!targets.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      targets.forEach((el) => el.classList.add('in-view'));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.16 }
+    );
+    targets.forEach((el) => observer.observe(el));
+  };
+
+  const initCounters = () => {
+    document.querySelectorAll('[data-counter]').forEach((node) => {
+      const target = Number(node.getAttribute('data-counter') || 0);
+      const start = performance.now();
+      const dur = 900;
+      const frame = (now) => {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        node.textContent = Math.round(target * eased).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    });
+  };
+
+  const initRepoMeta = () => {
+    const page = document.body.getAttribute('data-page');
+    if (page !== 'home') return;
+
+    const repoMeta = document.getElementById('repoMeta');
+    const captureCount = document.getElementById('captureCount');
+    if (!repoMeta) return;
+
+    fetch('https://api.github.com/repos/LaplaceYoung/Xknowledge', { headers: { Accept: 'application/vnd.github+json' } })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('repo fetch failed'))))
+      .then((repo) => {
+        const lang = (window.XK_I18N && window.XK_I18N.getLang && window.XK_I18N.getLang()) || 'en';
+        const stars = Number(repo.stargazers_count || 0).toLocaleString('en-US');
+        const forks = Number(repo.forks_count || 0).toLocaleString('en-US');
+        const pushed = new Date(repo.pushed_at);
+        const date = pushed.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' });
+        repoMeta.textContent = lang === 'zh' ? `${stars} stars · ${forks} forks · 更新于 ${date}` : `${stars} stars · ${forks} forks · updated ${date}`;
+
+        if (captureCount) {
+          const dynamic = Math.max(1280, Number(repo.stargazers_count || 0) * 12 + 1200);
+          captureCount.textContent = dynamic.toLocaleString('en-US');
+        }
+      })
+      .catch(() => {
+        const fallback = window.XK_I18N && window.XK_I18N.t && window.XK_I18N.t('runtime.repoFallback');
+        repoMeta.textContent = typeof fallback === 'string' ? fallback : 'Open-source extension for X bookmark workflows';
+      });
+  };
+
+  const init = () => {
+    if (window.XK_THEME && window.XK_THEME.init) window.XK_THEME.init();
+    if (window.XK_I18N && window.XK_I18N.init) window.XK_I18N.init();
+    applyUTM();
+    preserveInternalLang();
+    initReveal();
+    initCounters();
+    initRepoMeta();
+    window.addEventListener('xk:langchange', () => {
+      preserveInternalLang();
+      initRepoMeta();
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

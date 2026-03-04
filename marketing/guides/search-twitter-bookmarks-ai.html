@@ -3,302 +3,107 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Search Twitter Bookmarks with AI (Local-first Workflow)</title>
-    <meta
-      name="description"
-      content="A practical system to search Twitter/X bookmarks with AI tags, summaries, date filters, and batch operations."
-    />
-    <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/guides/search-twitter-bookmarks-ai.html" />
-    <meta property="og:title" content="Search Twitter Bookmarks with AI" />
-    <meta
-      property="og:description"
-      content="Replace endless bookmark scrolling with searchable AI metadata and structured export workflows."
-    />
+    <title>How to Search X/Twitter Bookmarks with AI | X-knowledge</title>
+    <meta name="description" content="Build a searchable X bookmark workflow with AI-generated tags and summaries." />
+    <meta property="og:title" content="How to Search X/Twitter Bookmarks with AI | X-knowledge" />
+    <meta property="og:description" content="Build a searchable X bookmark workflow with AI-generated tags and summaries." />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://laplaceyoung.github.io/Xknowledge/guides/search-twitter-bookmarks-ai.html" />
     <meta property="og:image" content="https://laplaceyoung.github.io/Xknowledge/assets/demo-3.png" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Search X/Twitter Bookmarks with AI | X-knowledge" />
+    <meta name="twitter:description" content="Build a searchable X bookmark workflow with AI-generated tags and summaries." />
+    <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/guides/search-twitter-bookmarks-ai.html" />
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --bg: #f6f2e8;
-        --surface: #fffdf9;
-        --text: #0d2538;
-        --muted: #516779;
-        --line: #d8d0c2;
-        --brand: #005fef;
-      }
-
-      * { box-sizing: border-box; }
-
-      body {
-        margin: 0;
-        font-family: "Sora", sans-serif;
-        background: radial-gradient(circle at 95% -10%, rgba(255, 122, 26, 0.15), transparent 35%), var(--bg);
-        color: var(--text);
-      }
-
-      .page {
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 24px 18px 80px;
-      }
-
-      .top {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 18px;
-      }
-
-      .home {
-        text-decoration: none;
-        color: var(--brand);
-        font-weight: 700;
-      }
-
-      .pill {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 6px 10px;
-        font-size: 11px;
-        color: var(--muted);
-        font-family: "Space Mono", monospace;
-        background: #fff;
-      }
-
-      .hero {
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        padding: 24px;
-        background: var(--surface);
-        box-shadow: 0 12px 28px rgba(26, 51, 80, 0.09);
-      }
-
-      h1 {
-        margin: 8px 0 10px;
-        font-size: clamp(1.8rem, 4.6vw, 3rem);
-        line-height: 1.08;
-      }
-
-      .lead {
-        color: var(--muted);
-        margin: 0;
-        line-height: 1.72;
-      }
-
-      .cover {
-        margin-top: 16px;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid #d9deea;
-      }
-
-      .cover img {
-        width: 100%;
-        display: block;
-      }
-
-      section {
-        margin-top: 22px;
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        background: var(--surface);
-        padding: 18px;
-      }
-
-      h2 {
-        margin: 0 0 10px;
-        font-size: 1.18rem;
-      }
-
-      p,
-      li {
-        color: var(--muted);
-        line-height: 1.68;
-      }
-
-      ul,
-      ol {
-        margin: 0;
-        padding-left: 20px;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .box {
-        border: 1px dashed #cad8f0;
-        border-radius: 12px;
-        background: #f8fbff;
-        padding: 12px;
-      }
-
-      .box b {
-        display: block;
-        margin-bottom: 6px;
-        color: #264c6b;
-      }
-
-      .cta {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 14px;
-      }
-
-      .btn,
-      .ghost {
-        text-decoration: none;
-        border-radius: 11px;
-        padding: 10px 14px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-      }
-
-      .btn {
-        background: linear-gradient(120deg, var(--brand), #3887ff);
-        color: #fff;
-      }
-
-      .ghost {
-        color: var(--text);
-        border: 1px solid var(--line);
-        background: #fff;
-      }
-
-      .related {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .related a {
-        text-decoration: none;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 12px;
-        background: #fff;
-        color: var(--text);
-        font-weight: 600;
-      }
-
-      @media (max-width: 760px) {
-        .grid,
-        .related {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/components.css" />
+    <link rel="stylesheet" href="../assets/css/motion.css" />
   </head>
-  <body>
-    <div class="page">
-      <div class="top">
-        <a class="home" href="../index.html">← Back to X-knowledge Home</a>
-        <span class="pill">SEO GUIDE / AI SEARCH</span>
+  <body data-page="guide_search">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html"><span class="brand-mark">X</span><span>X-knowledge</span></a>
+        <div class="controls">
+          <div class="seg">
+            <button type="button" data-theme-value="light" data-i18n="controls.light" aria-pressed="false">Light</button>
+            <button type="button" data-theme-value="dark" data-i18n="controls.dark" aria-pressed="false">Dark</button>
+          </div>
+          <div class="seg">
+            <button type="button" data-lang-value="zh" data-i18n="controls.zh" aria-pressed="false">中文</button>
+            <button type="button" data-lang-value="en" data-i18n="controls.en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="article-top reveal">
+        <a class="back" href="../index.html" data-i18n="nav.back">Back to Home</a>
+        <span class="badge" data-i18n="nav.tag">GUIDE / AI Search</span>
       </div>
 
-      <article class="hero">
-        <h1>How to Search Twitter Bookmarks with AI</h1>
-        <p class="lead">
-          Native X bookmarks are hard to scale once volume grows. This guide shows how to use AI tags,
-          summaries, and query memory to build a fast bookmark retrieval workflow.
-        </p>
-        <div class="cover">
-          <img src="../assets/demo-3.png" alt="X-knowledge bookmark filters and search controls" />
+      <article class="article-hero reveal">
+        <img src="../assets/demo-3.png" width="960" height="540" alt="X-knowledge AI search workflow" />
+        <div class="content">
+          <h1 data-i18n="hero.title">How to Search X/Twitter Bookmarks with AI</h1>
+          <p data-i18n="hero.lead">Replace manual scrolling with structured metadata and batch processing so key insights are always retrievable.</p>
         </div>
       </article>
 
-      <section>
-        <h2>Core search architecture</h2>
-        <div class="grid">
-          <div class="box">
-            <b>Layer 1: Raw capture</b>
-            <span>Store tweet text, author, and timestamps locally for deterministic retrieval.</span>
-          </div>
-          <div class="box">
-            <b>Layer 2: AI metadata</b>
-            <span>Generate category + summary + tags to make semantic filtering practical.</span>
-          </div>
-          <div class="box">
-            <b>Layer 3: Query UX</b>
-            <span>Highlight matches, keep recent searches, and expose top-tag filters.</span>
-          </div>
-          <div class="box">
-            <b>Layer 4: Batch operations</b>
-            <span>Pause/resume/retry AI queue to maintain quality at scale.</span>
-          </div>
-        </div>
+      <section class="article-section reveal">
+        <h2 data-i18n="s1.title">Step 1: Build baseline indexing</h2>
+        <ol>
+          <li data-i18n="s1.li1">Ingest bookmarks and verify raw records.</li>
+          <li data-i18n="s1.li2">Create initial tags by author, date, and topic.</li>
+          <li data-i18n="s1.li3">Clean duplicated or low-signal items.</li>
+        </ol>
       </section>
 
-      <section>
-        <h2>Suggested query patterns</h2>
+      <section class="article-section reveal">
+        <h2 data-i18n="s2.title">Step 2: Add AI retrieval layer</h2>
+        <ol>
+          <li data-i18n="s2.li1">Generate summaries and semantic tags in batch.</li>
+          <li data-i18n="s2.li2">Keep failed queues visible and retry.</li>
+          <li data-i18n="s2.li3">Promote high-frequency tags into quick filters.</li>
+        </ol>
+      </section>
+
+      <section class="article-section reveal">
+        <h2 data-i18n="s3.title">Step 3: Close the search-export loop</h2>
+        <ol>
+          <li data-i18n="s3.li1">Predefine filter sets for recurring queries.</li>
+          <li data-i18n="s3.li2">Archive to Markdown/Notion on schedule.</li>
+          <li data-i18n="s3.li3">Refine vocabulary and merge overlapping tags.</li>
+        </ol>
+      </section>
+
+      <section class="article-section reveal">
+        <h2 data-i18n="faq.title">FAQ</h2>
         <ul>
-          <li><b>Topic sweep:</b> `ai agents` + date range + top tags.</li>
-          <li><b>Creator scan:</b> filter by author handle + summary keyword.</li>
-          <li><b>Export batch:</b> shortlist and send to markdown or Notion for team sharing.</li>
+          <li><strong data-i18n="faq.q1">What scale does it support?</strong> <span data-i18n="faq.a1">Hundreds to thousands of bookmarks, with periodic maintenance.</span></li>
+          <li><strong data-i18n="faq.q2">How to improve search precision?</strong> <span data-i18n="faq.a2">Use consistent tag naming and regular semantic cleanup.</span></li>
         </ul>
       </section>
 
-      <section>
-        <h2>FAQ</h2>
-        <ul>
-          <li><b>Is this cloud-dependent?</b> No. Core capture/search works locally.</li>
-          <li><b>Can I audit AI output?</b> Yes. Tags and summaries are editable before export.</li>
-          <li><b>Can I back up everything?</b> Yes. Export to JSON and markdown/ZIP.</li>
-        </ul>
-        <div class="cta">
-          <a class="btn" data-utm="search_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer">Install Extension</a>
-          <a class="ghost" data-utm="search_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">View Source</a>
+      <section class="article-section reveal">
+        <h2 data-i18n="related.title">Related guides</h2>
+        <div class="guides" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+          <a class="guide" href="./x-bookmarks-to-obsidian.html"><h3 data-i18n="related.r1">Export to Obsidian</h3><span>→</span></a>
+          <a class="guide" href="./x-bookmarks-to-notion.html"><h3 data-i18n="related.r2">Sync to Notion</h3><span>→</span></a>
         </div>
       </section>
 
-      <section>
-        <h2>Related guides</h2>
-        <div class="related">
-          <a href="./x-bookmarks-to-obsidian.html">Export X bookmarks to Obsidian →</a>
-          <a href="./x-bookmarks-to-notion.html">Sync X bookmarks to Notion →</a>
+      <section class="article-section reveal cta">
+        <div class="actions" style="justify-content:center;">
+          <a class="btn btn-primary" data-utm="search_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer" data-i18n="cta.install">Install Extension</a>
+          <a class="btn btn-ghost" data-utm="search_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer" data-i18n="cta.repo">View Source</a>
         </div>
       </section>
-    </div>
+    </main>
 
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "How to Search Twitter Bookmarks with AI",
-        "description": "A practical system to search Twitter/X bookmarks with AI tags, summaries, and date filters.",
-        "author": { "@type": "Person", "name": "LaplaceYoung" },
-        "publisher": { "@type": "Organization", "name": "X-knowledge" },
-        "mainEntityOfPage": "https://laplaceyoung.github.io/Xknowledge/guides/search-twitter-bookmarks-ai.html"
-      }
-    </script>
-
-    <script>
-      const base = {
-        utm_source: 'github_pages',
-        utm_medium: 'seo_guide',
-        utm_campaign: 'search_workflow'
-      };
-
-      document.querySelectorAll('a[data-utm]').forEach((a) => {
-        if (!a.href.startsWith('http')) return;
-        const url = new URL(a.href);
-        Object.entries(base).forEach(([k, v]) => url.searchParams.set(k, v));
-        url.searchParams.set('utm_content', a.dataset.utm || 'guide_link');
-        a.href = url.toString();
-      });
-    </script>
+    <script src="../assets/js/theme.js"></script>
+    <script src="../assets/js/i18n.js"></script>
+    <script src="../assets/js/app.js"></script>
   </body>
 </html>

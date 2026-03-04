@@ -1,0 +1,396 @@
+﻿.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seg {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  overflow: hidden;
+  display: inline-flex;
+}
+
+.seg button {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.seg button[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.badge {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  padding: 6px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.hero {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.hero-copy {
+  padding: 28px;
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  padding: 5px 11px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.hero-copy p {
+  margin-top: 14px;
+  font-size: 1.04rem;
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  font-weight: 700;
+  transition: background-color 0.16s ease, transform 0.16s ease;
+}
+
+.btn-primary {
+  background: var(--x-blue);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--x-blue-hover);
+}
+
+.btn-ghost {
+  border-color: var(--line);
+  color: var(--text);
+  background: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-hover);
+}
+
+.hero-media {
+  border-left: 1px solid var(--line);
+  background: var(--bg-soft);
+  padding: 20px;
+}
+
+.demo-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.metric {
+  padding: 10px 12px;
+  border-right: 1px solid var(--line);
+}
+
+.metric:last-child {
+  border-right: 0;
+}
+
+.metric b {
+  display: block;
+  font-size: 1rem;
+}
+
+.metric span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.section {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  margin-top: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-inner {
+  padding: 20px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.grid.cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--surface);
+}
+
+.card p {
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.strip-item {
+  padding: 14px;
+  border-right: 1px solid var(--line);
+}
+
+.strip-item:last-child {
+  border-right: 0;
+}
+
+.strip-item b {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.strip-item span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.step {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.step code {
+  font-size: 12px;
+  color: var(--x-blue);
+  font-weight: 700;
+}
+
+.guides {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.guide {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  text-decoration: none;
+}
+
+.guide h3 {
+  font-size: 1rem;
+}
+
+.guide p {
+  margin-top: 8px;
+  font-size: 0.92rem;
+}
+
+.guide span {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--x-blue);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.cta {
+  text-align: center;
+}
+
+.footer {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer p {
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: var(--x-blue);
+  text-decoration: none;
+}
+
+.article-top {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.back {
+  color: var(--x-blue);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.article-hero {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.article-hero .content {
+  padding: 20px;
+}
+
+.article-hero .content p {
+  margin-top: 10px;
+}
+
+.article-section {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.article-section ul,
+.article-section ol {
+  margin: 10px 0 0;
+  padding-left: 22px;
+}
+
+.article-section li {
+  color: var(--text-muted);
+  margin: 6px 0;
+}
+
+@media (hover: hover) {
+  .card:hover,
+  .guide:hover,
+  .step:hover,
+  .article-section:hover {
+    background: var(--surface-hover);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-media {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .grid.cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .guides {
+    grid-template-columns: 1fr;
+  }
+
+  .strip {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .hero-copy {
+    padding: 18px;
+  }
+
+  .section-inner {
+    padding: 14px;
+  }
+
+  .grid.cards,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .strip {
+    grid-template-columns: 1fr;
+  }
+
+  .strip-item {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .strip-item:last-child {
+    border-bottom: 0;
+  }
+}

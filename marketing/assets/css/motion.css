@@ -1,0 +1,39 @@
+﻿.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn,
+.card,
+.guide,
+.step,
+.article-section {
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .btn,
+  .card,
+  .guide,
+  .step,
+  .article-section {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+  }
+}
