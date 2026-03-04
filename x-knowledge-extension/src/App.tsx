@@ -19,6 +19,10 @@ type RuntimeMessage =
   | { type: 'THEME_CHANGED'; payload?: string }
   | { type: 'BOOKMARKS_UPDATED'; count?: number };
 
+const BATCH_ANALYZE_DELAY_MS = 2000;
+const RECENT_SEARCHES_KEY = 'recentSearchQueries';
+const MAX_RECENT_SEARCHES = 6;
+
 function App() {
   const { showToast } = useToast();
 
@@ -135,6 +139,22 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!chrome?.storage?.local) return;
+
+    chrome.storage.local.get([RECENT_SEARCHES_KEY], (result) => {
+      const stored = result[RECENT_SEARCHES_KEY];
+      if (!Array.isArray(stored)) return;
+
+      const sanitized = stored
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
+        .slice(0, MAX_RECENT_SEARCHES);
+      setRecentSearches(sanitized);
+    });
+  }, []);
+
   const [analyzingId, setAnalyzingId] = useState<string | null>(null)
   const [pushingId, setPushingId] = useState<string | null>(null)
 
@@ -144,6 +164,8 @@ function App() {
 
   // Batch analysis state
   const [isBatchAnalyzing, setIsBatchAnalyzing] = useState(false)
+  const [isBatchPaused, setIsBatchPaused] = useState(false)
+  const [batchFailedIds, setBatchFailedIds] = useState<string[]>([])
   const batchStateRef = useRef({ isRunning: false, isPaused: false });
   const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 })
 
@@ -153,6 +175,7 @@ function App() {
   // Float to top state
   // New state for filtering and searching
   const [searchQuery, setSearchQuery] = useState('')
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [activeTagFilter, setActiveTagFilter] = useState('')
   const activeCategory: string = 'all'
   const [sortBy, setSortBy] = useState<'time' | 'retweets' | 'likes'>('time')
@@ -165,6 +188,27 @@ function App() {
   const [showTools, setShowTools] = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const persistRecentSearches = (next: string[]) => {
+    setRecentSearches(next);
+    if (chrome?.storage?.local) {
+      chrome.storage.local.set({ [RECENT_SEARCHES_KEY]: next });
+    }
+  };
+
+  const commitRecentSearch = (rawQuery: string) => {
+    const query = rawQuery.trim();
+    if (!query) return;
+
+    setRecentSearches((prev) => {
+      const deduped = prev.filter((item) => item.toLowerCase() !== query.toLowerCase());
+      const next = [query, ...deduped].slice(0, MAX_RECENT_SEARCHES);
+      if (chrome?.storage?.local) {
+        chrome.storage.local.set({ [RECENT_SEARCHES_KEY]: next });
+      }
+      return next;
+    });
+  };
 
   const handleClear = () => {
     setShowClearConfirm(true);
@@ -417,50 +461,123 @@ function App() {
     }
   };
 
-  const handleBatchAnalyze = async () => {
-    if (batchStateRef.current.isRunning && batchStateRef.current.isPaused) {
-      // Resume      batchStateRef.current.isPaused = false;
+  const runBatchAnalyze = async (queue: ParsedTweet[]) => {
+    if (queue.length === 0) {
+      showToast('No tweets available for batch analysis', 'info');
       return;
     }
 
-    const uncategorized = bookmarks.filter(b => !b.aiAnalysis);
-    if (uncategorized.length === 0) return;
+    const queueIds = new Set(queue.map((tweet) => tweet.id));
+    const failedIds: string[] = [];
+    let processedCount = 0;
 
-    setIsBatchAnalyzing(true);    batchStateRef.current = { isRunning: true, isPaused: false };
-    setBatchProgress({ current: 0, total: uncategorized.length });
+    batchStateRef.current = { isRunning: true, isPaused: false };
+    setIsBatchAnalyzing(true);
+    setIsBatchPaused(false);
+    setBatchProgress({ current: 0, total: queue.length });
 
-    for (let i = 0; i < uncategorized.length; i++) {
+    for (const tweet of queue) {
       if (!batchStateRef.current.isRunning) break;
 
       while (batchStateRef.current.isPaused) {
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         if (!batchStateRef.current.isRunning) break;
       }
 
       if (!batchStateRef.current.isRunning) break;
 
-      const tweet = uncategorized[i];
       setAnalyzingId(tweet.id);
-
       try {
         const result = await analyzeTweet(tweet.text);
         if (result) {
           await db.tweets.update(tweet.id, { aiAnalysis: result });
+        } else {
+          failedIds.push(tweet.id);
         }
       } catch (error) {
+        failedIds.push(tweet.id);
         console.error(`Failed to analyze tweet ${tweet.id}:`, error);
       }
 
-      setBatchProgress({ current: i + 1, total: uncategorized.length });
+      processedCount += 1;
+      setBatchProgress({ current: processedCount, total: queue.length });
 
-      // Rate limit delay
-      if (i < uncategorized.length - 1 && batchStateRef.current.isRunning && !batchStateRef.current.isPaused) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      if (processedCount < queue.length && batchStateRef.current.isRunning && !batchStateRef.current.isPaused) {
+        await new Promise((resolve) => setTimeout(resolve, BATCH_ANALYZE_DELAY_MS));
       }
     }
 
+    const stoppedEarly = processedCount < queue.length;
+
+    batchStateRef.current = { isRunning: false, isPaused: false };
+    setIsBatchAnalyzing(false);
+    setIsBatchPaused(false);
     setAnalyzingId(null);
-    setIsBatchAnalyzing(false);    batchStateRef.current = { isRunning: false, isPaused: false };
+
+    setBatchFailedIds((prev) => {
+      const remaining = prev.filter((id) => !queueIds.has(id));
+      return Array.from(new Set([...remaining, ...failedIds]));
+    });
+
+    if (stoppedEarly) {
+      showToast(`Batch analysis stopped at ${processedCount}/${queue.length}`, 'warning');
+      return;
+    }
+
+    if (failedIds.length > 0) {
+      showToast(`Batch finished: ${queue.length - failedIds.length} succeeded, ${failedIds.length} failed`, 'warning');
+    } else {
+      showToast(`Batch analysis completed (${queue.length}/${queue.length})`, 'success');
+    }
+  };
+
+  const handleBatchAnalyze = () => {
+    if (batchStateRef.current.isRunning) {
+      const nextPaused = !batchStateRef.current.isPaused;
+      batchStateRef.current.isPaused = nextPaused;
+      setIsBatchPaused(nextPaused);
+      showToast(nextPaused ? 'Batch analysis paused' : 'Batch analysis resumed', 'info');
+      return;
+    }
+
+    const uncategorized = bookmarks.filter((bookmark) => !bookmark.aiAnalysis);
+    if (uncategorized.length === 0) {
+      showToast('No uncategorized tweets to analyze', 'info');
+      return;
+    }
+
+    void runBatchAnalyze(uncategorized);
+  };
+
+  const handleStopBatchAnalyze = () => {
+    if (!batchStateRef.current.isRunning) return;
+    batchStateRef.current = { isRunning: false, isPaused: false };
+    setIsBatchAnalyzing(false);
+    setIsBatchPaused(false);
+    setAnalyzingId(null);
+    showToast('Stopping batch analysis...', 'info');
+  };
+
+  const handleRetryFailedBatch = () => {
+    if (batchStateRef.current.isRunning) {
+      showToast('Stop current batch before retrying failures', 'warning');
+      return;
+    }
+
+    if (batchFailedIds.length === 0) {
+      showToast('No failed tweets to retry', 'info');
+      return;
+    }
+
+    const failedSet = new Set(batchFailedIds);
+    const retryQueue = bookmarks.filter((bookmark) => failedSet.has(bookmark.id) && !bookmark.aiAnalysis);
+    if (retryQueue.length === 0) {
+      setBatchFailedIds([]);
+      showToast('No remaining failed tweets to retry', 'info');
+      return;
+    }
+
+    void runBatchAnalyze(retryQueue);
   };
 
   const popularTags = useMemo(() => {
@@ -534,6 +651,11 @@ function App() {
     });
   }, [bookmarks, searchQuery, sortBy, startDate, endDate, activeTagFilter])
 
+  const batchActionLabel = isBatchAnalyzing
+    ? (isBatchPaused ? 'Resume AI Batch' : 'Pause AI Batch')
+    : 'Batch AI Analyze';
+  const hasActiveFilters = Boolean(searchQuery.trim() || activeTagFilter || startDate || endDate);
+
   return (
     <>
       {!isApiKeyConfigured ? (
@@ -562,6 +684,16 @@ function App() {
                   </svg>
                 </a>
                 <span className="text-xs text-x-textMuted font-medium">{bookmarks.length}</span>
+                {isBatchAnalyzing && (
+                  <span className={`text-[11px] font-semibold ${isBatchPaused ? 'text-amber-500' : 'text-x-primary'}`}>
+                    {isBatchPaused ? 'Batch Paused' : `Batch ${batchProgress.current}/${batchProgress.total}`}
+                  </span>
+                )}
+                {!isBatchAnalyzing && batchFailedIds.length > 0 && (
+                  <span className="text-[11px] font-semibold text-amber-500">
+                    Failed {batchFailedIds.length}
+                  </span>
+                )}
                 <div className="relative">
                   <button
                     onClick={() => setShowTools(!showTools)}
@@ -583,8 +715,26 @@ function App() {
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                           </svg>
-                          鎵归噺 AI 鍒嗘瀽
+                          {batchActionLabel}
                         </button>
+                        {isBatchAnalyzing && (
+                          <button onClick={() => { handleStopBatchAnalyze(); setShowTools(false); }}
+                            className="w-full px-4 py-3 text-[15px] font-bold text-amber-500 hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6h12v12H6z" />
+                            </svg>
+                            Stop Batch
+                          </button>
+                        )}
+                        {!isBatchAnalyzing && batchFailedIds.length > 0 && (
+                          <button onClick={() => { handleRetryFailedBatch(); setShowTools(false); }}
+                            className="w-full px-4 py-3 text-[15px] font-bold text-amber-500 hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M5.64 18.36A9 9 0 1020 12" />
+                            </svg>
+                            Retry Failed ({batchFailedIds.length})
+                          </button>
+                        )}
                         <button onClick={() => { handleExport(); setShowTools(false); }}
                           className="w-full px-4 py-3 text-[15px] font-bold text-x-text hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -630,7 +780,7 @@ function App() {
             {isBatchAnalyzing && (
               <div className="absolute bottom-0 left-0 w-full h-[2px] bg-x-bgHover z-20">
                 <div
-                  className="h-full bg-x-primary transition-all duration-300 shadow-[0_0_10px_rgba(29,155,240,0.5)]"
+                  className={`h-full transition-all duration-300 ${isBatchPaused ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.45)]' : 'bg-x-primary shadow-[0_0_10px_rgba(29,155,240,0.5)]'}`}
                   style={{ width: `${(batchProgress.current / Math.max(batchProgress.total, 1)) * 100}%` }}
                 />
               </div>
@@ -647,17 +797,49 @@ function App() {
                   placeholder="鎼滅储涔︾銆佷綔鑰呮垨鏍囩..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      commitRecentSearch(searchQuery);
+                    }
+                  }}
+                  onBlur={() => {
+                    commitRecentSearch(searchQuery);
+                  }}
                   className="w-full pl-10 pr-4 py-2.5 bg-x-bgHover border border-transparent rounded-full text-sm text-x-text placeholder-x-textMuted focus:bg-transparent focus:border-x-primary focus:ring-0 transition-all outline-none"
                 />
                 <svg className="w-4 h-4 text-x-textMuted absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
+                {searchQuery.trim() && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-2.5 p-1 rounded-full text-x-textMuted hover:text-x-text hover:bg-x-primary/10 transition-colors"
+                    title="Clear search"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
               <div className="mt-2 text-xs text-x-textMuted">
                 Showing {filteredBookmarks.length} of {bookmarks.length}
                 {searchQuery.trim() ? ` for "${searchQuery.trim()}"` : ''}
                 {activeTagFilter ? ` tagged ${activeTagFilter}` : ''}
                 {(startDate || endDate) ? ' (date filtered)' : ''}
+                {hasActiveFilters && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setActiveTagFilter('');
+                      setStartDate('');
+                      setEndDate('');
+                    }}
+                    className="ml-2 text-x-primary hover:text-x-primaryHover font-semibold"
+                  >
+                    Clear all filters
+                  </button>
+                )}
               </div>
               {popularTags.length > 0 && (
                 <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
@@ -679,6 +861,31 @@ function App() {
                       </button>
                     );
                   })}
+                </div>
+              )}
+              {recentSearches.length > 0 && (
+                <div className="mt-1.5 flex items-center gap-1.5 overflow-x-auto pb-1">
+                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">Recent</span>
+                  {recentSearches.map((query) => (
+                    <button
+                      key={query}
+                      onClick={() => {
+                        setSearchQuery(query);
+                        commitRecentSearch(query);
+                      }}
+                      className="text-[11px] px-2 py-1 rounded-full border border-x-border bg-x-bgHover text-x-textMuted hover:text-x-text whitespace-nowrap transition-colors"
+                      title={`Search ${query}`}
+                    >
+                      {query}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => persistRecentSearches([])}
+                    className="text-[11px] px-2 py-1 rounded-full border border-x-border text-x-textMuted hover:text-[#F4212E] whitespace-nowrap transition-colors"
+                    title="Clear recent searches"
+                  >
+                    Clear
+                  </button>
                 </div>
               )}
             </div>

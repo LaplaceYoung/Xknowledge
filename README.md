@@ -64,6 +64,7 @@ After building, go to Chrome's `chrome://extensions/` page, enable "Developer mo
 - Marketing page auto deployment:
   - Workflow: `.github/workflows/deploy-marketing-pages.yml`
   - Publish source: `marketing/`
+  - Fallback: auto-publish to `gh-pages` branch when Pages is not enabled yet
   - URL: `https://laplaceyoung.github.io/Xknowledge/`
 - Extension quality gate:
   - Workflow: `.github/workflows/extension-ci.yml`

@@ -17,7 +17,10 @@ Open `http://localhost:8080/marketing/`.
 1. GitHub Pages (already wired in this repo):
    - Workflow: `.github/workflows/deploy-marketing-pages.yml`
    - Trigger: push to `main` with changes under `marketing/`
-   - Expected URL: `https://laplaceyoung.github.io/Xknowledge/`
+   - Strategy:
+     - If Pages is already enabled: deploy via official Pages Actions.
+     - If Pages is not enabled yet: auto-fallback to `gh-pages` branch deploy.
+   - Expected URL after enabling Pages: `https://laplaceyoung.github.io/Xknowledge/`
 2. Cloudflare Pages:
    - Root directory: repository root
    - Build command: none
