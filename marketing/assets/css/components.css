@@ -112,6 +112,7 @@
   border-left: 1px solid var(--line);
   background: var(--bg-soft);
   padding: 20px;
+  will-change: transform;
 }
 
 .demo-card {

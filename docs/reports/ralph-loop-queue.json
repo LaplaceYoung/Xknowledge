@@ -1,0 +1,51 @@
+{
+  "repo": "F:\\\u7b80\u5386\u9879\u76ee\\xknowledge\\xknowledge",
+  "stack": [],
+  "tasks": [
+    {
+      "id": "landing-cta",
+      "title": "Optimize landing page CTA and hero message clarity",
+      "impact": 5,
+      "effort": 2,
+      "risk": 2,
+      "category": "growth",
+      "why": "Clear value proposition and CTA hierarchy improve conversion.",
+      "priority_score": 11
+    },
+    {
+      "id": "quality-gates",
+      "title": "Stabilize lint/test/build gates",
+      "impact": 5,
+      "effort": 3,
+      "risk": 2,
+      "category": "engineering",
+      "why": "Fast feedback loops reduce regressions in all future cycles.",
+      "priority_score": 10
+    },
+    {
+      "id": "retention-hooks",
+      "title": "Add re-engagement and retention hooks",
+      "impact": 4,
+      "effort": 3,
+      "risk": 2,
+      "category": "product",
+      "why": "Lifecycle nudges improve repeated usage and reduce churn.",
+      "priority_score": 7
+    },
+    {
+      "id": "referral-loop",
+      "title": "Add referral and sharing mechanics",
+      "impact": 4,
+      "effort": 4,
+      "risk": 3,
+      "category": "product",
+      "why": "Built-in sharing loop can compound acquisition.",
+      "priority_score": 5
+    }
+  ],
+  "next_cycle": [
+    "landing-cta",
+    "quality-gates",
+    "retention-hooks"
+  ]
+}

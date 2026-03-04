@@ -9,6 +9,11 @@ Static promotional site for `X-knowledge` with launch-grade visual design and gr
 - Shared static architecture:
   - `assets/css/{tokens,base,components,motion}.css`
   - `assets/js/{theme,i18n,app}.js`
+- Conversion upgrades:
+  - trust/benchmark strip, comparison table, testimonials, activation checklist
+  - FAQ accordion + FAQ JSON-LD
+  - referral copy-link action and mobile sticky CTA
+  - scroll progress bar and hero parallax motion
 - SEO long-tail guides:
   - `guides/x-bookmarks-to-obsidian.html`
   - `guides/x-bookmarks-to-notion.html`

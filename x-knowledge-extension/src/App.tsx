@@ -188,6 +188,20 @@ function App() {
   const [showTools, setShowTools] = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const isSearchHotkey = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k';
+      if (!isSearchHotkey) return;
+      event.preventDefault();
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const persistRecentSearches = (next: string[]) => {
     setRecentSearches(next);
@@ -793,6 +807,7 @@ function App() {
             <div className="px-4 py-2 border-b border-x-border">
               <div className="relative">
                 <input
+                  ref={searchInputRef}
                   type="text"
                   placeholder="鎼滅储涔︾銆佷綔鑰呮垨鏍囩..."
                   value={searchQuery}
@@ -800,6 +815,10 @@ function App() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       commitRecentSearch(searchQuery);
+                    }
+                    if (e.key === 'Escape') {
+                      setSearchQuery('');
+                      e.currentTarget.blur();
                     }
                   }}
                   onBlur={() => {

@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="./assets/css/motion.css" />
   </head>
   <body data-page="home">
+    <div class="scroll-progress" id="scrollProgress"></div>
     <header class="topbar">
       <div class="topbar-inner">
         <a class="brand" href="./index.html">
@@ -52,7 +53,7 @@
     </header>
 
     <main class="page">
-      <section class="hero reveal">
+      <section class="hero reveal" data-reveal-delay="1">
         <div class="hero-grid">
           <div class="hero-copy">
             <span class="hero-kicker" data-i18n="hero.kicker">X-native UX · Bilingual · Dual Themes</span>
@@ -83,7 +84,7 @@
               </a>
             </div>
           </div>
-          <aside class="hero-media">
+          <aside class="hero-media" id="heroMedia">
             <div class="demo-card">
               <img src="./assets/demo-1.png" width="960" height="540" alt="X-knowledge dashboard preview" />
               <div class="metrics">
@@ -105,7 +106,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="1">
         <div class="strip">
           <div class="strip-item">
             <b data-counter="1500">0</b>
@@ -126,7 +127,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="2">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="trust.title">Benchmark-inspired product narrative</h2>
@@ -142,7 +143,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="1">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="feature.title">Feature Matrix</h2>
@@ -177,7 +178,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="2">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="workflow.title">4-step workflow</h2>
@@ -244,7 +245,7 @@
         </div>
       </section>
 
-      <section class="section reveal" id="seo-guides">
+      <section class="section reveal" data-reveal-delay="3" id="seo-guides">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="guides.title">Use-case Guides</h2>
@@ -270,7 +271,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="1">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="testimonials.title">What builders use it for</h2>
@@ -293,7 +294,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="2">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="activation.title">Activation in under 10 minutes</h2>
@@ -307,7 +308,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="1">
         <div class="section-inner referral">
           <div>
             <h2 data-i18n="referral.title">Share with your team and keep taxonomy aligned</h2>
@@ -317,7 +318,7 @@
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" data-reveal-delay="2">
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="faq.title">FAQ</h2>
@@ -340,7 +341,7 @@
         </div>
       </section>
 
-      <section class="section reveal cta">
+      <section class="section reveal cta" data-reveal-delay="3">
         <div class="section-inner">
           <h2 data-i18n="cta.title">Move from bookmark chaos to reusable knowledge flow.</h2>
           <p data-i18n="cta.desc">Built for creators, researchers, and product teams running intelligence loops on X.</p>

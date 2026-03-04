@@ -55,6 +55,31 @@
     targets.forEach((el) => observer.observe(el));
   };
 
+  const initScrollProgress = () => {
+    const bar = document.getElementById('scrollProgress');
+    if (!bar) return;
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      bar.style.width = `${Math.min(100, Math.max(0, pct)).toFixed(2)}%`;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  };
+
+  const initHeroParallax = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const hero = document.getElementById('heroMedia');
+    if (!hero) return;
+    const onScroll = () => {
+      const rect = hero.getBoundingClientRect();
+      const offset = Math.max(-16, Math.min(16, (window.innerHeight * 0.45 - rect.top) * 0.04));
+      hero.style.transform = `translateY(${offset.toFixed(2)}px)`;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  };
+
   const initCounters = () => {
     document.querySelectorAll('[data-counter]').forEach((node) => {
       const target = Number(node.getAttribute('data-counter') || 0);
@@ -144,6 +169,8 @@
     applyUTM();
     preserveInternalLang();
     initReveal();
+    initScrollProgress();
+    initHeroParallax();
     initCounters();
     initRepoMeta();
     initFaq();
