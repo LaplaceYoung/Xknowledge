@@ -69,6 +69,14 @@ After building, go to Chrome's `chrome://extensions/` page, enable "Developer mo
 - Extension quality gate:
   - Workflow: `.github/workflows/extension-ci.yml`
   - Checks: `npm run lint` + `npm run build`
+- Repository hygiene gate:
+  - Workflow: `.github/workflows/repo-hygiene.yml`
+  - Checks: blocked file classes and high-risk secret markers
+
+## Repository Structure
+
+- Public structure overview: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+- Security policy: [SECURITY.md](SECURITY.md)
 
 ## Configuration Guide
 

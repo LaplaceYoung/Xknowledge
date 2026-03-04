@@ -1,0 +1,41 @@
+﻿name: Repo Hygiene
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Block Internal And Package Artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          blocked_paths='(^docs/(plans|reports|research)/)|(^x-knowledge-extension/\.claude/)|(^x-knowledge-extension/dist\.pem$)|(^x-knowledge-extension/dist\.crx$)|(^x-knowledge-extension/x-knowledge-extension\.zip$)|(^x-knowledge-extension/feedback\.json$)|(^x-knowledge-extension/(build.*|err\.txt|vite_out\.txt|task\.md|image(-1|-2)?\.png)$)'
+          hits="$(git ls-files | grep -E "$blocked_paths" || true)"
+          if [ -n "$hits" ]; then
+            echo "Blocked files are tracked in this repository:"
+            echo "$hits"
+            exit 1
+          fi
+
+      - name: Scan Tracked Files For High-Risk Secret Markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|xoxb-[0-9A-Za-z-]{20,}|sk-[A-Za-z0-9]{20,}' -- . ':(exclude)x-knowledge-extension/public/html2canvas.min.js'; then
+            echo "Potential secret marker detected in tracked files."
+            exit 1
+          fi
+          echo "No high-risk secret markers found."
