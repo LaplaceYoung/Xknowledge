@@ -1,63 +1,71 @@
-﻿.reveal {
+/* X-Native Physics Curves */
+:root {
+  --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Enhanced Reveal Animation */
+@keyframes x-spring-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 220ms ease, transform 220ms ease;
+  will-change: transform, opacity;
 }
 
 .reveal.in-view {
-  opacity: 1;
-  transform: translateY(0);
+  animation: x-spring-up 0.8s var(--ease-elastic) forwards;
 }
 
-.reveal[data-animate="pop"] {
-  transform: translateY(10px) scale(0.985);
+/* Staggered Delays for Grid Items */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.15s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.25s; }
+.card:nth-child(5) { animation-delay: 0.3s; }
+.card:nth-child(6) { animation-delay: 0.35s; }
+
+/* Micro-Interactions */
+.btn, .card, .guide, .trending-item, .seg button {
+  transition: all 0.2s var(--ease-out-expo);
 }
 
-.reveal[data-animate="pop"].in-view {
-  transform: translateY(0) scale(1);
+/* X-Style Elastic Click */
+.btn:active, .card:active, .guide:active, .seg button:active {
+  transform: scale(0.92);
 }
 
-.reveal[data-reveal-delay="1"] {
-  transition-delay: 60ms;
+/* Hover "Lift" effect */
+.card:hover, .guide:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px var(--x-shadow);
 }
 
-.reveal[data-reveal-delay="2"] {
-  transition-delay: 120ms;
+/* Pulse effect for CTA */
+@keyframes x-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(29, 155, 240, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(29, 155, 240, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(29, 155, 240, 0); }
 }
 
-.reveal[data-reveal-delay="3"] {
-  transition-delay: 180ms;
+.btn-primary {
+  animation: x-pulse 2s infinite;
 }
 
-.btn,
-.card,
-.guide,
-.step,
-.article-section {
-  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+/* Floating Sidebar effect */
+@keyframes x-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal,
-  .btn,
-  .card,
-  .guide,
-  .step,
-  .article-section {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-  }
-
-  .reveal {
-    opacity: 1;
-  }
-
-  .hero-media {
-    transform: none !important;
-  }
+.demo-card-native {
+  animation: x-float 6s ease-in-out infinite;
 }

@@ -222,6 +222,31 @@
     meta.setAttribute('content', dark ? '#000000' : '#ffffff');
   };
 
+  const initScrollHeader = () => {
+    const header = document.querySelector('.topbar');
+    if (!header) return;
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY > 20;
+      header.style.backgroundColor = scrolled 
+        ? (document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)')
+        : 'transparent';
+      header.style.borderBottomColor = scrolled ? 'var(--x-border)' : 'transparent';
+    }, { passive: true });
+  };
+
+  const initMagneticHero = () => {
+    const heroMedia = document.getElementById('heroMedia');
+    if (!heroMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    document.addEventListener('mousemove', (e) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      const x = (clientX - innerWidth / 2) / innerWidth * 15;
+      const y = (clientY - innerHeight / 2) / innerHeight * 15;
+      heroMedia.style.transform = `translate(${x}px, ${y}px) rotateX(${-y/2}deg) rotateY(${x/2}deg)`;
+    });
+  };
+
   const init = () => {
     if (window.XK_THEME && window.XK_THEME.init) window.XK_THEME.init();
     if (window.XK_I18N && window.XK_I18N.init) window.XK_I18N.init();
@@ -229,7 +254,8 @@
     preserveInternalLang();
     initReveal();
     initScrollProgress();
-    initHeroParallax();
+    initScrollHeader();
+    initMagneticHero();
     initRoleSwitcher();
     initGuideTOC();
     initGuideProgress();

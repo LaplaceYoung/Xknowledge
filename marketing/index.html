@@ -1,29 +1,14 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>X-knowledge | Turn X Bookmarks into Searchable Knowledge</title>
-    <meta
-      name="description"
-      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
-    />
+    <meta name="description" content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports." />
     <meta property="og:title" content="X-knowledge | Turn X Bookmarks into Searchable Knowledge" />
-    <meta
-      property="og:description"
-      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://laplaceyoung.github.io/Xknowledge/" />
-    <meta property="og:image" content="https://laplaceyoung.github.io/Xknowledge/assets/demo-1.png" />
+    <meta property="og:image" content="./assets/demo-1.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="X-knowledge | Turn X Bookmarks into Searchable Knowledge" />
-    <meta
-      name="twitter:description"
-      content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports to Markdown, Notion, and Obsidian."
-    />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/" />
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="stylesheet" href="./assets/css/tokens.css" />
     <link rel="stylesheet" href="./assets/css/base.css" />
@@ -35,18 +20,18 @@
     <header class="topbar">
       <div class="topbar-inner">
         <a class="brand" href="./index.html">
-          <span class="brand-mark">X</span>
+          <div class="brand-mark">𝕏</div>
           <span>X-knowledge</span>
         </a>
         <div class="controls">
-          <span class="badge" id="repoMeta" data-i18n="nav.repoLoading">Loading GitHub metrics...</span>
-          <div class="seg" role="group" aria-label="Theme switcher">
-            <button type="button" data-theme-value="light" data-i18n="controls.light" aria-pressed="false">Light</button>
-            <button type="button" data-theme-value="dark" data-i18n="controls.dark" aria-pressed="false">Dark</button>
+          <span class="badge" id="repoMeta" data-i18n="nav.repoLoading">Loading...</span>
+          <div class="seg" role="group">
+            <button type="button" data-theme-value="light" data-i18n="controls.light">Light</button>
+            <button type="button" data-theme-value="dark" data-i18n="controls.dark">Dark</button>
           </div>
-          <div class="seg" role="group" aria-label="Language switcher">
-            <button type="button" data-lang-value="zh" data-i18n="controls.zh" aria-pressed="false">中文</button>
-            <button type="button" data-lang-value="en" data-i18n="controls.en" aria-pressed="false">EN</button>
+          <div class="seg" role="group">
+            <button type="button" data-lang-value="zh" data-i18n="controls.zh">中文</button>
+            <button type="button" data-lang-value="en" data-i18n="controls.en">EN</button>
           </div>
         </div>
       </div>
@@ -56,51 +41,33 @@
       <section class="hero reveal" data-reveal-delay="1">
         <div class="hero-grid">
           <div class="hero-copy">
-            <span class="hero-kicker" data-i18n="hero.kicker">X-native UX · Bilingual · Dual Themes</span>
-            <h1 data-i18n="hero.title">Turn bookmark clutter into an operational knowledge system.</h1>
-            <p data-i18n="hero.desc">
-              X-knowledge keeps your data local-first, then layers AI summaries and tags for retrieval, curation, and reuse.
-            </p>
+            <span class="hero-kicker" data-i18n="hero.kicker">X-Native UX</span>
+            <h1 data-i18n="hero.title">Everything from X, now actionable.</h1>
+            <p data-i18n="hero.desc">Turn your chaotic bookmarks into a searchable intelligence hub.</p>
             <div class="actions">
-              <a
-                class="btn btn-primary"
-                data-utm="hero_install"
-                href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension"
-                target="_blank"
-                rel="noreferrer"
-                data-i18n="hero.install"
-              >
-                Install Extension
-              </a>
-              <a
-                class="btn btn-ghost"
-                data-utm="hero_repo"
-                href="https://github.com/LaplaceYoung/Xknowledge"
-                target="_blank"
-                rel="noreferrer"
-                data-i18n="hero.viewRepo"
-              >
-                View Repository
-              </a>
+              <a class="btn btn-primary" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" data-i18n="hero.install">Install Extension</a>
+              <a class="btn btn-ghost" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" data-i18n="hero.viewRepo">View GitHub</a>
             </div>
           </div>
           <aside class="hero-media" id="heroMedia">
-            <div class="demo-card">
-              <img src="./assets/demo-1.png" width="960" height="540" alt="X-knowledge dashboard preview" />
-              <div class="metrics">
-                <div class="metric">
-                  <b id="captureCount">1,280</b>
-                  <span data-i18n="hero.cap">Bookmarks captured</span>
-                </div>
-                <div class="metric">
-                  <b>96.4%</b>
-                  <span data-i18n="hero.ai">AI batch success</span>
-                </div>
-                <div class="metric">
-                  <b>4</b>
-                  <span data-i18n="hero.export">Built-in export routes</span>
-                </div>
+            <div class="demo-card-native">
+              <div class="card-header"><h2 data-i18n="hero.trendingTitle">Trending in your knowledge</h2></div>
+              <div class="trending-item">
+                <span class="trending-meta">Knowledge · Trending</span>
+                <span class="trending-name">#AI-Strategy</span>
+                <span class="trending-meta"><span id="captureCount">1,280</span> <span data-i18n="hero.cap">bookmarks summarized</span></span>
               </div>
+              <div class="trending-item">
+                <span class="trending-meta">Creator · Trending</span>
+                <span class="trending-name">#Solopreneur-Stack</span>
+                <span class="trending-meta">452 <span data-i18n="hero.ai">insights captured</span></span>
+              </div>
+              <div class="trending-item">
+                <span class="trending-meta">Research · Trending</span>
+                <span class="trending-name">#Web3-Economics</span>
+                <span class="trending-meta">89 <span data-i18n="hero.export">exports to Notion</span></span>
+              </div>
+              <div class="card-footer"><span data-i18n="hero.showMore">Show more</span></div>
             </div>
           </aside>
         </div>
@@ -108,38 +75,10 @@
 
       <section class="section reveal" data-reveal-delay="1">
         <div class="strip">
-          <div class="strip-item">
-            <b data-counter="1500">0</b>
-            <span data-i18n="proof.s1">Bookmarks per power user</span>
-          </div>
-          <div class="strip-item">
-            <b data-counter="4">0</b>
-            <span data-i18n="proof.s2">Built-in export routes</span>
-          </div>
-          <div class="strip-item">
-            <b data-counter="2000">0</b>
-            <span data-i18n="proof.s3">Queue delay control</span>
-          </div>
-          <div class="strip-item">
-            <b data-counter="100">0</b>
-            <span data-i18n="proof.s4">Local-first key policy</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="2">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="trust.title">Benchmark-inspired product narrative</h2>
-            <p data-i18n="trust.desc">Pattern references from top creator and product tools: clear value, proof-first modules, and low-friction CTA flow.</p>
-          </div>
-          <div class="logo-row">
-            <span class="logo-pill">Typefully</span>
-            <span class="logo-pill">Tweet Hunter</span>
-            <span class="logo-pill">Hypefury</span>
-            <span class="logo-pill">Readwise</span>
-            <span class="logo-pill">Linear</span>
-          </div>
+          <div class="strip-item"><b data-counter="1500">0</b><span data-i18n="proof.s1">Bookmarks</span></div>
+          <div class="strip-item"><b data-counter="4">0</b><span data-i18n="proof.s2">Built-in routes</span></div>
+          <div class="strip-item"><b data-counter="2000">0</b><span data-i18n="proof.s3">Delay control</span></div>
+          <div class="strip-item"><b data-counter="100">0</b><span data-i18n="proof.s4">Local policy</span></div>
         </div>
       </section>
 
@@ -147,33 +86,15 @@
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="feature.title">Feature Matrix</h2>
-            <p data-i18n="feature.desc">Designed around X-style interaction rhythm with strong retrieval, batch processing, and export portability.</p>
+            <p data-i18n="feature.desc">Designed around X-style rhythm.</p>
           </div>
           <div class="grid cards">
-            <article class="card">
-              <h3 data-i18n="feature.c1t">Signal-rich search</h3>
-              <p data-i18n="feature.c1d">Filter by text, author, tags, and date with on-card highlights.</p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="feature.c2t">Batch queue control</h3>
-              <p data-i18n="feature.c2d">Pause, resume, stop, and retry failed AI tasks with visible progress.</p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="feature.c3t">Knowledge portability</h3>
-              <p data-i18n="feature.c3d">Export to Markdown, JSON, ZIP, Notion, and Obsidian workflows.</p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="feature.c4t">Clear secret policy</h3>
-              <p data-i18n="feature.c4d">API keys stay local by default, with explicit opt-in sync behavior.</p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="feature.c5t">Release-ready pipeline</h3>
-              <p data-i18n="feature.c5d">Extension and marketing pages ship through reliable iteration loops.</p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="feature.c6t">X-like interface</h3>
-              <p data-i18n="feature.c6d">Theme hierarchy and interaction feedback aligned with X native UI.</p>
-            </article>
+            <article class="card"><h3 data-i18n="feature.c1t">Search</h3><p data-i18n="feature.c1d">Semantic retrieval.</p></article>
+            <article class="card"><h3 data-i18n="feature.c2t">Queue</h3><p data-i18n="feature.c2d">Batch control.</p></article>
+            <article class="card"><h3 data-i18n="feature.c3t">Export</h3><p data-i18n="feature.c3d">Markdown & Notion.</p></article>
+            <article class="card"><h3 data-i18n="feature.c4t">Security</h3><p data-i18n="feature.c4d">Local-first keys.</p></article>
+            <article class="card"><h3 data-i18n="feature.c5t">Pipeline</h3><p data-i18n="feature.c5d">Reliable iteration.</p></article>
+            <article class="card"><h3 data-i18n="feature.c6t">Interface</h3><p data-i18n="feature.c6d">Aligned with X.</p></article>
           </div>
         </div>
       </section>
@@ -182,300 +103,82 @@
         <div class="section-inner">
           <div class="section-head">
             <h2 data-i18n="workflow.title">4-step workflow</h2>
-            <p data-i18n="workflow.desc">A repeatable loop from capture to delivery.</p>
+            <p data-i18n="workflow.desc">Repeated research loop.</p>
           </div>
           <div class="steps">
-            <article class="step">
-              <code data-i18n="workflow.s1">Capture</code>
-              <p data-i18n="workflow.d1">Ingest tweet content, author, metrics, and media from bookmarks.</p>
+            <article class="step"><div class="step-node">1</div><div class="step-content"><h3 data-i18n="workflow.s1">Capture</h3><p data-i18n="workflow.d1">Ingest content.</p></div></article>
+            <article class="step"><div class="step-node">2</div><div class="step-content"><h3 data-i18n="workflow.s2">Structure</h3><p data-i18n="workflow.d2">AI tagging.</p></div></article>
+            <article class="step"><div class="step-node">3</div><div class="step-content"><h3 data-i18n="workflow.s3">Operate</h3><p data-i18n="workflow.d3">Review in bulk.</p></div></article>
+            <article class="step"><div class="step-node">4</div><div class="step-content"><h3 data-i18n="workflow.s4">Ship</h3><p data-i18n="workflow.d4">Export notes.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="2" data-component="role-switch">
+        <div class="section-inner">
+          <div class="section-head"><h2 data-i18n="scenes.title">Workflow Lanes</h2><p data-i18n="scenes.desc">Switch roles.</p></div>
+          <div class="role-tabs">
+            <button class="role-tab" data-role-tab="researcher" aria-selected="true" data-i18n="scenes.r1t">Researcher</button>
+            <button class="role-tab" data-role-tab="creator" data-i18n="scenes.r2t">Creator</button>
+            <button class="role-tab" data-role-tab="pm" data-i18n="scenes.r3t">Product Team</button>
+          </div>
+          <div class="role-panels">
+            <article class="role-panel active" data-role-panel="researcher">
+              <h3 data-i18n="scenes.r1h">Researcher</h3><p data-i18n="scenes.r1d">Capture daily.</p>
+              <a class="btn btn-ghost" href="./guides/search-twitter-bookmarks-ai.html" data-i18n="scenes.link">Open Guide</a>
             </article>
-            <article class="step">
-              <code data-i18n="workflow.s2">Structure</code>
-              <p data-i18n="workflow.d2">Generate summaries, categories, and reusable tags with AI.</p>
+            <article class="role-panel" data-role-panel="creator">
+              <h3 data-i18n="scenes.r2h">Creator</h3><p data-i18n="scenes.r2d">Backlog posts.</p>
+              <a class="btn btn-ghost" href="./guides/x-bookmarks-to-obsidian.html" data-i18n="scenes.link">Open Guide</a>
             </article>
-            <article class="step">
-              <code data-i18n="workflow.s3">Operate</code>
-              <p data-i18n="workflow.d3">Filter, review, and retry in bulk with date and tag controls.</p>
-            </article>
-            <article class="step">
-              <code data-i18n="workflow.s4">Ship</code>
-              <p data-i18n="workflow.d4">Export to Markdown, Notion, Obsidian, and archive formats.</p>
+            <article class="role-panel" data-role-panel="pm">
+              <h3 data-i18n="scenes.r3h">Product Team</h3><p data-i18n="scenes.r3d">Notion sync.</p>
+              <a class="btn btn-ghost" href="./guides/x-bookmarks-to-notion.html" data-i18n="scenes.link">Open Guide</a>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section reveal" data-reveal-delay="2" data-animate="pop">
+      <section class="section reveal" id="seo-guides">
         <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="scenes.title">Choose your workflow lane</h2>
-            <p data-i18n="scenes.desc">Switch by role to see the fastest value path.</p>
+          <div class="section-head"><h2 data-i18n="guides.title">Use-case Guides</h2><p data-i18n="guides.desc">Practical tutorials.</p></div>
+          <div class="guides">
+            <a class="guide" href="./guides/x-bookmarks-to-obsidian.html"><h3 data-i18n="guides.g1t">Obsidian</h3><p data-i18n="guides.g1d">Markdown export.</p><span data-i18n="guides.read">Read Guide</span></a>
+            <a class="guide" href="./guides/x-bookmarks-to-notion.html"><h3 data-i18n="guides.g2t">Notion</h3><p data-i18n="guides.g2d">Sync database.</p><span data-i18n="guides.read">Read Guide</span></a>
+            <a class="guide" href="./guides/search-twitter-bookmarks-ai.html"><h3 data-i18n="guides.g3t">AI Search</h3><p data-i18n="guides.g3d">Find signals.</p><span data-i18n="guides.read">Read Guide</span></a>
           </div>
-          <div class="role-switch" data-component="role-switch">
-            <div class="role-tabs" role="tablist" aria-label="Role switch">
-              <button class="role-tab" role="tab" type="button" aria-selected="true" data-role-tab="researcher" data-i18n="scenes.r1t">Researcher</button>
-              <button class="role-tab" role="tab" type="button" aria-selected="false" data-role-tab="creator" data-i18n="scenes.r2t">Creator</button>
-              <button class="role-tab" role="tab" type="button" aria-selected="false" data-role-tab="pm" data-i18n="scenes.r3t">Product Team</button>
-            </div>
-            <div class="role-panels">
-              <article class="role-panel active" data-role-panel="researcher">
-                <h3 data-i18n="scenes.r1h">Research capture and weekly signal reviews</h3>
-                <p data-i18n="scenes.r1d">Capture bookmarks daily, enrich metadata in batch, and export decision-ready notes every week.</p>
-                <a class="role-link" href="./guides/search-twitter-bookmarks-ai.html" data-i18n="scenes.link">Open workflow guide</a>
-              </article>
-              <article class="role-panel" data-role-panel="creator">
-                <h3 data-i18n="scenes.r2h">Content backlog from saved posts</h3>
-                <p data-i18n="scenes.r2d">Turn scattered bookmarks into reusable topic clusters for writing, clips, and thread planning.</p>
-                <a class="role-link" href="./guides/x-bookmarks-to-obsidian.html" data-i18n="scenes.link">Open workflow guide</a>
-              </article>
-              <article class="role-panel" data-role-panel="pm">
-                <h3 data-i18n="scenes.r3h">Team-ready intel with Notion sync</h3>
-                <p data-i18n="scenes.r3d">Normalize taxonomy, sync summary fields, and keep a shared product intelligence board updated.</p>
-                <a class="role-link" href="./guides/x-bookmarks-to-notion.html" data-i18n="scenes.link">Open workflow guide</a>
-              </article>
-            </div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="2">
+        <div class="section-inner">
+          <div class="section-head"><h2 data-i18n="faq.title">FAQ</h2><p data-i18n="faq.desc">Practical answers.</p></div>
+          <div class="faq-list">
+            <article class="faq-item" data-open="true">
+              <button class="faq-toggle" type="button" aria-expanded="true"><span data-i18n="faq.q1">Domain support?</span><span class="faq-icon">+</span></button>
+              <div class="faq-panel"><p data-i18n="faq.a1">Supports x.com & twitter.com.</p></div>
+            </article>
+            <article class="faq-item" data-open="false">
+              <button class="faq-toggle" type="button" aria-expanded="false"><span data-i18n="faq.q2">Privacy?</span><span class="faq-icon">+</span></button>
+              <div class="faq-panel"><p data-i18n="faq.a2">Keys are local-first.</p></div>
+            </article>
           </div>
         </div>
       </section>
 
       <section class="section reveal">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="compare.title">Why not just use native bookmarks?</h2>
-            <p data-i18n="compare.desc">X native bookmarks are storage; X-knowledge adds retrieval and operations.</p>
-          </div>
-          <table class="compare">
-            <thead>
-              <tr>
-                <th data-i18n="compare.h1">Capability</th>
-                <th data-i18n="compare.h2">Native X Bookmarks</th>
-                <th data-i18n="compare.h3">X-knowledge</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td data-i18n="compare.r1c1">Semantic search</td>
-                <td data-i18n="compare.r1c2">Basic text scan only</td>
-                <td data-i18n="compare.r1c3">AI tags + summary + filters</td>
-              </tr>
-              <tr>
-                <td data-i18n="compare.r2c1">Batch operations</td>
-                <td data-i18n="compare.r2c2">No queue controls</td>
-                <td data-i18n="compare.r2c3">Pause / resume / retry failed</td>
-              </tr>
-              <tr>
-                <td data-i18n="compare.r3c1">Portability</td>
-                <td data-i18n="compare.r3c2">Locked in platform</td>
-                <td data-i18n="compare.r3c3">Markdown / Notion / Obsidian / ZIP</td>
-              </tr>
-              <tr>
-                <td data-i18n="compare.r4c1">Data policy</td>
-                <td data-i18n="compare.r4c2">Platform-bound</td>
-                <td data-i18n="compare.r4c3">Local-first by default</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="3" id="seo-guides">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="guides.title">Use-case Guides</h2>
-            <p data-i18n="guides.desc">Practical pages for high-intent search scenarios.</p>
-          </div>
-          <div class="guides">
-            <a class="guide" href="./guides/x-bookmarks-to-obsidian.html">
-              <h3 data-i18n="guides.g1t">Export to Obsidian</h3>
-              <p data-i18n="guides.g1d">Convert saved tweets into structured markdown notes.</p>
-              <span data-i18n="guides.read">Read Guide</span>
-            </a>
-            <a class="guide" href="./guides/x-bookmarks-to-notion.html">
-              <h3 data-i18n="guides.g2t">Sync to Notion</h3>
-              <p data-i18n="guides.g2d">Map database fields and push AI summaries at scale.</p>
-              <span data-i18n="guides.read">Read Guide</span>
-            </a>
-            <a class="guide" href="./guides/search-twitter-bookmarks-ai.html">
-              <h3 data-i18n="guides.g3t">Search with AI</h3>
-              <p data-i18n="guides.g3d">Move beyond native scroll with a searchable layer.</p>
-              <span data-i18n="guides.read">Read Guide</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="1">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="testimonials.title">What builders use it for</h2>
-            <p data-i18n="testimonials.desc">Validated use-cases collected from creator workflows and product research routines.</p>
-          </div>
-          <div class="testimonials">
-            <article class="quote">
-              <p data-i18n="testimonials.q1">“I stopped losing references in bookmark scroll. Weekly research export takes 5 minutes now.”</p>
-              <span data-i18n="testimonials.a1">Product manager · AI tooling</span>
-            </article>
-            <article class="quote">
-              <p data-i18n="testimonials.q2">“Tags and summaries make trend digging way faster than native X.”</p>
-              <span data-i18n="testimonials.a2">Indie creator · Growth</span>
-            </article>
-            <article class="quote">
-              <p data-i18n="testimonials.q3">“Notion sync gave our team a shared signal board from personal bookmarks.”</p>
-              <span data-i18n="testimonials.a3">Startup operator · Research ops</span>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="2">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="activation.title">Activation in under 10 minutes</h2>
-            <p data-i18n="activation.desc">Compress onboarding to first value: capture, classify, and export.</p>
-          </div>
-          <div class="checklist">
-            <div class="check"><b data-i18n="activation.c1t">1) Load extension in Chrome</b><p data-i18n="activation.c1d">Enable developer mode and load unpacked in one step.</p></div>
-            <div class="check"><b data-i18n="activation.c2t">2) Open X bookmarks to ingest</b><p data-i18n="activation.c2d">Start capture immediately from your existing bookmark list.</p></div>
-            <div class="check"><b data-i18n="activation.c3t">3) Run AI batch and export</b><p data-i18n="activation.c3d">Generate metadata and ship to your note stack.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="1">
         <div class="section-inner referral">
-          <div>
-            <h2 data-i18n="referral.title">Share with your team and keep taxonomy aligned</h2>
-            <p data-i18n="referral.desc">Copy this page link with your language setting and onboard collaborators fast.</p>
-          </div>
-          <button class="btn btn-ghost" id="shareLinkBtn" type="button" data-i18n="referral.copy">Copy Page Link</button>
-        </div>
-      </section>
-
-      <section class="section reveal" data-reveal-delay="2">
-        <div class="section-inner">
-          <div class="section-head">
-            <h2 data-i18n="faq.title">FAQ</h2>
-            <p data-i18n="faq.desc">Practical answers before installation.</p>
-          </div>
-          <div class="faq-list">
-            <article class="faq-item" data-open="true">
-              <button class="faq-toggle" type="button" data-i18n="faq.q1" aria-expanded="true">Does this work on x.com and twitter.com?</button>
-              <div class="faq-panel"><p data-i18n="faq.a1">Yes. The extension supports both domains.</p></div>
-            </article>
-            <article class="faq-item" data-open="false">
-              <button class="faq-toggle" type="button" data-i18n="faq.q2" aria-expanded="false">Will my API key be uploaded by default?</button>
-              <div class="faq-panel"><p data-i18n="faq.a2">No. Keys are local-first by default, and sync is opt-in.</p></div>
-            </article>
-            <article class="faq-item" data-open="false">
-              <button class="faq-toggle" type="button" data-i18n="faq.q3" aria-expanded="false">Can I migrate existing bookmarks?</button>
-              <div class="faq-panel"><p data-i18n="faq.a3">Yes. Existing bookmarks can be ingested directly from your X bookmark timeline.</p></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section reveal cta" data-reveal-delay="3">
-        <div class="section-inner">
-          <h2 data-i18n="cta.title">Move from bookmark chaos to reusable knowledge flow.</h2>
-          <p data-i18n="cta.desc">Built for creators, researchers, and product teams running intelligence loops on X.</p>
-          <div class="actions" style="justify-content:center;">
-            <a
-              class="btn btn-primary"
-              data-utm="cta_install"
-              href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension"
-              target="_blank"
-              rel="noreferrer"
-              data-i18n="cta.install"
-            >Install Extension</a>
-            <a
-              class="btn btn-ghost"
-              data-utm="cta_star"
-              href="https://github.com/LaplaceYoung/Xknowledge"
-              target="_blank"
-              rel="noreferrer"
-              data-i18n="cta.star"
-            >Star + Follow Updates</a>
-          </div>
+          <div><h2 data-i18n="referral.title">Share</h2><p data-i18n="referral.desc">Team sync.</p></div>
+          <button class="btn btn-ghost" id="shareLinkBtn" data-i18n="referral.copy">Copy Link</button>
         </div>
       </section>
 
       <footer class="footer reveal">
-        <p data-i18n="footer.copy">Built by LaplaceYoung. Open source, iteration-driven, launch-ready.</p>
-        <p>
-          <a data-i18n="footer.github" data-utm="footer_github" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer">GitHub</a>
-          ·
-          <a data-i18n="footer.docs" data-utm="footer_docs" href="https://github.com/LaplaceYoung/Xknowledge#readme" target="_blank" rel="noreferrer">Docs</a>
-        </p>
+        <p data-i18n="footer.copy">Built by LaplaceYoung.</p>
+        <p><a href="https://github.com/LaplaceYoung/Xknowledge" data-i18n="footer.github">GitHub</a> · <a href="https://github.com/LaplaceYoung/Xknowledge#readme" data-i18n="footer.docs">Docs</a></p>
       </footer>
     </main>
 
-    <div class="sticky-cta">
-      <a
-        class="btn btn-primary"
-        data-utm="sticky_install"
-        href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension"
-        target="_blank"
-        rel="noreferrer"
-        data-i18n="cta.install"
-      >Install Extension</a>
-      <a
-        class="btn btn-ghost"
-        data-utm="sticky_star"
-        href="https://github.com/LaplaceYoung/Xknowledge"
-        target="_blank"
-        rel="noreferrer"
-        data-i18n="cta.star"
-      >Star + Follow Updates</a>
-    </div>
-
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "X-knowledge",
-        "applicationCategory": "BrowserApplication",
-        "operatingSystem": "Chrome",
-        "url": "https://laplaceyoung.github.io/Xknowledge/",
-        "description": "A local-first AI extension that turns X bookmarks into searchable knowledge and exports to Markdown, Notion, Obsidian, and ZIP.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      }
-    </script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does this work on x.com and twitter.com?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. The extension supports both domains."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Will my API key be uploaded by default?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Keys are local-first by default, and sync is opt-in."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I migrate existing bookmarks?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Existing bookmarks can be ingested directly from your X bookmark timeline."
-            }
-          }
-        ]
-      }
-    </script>
     <script src="./assets/js/theme.js"></script>
     <script src="./assets/js/i18n.js"></script>
     <script src="./assets/js/app.js"></script>
