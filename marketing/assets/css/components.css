@@ -430,6 +430,61 @@
   flex: 1 1 0;
 }
 
+.role-switch {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.role-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.role-tab {
+  flex: 1 1 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.role-tab[aria-selected="true"] {
+  color: var(--text);
+  background: color-mix(in srgb, var(--x-blue) 14%, transparent);
+}
+
+.role-panels {
+  padding: 14px;
+}
+
+.role-panel {
+  display: none;
+}
+
+.role-panel.active {
+  display: block;
+}
+
+.role-panel h3 {
+  margin-bottom: 8px;
+}
+
+.role-panel p {
+  margin-bottom: 10px;
+}
+
+.role-link {
+  color: var(--x-blue);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
 .article-top {
   margin-bottom: 12px;
   display: flex;
@@ -477,6 +532,73 @@
   margin: 6px 0;
 }
 
+.article-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: 74px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 12px;
+}
+
+.toc h3 {
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+}
+
+.toc nav {
+  display: grid;
+  gap: 6px;
+}
+
+.toc a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.toc a.active {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.summary-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg-soft);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-card b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.summary-card p {
+  font-size: 0.92rem;
+}
+
+.guide-progress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 0%;
+  background: linear-gradient(180deg, #1d9bf0, #27c2ff);
+  z-index: 20;
+}
+
 @media (hover: hover) {
   .card:hover,
   .guide:hover,
@@ -510,6 +632,14 @@
 
   .strip {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .article-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .toc {
+    position: static;
   }
 }
 

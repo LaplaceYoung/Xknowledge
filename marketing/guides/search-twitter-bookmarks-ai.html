@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../assets/css/motion.css" />
   </head>
   <body data-page="guide_search">
+    <div class="guide-progress" id="guideProgress"></div>
     <header class="topbar">
       <div class="topbar-inner">
         <a class="brand" href="../index.html"><span class="brand-mark">X</span><span>X-knowledge</span></a>
@@ -51,55 +52,76 @@
         </div>
       </article>
 
-      <section class="article-section reveal">
-        <h2 data-i18n="s1.title">Step 1: Build baseline indexing</h2>
-        <ol>
-          <li data-i18n="s1.li1">Ingest bookmarks and verify raw records.</li>
-          <li data-i18n="s1.li2">Create initial tags by author, date, and topic.</li>
-          <li data-i18n="s1.li3">Clean duplicated or low-signal items.</li>
-        </ol>
-      </section>
+      <div class="article-layout">
+        <aside class="toc reveal" data-component="guide-toc">
+          <h3 data-i18n="toc.title">Quick Nav</h3>
+          <nav>
+            <a href="#sec-summary" data-section-id="sec-summary" data-i18n="toc.summary">TL;DR</a>
+            <a href="#sec-step1" data-section-id="sec-step1" data-i18n="toc.s1">Step 1</a>
+            <a href="#sec-step2" data-section-id="sec-step2" data-i18n="toc.s2">Step 2</a>
+            <a href="#sec-step3" data-section-id="sec-step3" data-i18n="toc.s3">Step 3</a>
+            <a href="#sec-faq" data-section-id="sec-faq" data-i18n="toc.faq">FAQ</a>
+          </nav>
+        </aside>
+        <div>
+          <section class="article-section reveal" id="sec-summary">
+            <div class="summary-card">
+              <b data-i18n="summary.title">TL;DR</b>
+              <p data-i18n="summary.body">Build a reliable index first, then add AI tagging and fixed filter sets so retrieval quality remains stable as bookmarks grow.</p>
+            </div>
+          </section>
 
-      <section class="article-section reveal">
-        <h2 data-i18n="s2.title">Step 2: Add AI retrieval layer</h2>
-        <ol>
-          <li data-i18n="s2.li1">Generate summaries and semantic tags in batch.</li>
-          <li data-i18n="s2.li2">Keep failed queues visible and retry.</li>
-          <li data-i18n="s2.li3">Promote high-frequency tags into quick filters.</li>
-        </ol>
-      </section>
+          <section class="article-section reveal" id="sec-step1">
+            <h2 data-i18n="s1.title">Step 1: Build baseline indexing</h2>
+            <ol>
+              <li data-i18n="s1.li1">Ingest bookmarks and verify raw records.</li>
+              <li data-i18n="s1.li2">Create initial tags by author, date, and topic.</li>
+              <li data-i18n="s1.li3">Clean duplicated or low-signal items.</li>
+            </ol>
+          </section>
 
-      <section class="article-section reveal">
-        <h2 data-i18n="s3.title">Step 3: Close the search-export loop</h2>
-        <ol>
-          <li data-i18n="s3.li1">Predefine filter sets for recurring queries.</li>
-          <li data-i18n="s3.li2">Archive to Markdown/Notion on schedule.</li>
-          <li data-i18n="s3.li3">Refine vocabulary and merge overlapping tags.</li>
-        </ol>
-      </section>
+          <section class="article-section reveal" id="sec-step2">
+            <h2 data-i18n="s2.title">Step 2: Add AI retrieval layer</h2>
+            <ol>
+              <li data-i18n="s2.li1">Generate summaries and semantic tags in batch.</li>
+              <li data-i18n="s2.li2">Keep failed queues visible and retry.</li>
+              <li data-i18n="s2.li3">Promote high-frequency tags into quick filters.</li>
+            </ol>
+          </section>
 
-      <section class="article-section reveal">
-        <h2 data-i18n="faq.title">FAQ</h2>
-        <ul>
-          <li><strong data-i18n="faq.q1">What scale does it support?</strong> <span data-i18n="faq.a1">Hundreds to thousands of bookmarks, with periodic maintenance.</span></li>
-          <li><strong data-i18n="faq.q2">How to improve search precision?</strong> <span data-i18n="faq.a2">Use consistent tag naming and regular semantic cleanup.</span></li>
-        </ul>
-      </section>
+          <section class="article-section reveal" id="sec-step3">
+            <h2 data-i18n="s3.title">Step 3: Close the search-export loop</h2>
+            <ol>
+              <li data-i18n="s3.li1">Predefine filter sets for recurring queries.</li>
+              <li data-i18n="s3.li2">Archive to Markdown/Notion on schedule.</li>
+              <li data-i18n="s3.li3">Refine vocabulary and merge overlapping tags.</li>
+            </ol>
+          </section>
 
-      <section class="article-section reveal">
-        <h2 data-i18n="related.title">Related guides</h2>
-        <div class="guides" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-          <a class="guide" href="./x-bookmarks-to-obsidian.html"><h3 data-i18n="related.r1">Export to Obsidian</h3><span>→</span></a>
-          <a class="guide" href="./x-bookmarks-to-notion.html"><h3 data-i18n="related.r2">Sync to Notion</h3><span>→</span></a>
+          <section class="article-section reveal" id="sec-faq">
+            <h2 data-i18n="faq.title">FAQ</h2>
+            <ul>
+              <li><strong data-i18n="faq.q1">What scale does it support?</strong> <span data-i18n="faq.a1">Hundreds to thousands of bookmarks, with periodic maintenance.</span></li>
+              <li><strong data-i18n="faq.q2">How to improve search precision?</strong> <span data-i18n="faq.a2">Use consistent tag naming and regular semantic cleanup.</span></li>
+            </ul>
+          </section>
+
+          <section class="article-section reveal">
+            <h2 data-i18n="related.title">Related guides</h2>
+            <div class="guides" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+              <a class="guide" href="./x-bookmarks-to-obsidian.html"><h3 data-i18n="related.r1">Export to Obsidian</h3><span>→</span></a>
+              <a class="guide" href="./x-bookmarks-to-notion.html"><h3 data-i18n="related.r2">Sync to Notion</h3><span>→</span></a>
+            </div>
+          </section>
+
+          <section class="article-section reveal cta">
+            <div class="actions" style="justify-content:center;">
+              <a class="btn btn-primary" data-utm="search_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer" data-i18n="cta.install">Install Extension</a>
+              <a class="btn btn-ghost" data-utm="search_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer" data-i18n="cta.repo">View Source</a>
+            </div>
+          </section>
         </div>
-      </section>
-
-      <section class="article-section reveal cta">
-        <div class="actions" style="justify-content:center;">
-          <a class="btn btn-primary" data-utm="search_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer" data-i18n="cta.install">Install Extension</a>
-          <a class="btn btn-ghost" data-utm="search_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer" data-i18n="cta.repo">View Source</a>
-        </div>
-      </section>
+      </div>
     </main>
 
     <script src="../assets/js/theme.js"></script>

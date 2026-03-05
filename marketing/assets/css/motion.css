@@ -9,6 +9,14 @@
   transform: translateY(0);
 }
 
+.reveal[data-animate="pop"] {
+  transform: translateY(10px) scale(0.985);
+}
+
+.reveal[data-animate="pop"].in-view {
+  transform: translateY(0) scale(1);
+}
+
 .reveal[data-reveal-delay="1"] {
   transition-delay: 60ms;
 }

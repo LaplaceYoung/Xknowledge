@@ -80,6 +80,65 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   };
 
+  const initRoleSwitcher = () => {
+    const root = document.querySelector('[data-component="role-switch"]');
+    if (!root) return;
+    const tabs = root.querySelectorAll('[data-role-tab]');
+    const panels = root.querySelectorAll('[data-role-panel]');
+    const activate = (role) => {
+      tabs.forEach((tab) => {
+        tab.setAttribute('aria-selected', tab.getAttribute('data-role-tab') === role ? 'true' : 'false');
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle('active', panel.getAttribute('data-role-panel') === role);
+      });
+    };
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => activate(tab.getAttribute('data-role-tab')));
+    });
+  };
+
+  const initGuideTOC = () => {
+    const toc = document.querySelector('[data-component="guide-toc"]');
+    if (!toc) return;
+    const links = Array.from(toc.querySelectorAll('a[data-section-id]'));
+    const sections = links
+      .map((link) => document.getElementById(link.getAttribute('data-section-id') || ''))
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    const markActive = (id) => {
+      links.forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('data-section-id') === id);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const seen = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!seen || !seen.target || !seen.target.id) return;
+        markActive(seen.target.id);
+      },
+      { rootMargin: '-10% 0px -70% 0px', threshold: [0.2, 0.4, 0.7] }
+    );
+    sections.forEach((section) => observer.observe(section));
+    markActive(sections[0].id);
+  };
+
+  const initGuideProgress = () => {
+    const bar = document.getElementById('guideProgress');
+    if (!bar) return;
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      bar.style.height = `${Math.min(100, Math.max(0, pct)).toFixed(2)}%`;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  };
+
   const initCounters = () => {
     document.querySelectorAll('[data-counter]').forEach((node) => {
       const target = Number(node.getAttribute('data-counter') || 0);
@@ -171,6 +230,9 @@
     initReveal();
     initScrollProgress();
     initHeroParallax();
+    initRoleSwitcher();
+    initGuideTOC();
+    initGuideProgress();
     initCounters();
     initRepoMeta();
     initFaq();
