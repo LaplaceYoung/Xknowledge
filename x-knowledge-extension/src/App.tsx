@@ -6,7 +6,7 @@ import { pushToNotion } from './utils/notionExport'
 import { exportToZip } from './utils/zipExport'
 import { CustomDatePicker } from './components/CustomDatePicker'
 import { db } from './utils/db'
-import { loadSettings } from './utils/settingsStorage'
+import { loadSettings, updateSettings } from './utils/settingsStorage'
 
 import { Onboarding } from './components/Onboarding'
 import { useToast } from './contexts/ToastContext'
@@ -25,6 +25,8 @@ const MAX_RECENT_SEARCHES = 6;
 
 function App() {
   const { showToast } = useToast();
+  const [uiLanguage, setUiLanguage] = useState<'zh' | 'en'>('zh');
+  const isZh = uiLanguage === 'zh';
 
   const [isApiKeyConfigured, setIsApiKeyConfigured] = useState<boolean | null>(null);
   const [notionToken, setNotionToken] = useState<string | null>(null);
@@ -84,6 +86,7 @@ function App() {
         setIsApiKeyConfigured(!!settings.siliconFlowApiKey);
         setNotionToken(settings.notionToken || null);
         setNotionDbId(settings.notionDatabaseId || null);
+        setUiLanguage(settings.displayLanguage || 'zh');
       } catch (err) {
         console.error('[X-knowledge] Failed to initialize settings:', err);
         if (!isCancelled) setIsApiKeyConfigured(false);
@@ -120,7 +123,7 @@ function App() {
   useEffect(() => {
     refreshBookmarks();
 
-    // 鐩戝惉鍚庡彴鑴氭湰鐨勬暟鎹洿鏂伴€氱煡
+    // Listen for background update notifications.
     const onMessage = (message: RuntimeMessage) => {
       if (message.type === 'BOOKMARKS_UPDATED') {
         console.log(`[X-knowledge] Side panel received update notification (${message.count} new).`);
@@ -228,6 +231,18 @@ function App() {
     setShowClearConfirm(true);
   }
 
+  const handleToggleLanguage = async () => {
+    const next = isZh ? 'en' : 'zh';
+    setUiLanguage(next);
+    try {
+      await updateSettings({ displayLanguage: next });
+      showToast(next === 'zh' ? '已切换为中文' : 'Switched to English', 'success');
+    } catch (err) {
+      console.error('Failed to update display language', err);
+      showToast(next === 'zh' ? '语言切换失败' : 'Failed to switch language', 'error');
+    }
+  };
+
   const confirmClear = async () => {
     try {
       await db.tweets.clear();
@@ -235,10 +250,10 @@ function App() {
         chrome.storage.local.remove(['parsedBookmarks', 'rawBookmarks']); // Cleanup legacy
       }
       setShowClearConfirm(false);
-      showToast('鎵€鏈夋暟鎹凡娓呯┖', 'success');
+      showToast(isZh ? '所有数据已清空' : 'All data cleared', 'success');
     } catch (err) {
       console.error('Failed to clear database', err);
-      showToast('娓呯┖鏁版嵁澶辫触', 'error');
+      showToast(isZh ? '清空数据失败' : 'Failed to clear data', 'error');
     }
   }
 
@@ -252,7 +267,7 @@ function App() {
       await exportToZip(filteredBookmarks);
     } catch (err) {
       console.error('Failed to export ZIP', err);
-      showToast('瀵煎嚭 ZIP 澶辫触锛岃妫€鏌ョ綉缁滆繛鎺ワ紒', 'error');
+      showToast(isZh ? '导出 ZIP 失败，请检查网络连接' : 'Failed to export ZIP. Please check your network.', 'error');
     }
   };
 
@@ -287,13 +302,13 @@ function App() {
         if (Array.isArray(data)) {
           // Import into Dexie
           await db.tweets.bulkPut(data);
-          showToast(`鎴愬姛瀵煎叆 ${data.length} 鏉′功绛撅紒`, 'success');
+          showToast(isZh ? `成功导入 ${data.length} 条书签` : `Imported ${data.length} bookmarks`, 'success');
         } else {
           showToast('Invalid JSON format', 'error');
         }
       } catch (err) {
         console.error('Failed to parse or import JSON', err);
-        showToast('瀵煎叆澶辫触锛岃妫€鏌ユ枃浠舵牸寮忥紒', 'error');
+        showToast(isZh ? '导入失败，请检查文件格式' : 'Import failed, please check file format', 'error');
       }
       // Reset input
       if (fileInputRef.current) {
@@ -339,7 +354,7 @@ function App() {
       }
     } catch (err) {
       console.error('Failed to update tags', err);
-      showToast('鏇存柊鏍囩澶辫触', 'error');
+      showToast(isZh ? '更新标签失败' : 'Failed to update tags', 'error');
     }
   };
 
@@ -412,13 +427,41 @@ function App() {
     setSelectedIds(new Set());
   };
 
+  const handleExportSelectedJSON = () => {
+    if (selectedIds.size === 0) return;
+    const selectedTweets = bookmarks.filter((b) => selectedIds.has(b.id));
+    const jsonStr = JSON.stringify(selectedTweets, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `x-knowledge-selected-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(isZh ? '已导出选中项 JSON' : 'Selected JSON exported', 'success');
+  };
+
+  const handleExportSelectedZip = async () => {
+    if (selectedIds.size === 0) return;
+    const selectedTweets = bookmarks.filter((b) => selectedIds.has(b.id));
+    try {
+      await exportToZip(selectedTweets);
+      showToast(isZh ? '已导出选中项 ZIP' : 'Selected ZIP exported', 'success');
+    } catch (err) {
+      console.error('Failed to export selected ZIP', err);
+      showToast(isZh ? '导出选中项 ZIP 失败' : 'Failed to export selected ZIP', 'error');
+    }
+  };
+
   const handleGenerateImage = async (tweet: ParsedTweet) => {
     const cardEl = document.getElementById(`tweet-card-${tweet.id}`);
     if (!cardEl) return;
 
     try {
       setIsGeneratingImage(tweet.id);
-      showToast('姝ｅ湪鐢熸垚鏃犵櫧杈圭殑楂樻竻鍒嗕韩鍥?..', 'info');
+      showToast(isZh ? '正在生成高清分享图...' : 'Generating share image...', 'info');
 
       // Slight delay to ensure UI updates are flushed
       await new Promise(r => setTimeout(r, 100));
@@ -427,7 +470,7 @@ function App() {
         html2canvas?: (element: HTMLElement, options?: Record<string, unknown>) => Promise<HTMLCanvasElement>;
       }).html2canvas;
       if (!html2canvas) {
-        showToast('娓叉煋寮曟搸灏氭湭鍔犺浇锛岃鍒锋柊椤甸潰', 'error');
+        showToast(isZh ? '截图引擎尚未加载，请刷新页面' : 'Image engine not loaded, please refresh.', 'error');
         setIsGeneratingImage(null);
         return;
       }
@@ -448,10 +491,10 @@ function App() {
       a.download = `X-knowledge-${dateStr}-${safeAuthorName}.png`;
       a.click();
 
-      showToast('鍒嗕韩鍥惧凡鐢熸垚骞朵笅杞斤紒', 'success');
+      showToast(isZh ? '分享图已生成并下载' : 'Share image generated and downloaded', 'success');
     } catch (err) {
       console.error('Failed to generate image:', err);
-      showToast('鐢熸垚鍥剧墖澶辫触', 'error');
+      showToast(isZh ? '生成图片失败' : 'Failed to generate image', 'error');
     } finally {
       setIsGeneratingImage(null);
     }
@@ -459,7 +502,7 @@ function App() {
 
   const handlePushToNotion = async (tweet: ParsedTweet) => {
     if (!notionToken || !notionDbId) {
-      showToast('璇峰厛鍦ㄨ缃〉閰嶇疆 Notion Token 鍜?Database ID', 'warning');
+      showToast(isZh ? '请先在设置页配置 Notion Token 和 Database ID' : 'Configure Notion Token and Database ID first', 'warning');
       return;
     }
 
@@ -676,16 +719,23 @@ function App() {
         <Onboarding onComplete={() => setIsApiKeyConfigured(true)} />
       ) : (
         <div className="w-full h-screen bg-x-bg flex flex-col overflow-hidden">
-          {/* Header - X 椋庢牸椤舵爮 */}
+          {/* Header */}
           <div className="px-4 py-3 border-b border-x-border flex flex-col bg-x-bg/80 backdrop-blur-sm sticky top-0 z-10 w-full relative">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-x-primary" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-                <h1 className="text-base font-bold text-x-text">Knowledge</h1>
+                <h1 className="text-base font-bold text-x-text">{isZh ? '知识库' : 'Knowledge'}</h1>
               </div>
               <div className="flex items-center gap-3">
+                <button
+                  onClick={handleToggleLanguage}
+                  className="text-xs px-2 py-1 rounded-full border border-x-border text-x-textMuted hover:text-x-text hover:bg-x-bgHover"
+                  title={isZh ? '切换为英文' : 'Switch to Chinese'}
+                >
+                  {isZh ? 'EN' : '中文'}
+                </button>
                 <a
                   href="https://github.com/LaplaceYoung/Xknowledge"
                   target="_blank"
@@ -700,26 +750,26 @@ function App() {
                 <span className="text-xs text-x-textMuted font-medium">{bookmarks.length}</span>
                 {isBatchAnalyzing && (
                   <span className={`text-[11px] font-semibold ${isBatchPaused ? 'text-amber-500' : 'text-x-primary'}`}>
-                    {isBatchPaused ? 'Batch Paused' : `Batch ${batchProgress.current}/${batchProgress.total}`}
+                    {isBatchPaused ? (isZh ? '批处理已暂停' : 'Batch Paused') : `${isZh ? '批处理' : 'Batch'} ${batchProgress.current}/${batchProgress.total}`}
                   </span>
                 )}
                 {!isBatchAnalyzing && batchFailedIds.length > 0 && (
                   <span className="text-[11px] font-semibold text-amber-500">
-                    Failed {batchFailedIds.length}
+                    {isZh ? '失败' : 'Failed'} {batchFailedIds.length}
                   </span>
                 )}
                 <div className="relative">
                   <button
                     onClick={() => setShowTools(!showTools)}
                     className="p-2 text-x-textMuted hover:text-x-text hover:bg-x-primary/10 rounded-full transition-colors"
-                    title="鏇村鎿嶄綔"
+                    title={isZh ? '更多操作' : 'More actions'}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                     </svg>
                   </button>
 
-                  {/* X 椋庢牸涓嬫媺鑿滃崟 */}
+                  {/* Action Menu */}
                   {showTools && (
                     <>
                       <div className="fixed inset-0 z-20" onClick={() => setShowTools(false)} />
@@ -737,7 +787,7 @@ function App() {
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6h12v12H6z" />
                             </svg>
-                            Stop Batch
+                            {isZh ? '停止批处理' : 'Stop Batch'}
                           </button>
                         )}
                         {!isBatchAnalyzing && batchFailedIds.length > 0 && (
@@ -754,28 +804,28 @@ function App() {
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
-                          瀵煎嚭 Markdown
+                          {isZh ? '导出 Markdown' : 'Export Markdown'}
                         </button>
                         <button onClick={() => { handleExportZip(); setShowTools(false); }}
                           className="w-full px-4 py-3 text-[15px] font-bold text-x-text hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                           </svg>
-                          瀵煎嚭 ZIP锛堢绾匡級
+                          {isZh ? '导出 ZIP（离线）' : 'Export ZIP (Offline)'}
                         </button>
                         <button onClick={() => { handleExportJSON(); setShowTools(false); }}
                           className="w-full px-4 py-3 text-[15px] font-bold text-x-text hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                           </svg>
-                          瀵煎嚭 JSON
+                          {isZh ? '导出 JSON' : 'Export JSON'}
                         </button>
                         <button onClick={() => { fileInputRef.current?.click(); setShowTools(false); }}
                           className="w-full px-4 py-3 text-[15px] font-bold text-x-text hover:bg-x-bgHover transition-colors flex items-center gap-3 text-left">
                           <svg className="w-5 h-5 text-x-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
-                          瀵煎叆 JSON
+                          {isZh ? '导入 JSON' : 'Import JSON'}
                         </button>
                         <input type="file" ref={fileInputRef} onChange={handleImportJSON} accept=".json" className="hidden" />
                         <button onClick={() => { handleClear(); setShowTools(false); }}
@@ -783,7 +833,8 @@ function App() {
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
-                          娓呯┖鎵€鏈夋暟鎹?                        </button>
+                          {isZh ? '清空所有数据' : 'Clear All Data'}
+                        </button>
                       </div>
                     </>
                   )}
@@ -803,13 +854,13 @@ function App() {
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col bg-x-bg overflow-hidden">
-            {/* 鎼滅储鏍?- X 椋庢牸 */}
+            {/* Search */}
             <div className="px-4 py-2 border-b border-x-border">
               <div className="relative">
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="鎼滅储涔︾銆佷綔鑰呮垨鏍囩..."
+                  placeholder={isZh ? '搜索书签、作者或标签...' : 'Search bookmarks, author or tags...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => {
@@ -833,7 +884,7 @@ function App() {
                   <button
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-2.5 p-1 rounded-full text-x-textMuted hover:text-x-text hover:bg-x-primary/10 transition-colors"
-                    title="Clear search"
+                    title={isZh ? '清空搜索' : 'Clear search'}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -842,10 +893,10 @@ function App() {
                 )}
               </div>
               <div className="mt-2 text-xs text-x-textMuted">
-                Showing {filteredBookmarks.length} of {bookmarks.length}
-                {searchQuery.trim() ? ` for "${searchQuery.trim()}"` : ''}
-                {activeTagFilter ? ` tagged ${activeTagFilter}` : ''}
-                {(startDate || endDate) ? ' (date filtered)' : ''}
+                {isZh ? `显示 ${filteredBookmarks.length}/${bookmarks.length}` : `Showing ${filteredBookmarks.length} of ${bookmarks.length}`}
+                {searchQuery.trim() ? (isZh ? `，关键词“${searchQuery.trim()}”` : ` for "${searchQuery.trim()}"`) : ''}
+                {activeTagFilter ? (isZh ? `，标签 ${activeTagFilter}` : ` tagged ${activeTagFilter}`) : ''}
+                {(startDate || endDate) ? (isZh ? '（日期已筛选）' : ' (date filtered)') : ''}
                 {hasActiveFilters && (
                   <button
                     onClick={() => {
@@ -856,13 +907,13 @@ function App() {
                     }}
                     className="ml-2 text-x-primary hover:text-x-primaryHover font-semibold"
                   >
-                    Clear all filters
+                    {isZh ? '清空筛选' : 'Clear all filters'}
                   </button>
                 )}
               </div>
               {popularTags.length > 0 && (
                 <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
-                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">Top Tags</span>
+                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">{isZh ? '热门标签' : 'Top Tags'}</span>
                   {popularTags.map(([tag, count]) => {
                     const active = activeTagFilter.toLowerCase() === tag.toLowerCase();
                     return (
@@ -884,7 +935,7 @@ function App() {
               )}
               {recentSearches.length > 0 && (
                 <div className="mt-1.5 flex items-center gap-1.5 overflow-x-auto pb-1">
-                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">Recent</span>
+                  <span className="text-[11px] text-x-textMuted whitespace-nowrap">{isZh ? '最近搜索' : 'Recent'}</span>
                   {recentSearches.map((query) => (
                     <button
                       key={query}
@@ -901,15 +952,15 @@ function App() {
                   <button
                     onClick={() => persistRecentSearches([])}
                     className="text-[11px] px-2 py-1 rounded-full border border-x-border text-x-textMuted hover:text-[#F4212E] whitespace-nowrap transition-colors"
-                    title="Clear recent searches"
+                    title={isZh ? '清空最近搜索' : 'Clear recent searches'}
                   >
-                    Clear
+                    {isZh ? '清空' : 'Clear'}
                   </button>
                 </div>
               )}
             </div>
 
-            {/* 绛涢€夋爮 - X 椋庢牸鏍囩椤?*/}
+            {/* Filter Bar */}
             <div className="px-4 py-2 border-b border-x-border flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="relative">
@@ -971,7 +1022,7 @@ function App() {
                   <button
                     onClick={() => { setStartDate(''); setEndDate(''); }}
                     className="p-1 text-x-textMuted hover:text-[#F4212E] transition-colors rounded-full hover:bg-[#F4212E]/10"
-                    title="娓呴櫎鏃ユ湡"
+                    title={isZh ? '清空日期' : 'Clear dates'}
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -985,13 +1036,13 @@ function App() {
             <div className="flex-1 overflow-auto p-4 space-y-4">
               {loading ? (
                 <div className="flex justify-center items-center h-full text-x-textMuted">
-                  Loading...
+                  {isZh ? '加载中...' : 'Loading...'}
                 </div>
               ) : filteredBookmarks.length === 0 ? (
                 <div className="flex flex-col justify-center items-center h-full text-x-textMuted text-center">
-                  <p>No bookmarks found.</p>
+                  <p>{isZh ? '未找到书签' : 'No bookmarks found.'}</p>
                   {bookmarks.length === 0 && (
-                    <p className="text-sm mt-2">Open X (Twitter) bookmarks page to start capturing.</p>
+                    <p className="text-sm mt-2">{isZh ? '打开 X(Twitter) 书签页开始采集' : 'Open X (Twitter) bookmarks page to start capturing.'}</p>
                   )}
                 </div>
               ) : (
@@ -1058,21 +1109,24 @@ function App() {
       {showClearConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]" onClick={() => setShowClearConfirm(false)}>
           <div className="bg-x-bg w-80 rounded-2xl p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h2 className="text-xl font-bold text-x-text mb-2">娓呯┖鎵€鏈夋暟鎹紵</h2>
+            <h2 className="text-xl font-bold text-x-text mb-2">{isZh ? '清空所有数据？' : 'Clear all data?'}</h2>
             <p className="text-sm text-x-textMuted mb-6 leading-relaxed">
-              姝ゆ搷浣滄棤娉曟挙閿€銆傛竻绌哄悗锛屾墍鏈夋湰鍦扮紦瀛樼殑涔︾鏁版嵁灏嗚绉婚櫎锛堜笉浼氬奖鍝嶆偍鐨?X 涔︾锛夈€?            </p>
+              {isZh
+                ? '该操作不可撤销。清空后，本地缓存的书签数据将被移除（不会影响你的 X 线上书签）。'
+                : 'This action cannot be undone. Local cached bookmarks will be removed (your X bookmarks stay intact).'}
+            </p>
             <div className="flex flex-col gap-3">
               <button
                 onClick={confirmClear}
                 className="w-full py-3 bg-[#F4212E] hover:bg-[#F4212E]/90 text-white font-bold rounded-full transition-colors"
               >
-                娓呯┖
+                {isZh ? '清空' : 'Clear'}
               </button>
               <button
                 onClick={() => setShowClearConfirm(false)}
                 className="w-full py-3 bg-transparent hover:bg-x-bgHover text-x-text border border-x-border font-bold rounded-full transition-colors"
               >
-                鍙栨秷
+                {isZh ? '取消' : 'Cancel'}
               </button>
             </div>
           </div>
@@ -1092,14 +1146,22 @@ function App() {
       {selectedIds.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-x-primary text-white flex items-center gap-4 animate-fade-in-up py-3 px-6 rounded-full shadow-2xl">
           <span className="font-bold border-r border-white/20 pr-4 text-sm whitespace-nowrap">
-            Selected {selectedIds.size}
+            {isZh ? `已选 ${selectedIds.size}` : `Selected ${selectedIds.size}`}
           </span>
           <button onClick={handleSelectAll} className="hover:opacity-80 transition-opacity whitespace-nowrap text-sm font-medium">
-            Toggle All
+            {isZh ? '全选切换' : 'Toggle All'}
           </button>
           <button onClick={handleExportSelectedMarkdown} className="hover:opacity-80 transition-opacity flex items-center gap-1 text-sm font-medium">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
             Markdown
+          </button>
+          <button onClick={handleExportSelectedJSON} className="hover:opacity-80 transition-opacity flex items-center gap-1 text-sm font-medium">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+            JSON
+          </button>
+          <button onClick={handleExportSelectedZip} className="hover:opacity-80 transition-opacity flex items-center gap-1 text-sm font-medium">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+            ZIP
           </button>
           <button onClick={handlePushSelectedToObsidian} className="hover:opacity-80 transition-opacity flex items-center gap-1 text-sm font-medium">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>

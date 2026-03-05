@@ -3,9 +3,10 @@ export interface ExtensionSettings {
   customAIPrompt: string;
   notionToken: string;
   notionDatabaseId: string;
-  apiProvider: 'siliconflow' | 'custom';
+  apiProvider: 'siliconflow' | 'openai' | 'deepseek' | 'moonshot' | 'qwen' | 'custom';
   apiBaseUrl: string;
   apiModel: string;
+  displayLanguage: 'zh' | 'en';
   syncSecretsEnabled: boolean;
 }
 
@@ -17,6 +18,7 @@ const ALL_KEYS = [
   'apiProvider',
   'apiBaseUrl',
   'apiModel',
+  'displayLanguage',
   'syncSecretsEnabled'
 ] as const;
 
@@ -28,6 +30,7 @@ const NON_SENSITIVE_SYNC_KEYS = [
   'apiProvider',
   'apiBaseUrl',
   'apiModel',
+  'displayLanguage',
   'syncSecretsEnabled'
 ] as const;
 
@@ -39,6 +42,7 @@ const DEFAULT_SETTINGS: ExtensionSettings = {
   apiProvider: 'siliconflow',
   apiBaseUrl: '',
   apiModel: '',
+  displayLanguage: 'zh',
   syncSecretsEnabled: false
 };
 
@@ -82,9 +86,12 @@ const normalizeSettings = (raw: Record<string, unknown>): ExtensionSettings => {
     customAIPrompt: toStringValue(raw.customAIPrompt),
     notionToken: toStringValue(raw.notionToken),
     notionDatabaseId: toStringValue(raw.notionDatabaseId),
-    apiProvider: raw.apiProvider === 'custom' ? 'custom' : 'siliconflow',
+    apiProvider: ['siliconflow', 'openai', 'deepseek', 'moonshot', 'qwen', 'custom'].includes(String(raw.apiProvider))
+      ? (raw.apiProvider as ExtensionSettings['apiProvider'])
+      : 'siliconflow',
     apiBaseUrl: toStringValue(raw.apiBaseUrl),
     apiModel: toStringValue(raw.apiModel),
+    displayLanguage: raw.displayLanguage === 'en' ? 'en' : 'zh',
     syncSecretsEnabled: toBoolValue(raw.syncSecretsEnabled, false)
   };
 };

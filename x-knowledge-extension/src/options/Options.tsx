@@ -1,254 +1,231 @@
-import { useState, useEffect } from 'react';
-import { loadSettings, saveSettings } from '../utils/settingsStorage';
+import { useEffect, useMemo, useState } from 'react';
+import { loadSettings, saveSettings, ExtensionSettings } from '../utils/settingsStorage';
 
-const DEFAULT_PROMPT = `请分析以下推文内容，返回严格的 JSON 格式数据，不要包含任何 Markdown 标记（如 \`\`\`json），只需返回纯 JSON 字符串。
-JSON 结构如下：
+const DEFAULT_PROMPT = `请分析以下推文内容，返回严格 JSON，不要包含 Markdown 代码块。
+返回结构：
 {
-  "category": "字符串，推文的分类（如：#AI工具, #编程技巧, #投资观察, #生活方式等）",
-  "summary": "字符串，50字以内的核心摘要",
-  "tags": ["标签1", "标签2"]
+  "category": "分类（不带#）",
+  "summary": "50字以内摘要",
+  "tags": ["标签1","标签2"]
 }`;
 
+const PROVIDER_OPTIONS: Array<{ value: ExtensionSettings['apiProvider']; label: string; defaultUrl: string; defaultModel: string }> = [
+  { value: 'siliconflow', label: 'SiliconFlow', defaultUrl: 'https://api.siliconflow.cn/v1/chat/completions', defaultModel: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B' },
+  { value: 'openai', label: 'OpenAI', defaultUrl: 'https://api.openai.com/v1/chat/completions', defaultModel: 'gpt-4.1-mini' },
+  { value: 'deepseek', label: 'DeepSeek', defaultUrl: 'https://api.deepseek.com/v1/chat/completions', defaultModel: 'deepseek-chat' },
+  { value: 'moonshot', label: 'Moonshot', defaultUrl: 'https://api.moonshot.cn/v1/chat/completions', defaultModel: 'moonshot-v1-8k' },
+  { value: 'qwen', label: 'Qwen (DashScope Compatible)', defaultUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', defaultModel: 'qwen-plus' },
+  { value: 'custom', label: 'Custom (OpenAI-Compatible)', defaultUrl: '', defaultModel: '' }
+];
+
 function Options() {
-  const [apiKey, setApiKey] = useState('');
-  const [customPrompt, setCustomPrompt] = useState('');
-  const [notionToken, setNotionToken] = useState('');
-  const [notionDatabaseId, setNotionDatabaseId] = useState('');
+  const [settings, setSettings] = useState<ExtensionSettings | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const [apiProvider, setApiProvider] = useState<'siliconflow' | 'custom'>('siliconflow');
-  const [apiBaseUrl, setApiBaseUrl] = useState('');
-  const [apiModel, setApiModel] = useState('');
-  const [syncSecretsEnabled, setSyncSecretsEnabled] = useState(false);
-
   useEffect(() => {
-    let isCancelled = false;
-
-    const load = async () => {
-      try {
-        const settings = await loadSettings();
-        if (isCancelled) return;
-        setApiKey(settings.siliconFlowApiKey);
-        setCustomPrompt(settings.customAIPrompt);
-        setNotionToken(settings.notionToken);
-        setNotionDatabaseId(settings.notionDatabaseId);
-        setApiProvider(settings.apiProvider);
-        setApiBaseUrl(settings.apiBaseUrl);
-        setApiModel(settings.apiModel);
-        setSyncSecretsEnabled(settings.syncSecretsEnabled);
-      } catch (err) {
-        console.error('[X-knowledge] Failed to load settings:', err);
-      }
-    };
-
-    load();
+    let disposed = false;
+    loadSettings()
+      .then((s) => {
+        if (!disposed) setSettings(s);
+      })
+      .catch((err) => console.error('[X-knowledge] Failed to load settings:', err));
     return () => {
-      isCancelled = true;
+      disposed = true;
     };
   }, []);
 
+  const selectedProvider = useMemo(
+    () => PROVIDER_OPTIONS.find((p) => p.value === settings?.apiProvider) || PROVIDER_OPTIONS[0],
+    [settings?.apiProvider]
+  );
+
+  const update = <K extends keyof ExtensionSettings>(key: K, value: ExtensionSettings[K]) => {
+    setSettings((prev) => (prev ? { ...prev, [key]: value } : prev));
+  };
+
+  const handleProviderChange = (provider: ExtensionSettings['apiProvider']) => {
+    const preset = PROVIDER_OPTIONS.find((p) => p.value === provider);
+    if (!preset || !settings) return;
+    setSettings({
+      ...settings,
+      apiProvider: provider,
+      apiBaseUrl: settings.apiBaseUrl || preset.defaultUrl,
+      apiModel: settings.apiModel || preset.defaultModel
+    });
+  };
+
   const handleSave = async () => {
+    if (!settings) return;
     try {
       await saveSettings({
-        siliconFlowApiKey: apiKey.trim(),
-        customAIPrompt: customPrompt.trim(),
-        notionToken: notionToken.trim(),
-        notionDatabaseId: notionDatabaseId.trim(),
-        apiProvider,
-        apiBaseUrl: apiBaseUrl.trim(),
-        apiModel: apiModel.trim(),
-        syncSecretsEnabled
+        ...settings,
+        siliconFlowApiKey: settings.siliconFlowApiKey.trim(),
+        customAIPrompt: settings.customAIPrompt.trim(),
+        notionToken: settings.notionToken.trim(),
+        notionDatabaseId: settings.notionDatabaseId.trim(),
+        apiBaseUrl: settings.apiBaseUrl.trim(),
+        apiModel: settings.apiModel.trim()
       });
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       console.error('[X-knowledge] Failed to save settings:', err);
     }
   };
 
-  const handleResetPrompt = () => {
-    setCustomPrompt(DEFAULT_PROMPT);
-  };
+  if (!settings) {
+    return <div className="min-h-screen bg-x-bg text-x-text p-6">Loading settings...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-x-bg flex flex-col items-center justify-center p-4 font-sans">
       <div className="bg-x-bg rounded-2xl shadow-lg p-8 w-full max-w-2xl border border-x-border">
         <h1 className="text-2xl font-bold text-x-text mb-2">X-knowledge Settings</h1>
         <p className="text-x-textMuted text-sm mb-6">
-          Configure your AI brain and customize how bookmarks are analyzed.
+          Configure language, AI provider/model, and export integrations.
         </p>
 
         <div className="space-y-6">
-          {/* API Key Section */}
           <div className="space-y-4">
+            <h2 className="text-lg font-bold text-x-text">Display</h2>
+            <div>
+              <label htmlFor="displayLanguage" className="block text-sm font-bold text-x-text mb-2">
+                UI Language
+              </label>
+              <select
+                id="displayLanguage"
+                value={settings.displayLanguage}
+                onChange={(e) => update('displayLanguage', e.target.value as ExtensionSettings['displayLanguage'])}
+                className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+              >
+                <option value="zh">简体中文</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-x-border space-y-4">
+            <h2 className="text-lg font-bold text-x-text">AI Provider & Model</h2>
             <div>
               <label htmlFor="apiProvider" className="block text-sm font-bold text-x-text mb-2">
-                API 提供商
+                Provider
               </label>
               <select
                 id="apiProvider"
-                value={apiProvider}
-                onChange={(e) => setApiProvider(e.target.value as 'siliconflow' | 'custom')}
+                value={settings.apiProvider}
+                onChange={(e) => handleProviderChange(e.target.value as ExtensionSettings['apiProvider'])}
                 className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
               >
-                <option value="siliconflow">SiliconFlow (默认)</option>
-                <option value="custom">自定义兼容 OpenAI 的接口</option>
+                {PROVIDER_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
               </select>
             </div>
 
-            {apiProvider === 'custom' && (
-              <>
-                <div>
-                  <label htmlFor="apiBaseUrl" className="block text-sm font-bold text-x-text mb-2">
-                    Base URL (非必填，默认 SiliconFlow)
-                  </label>
-                  <input
-                    type="text"
-                    id="apiBaseUrl"
-                    value={apiBaseUrl}
-                    onChange={(e) => setApiBaseUrl(e.target.value)}
-                    placeholder="https://api.openai.com/v1/chat/completions"
-                    className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="apiModel" className="block text-sm font-bold text-x-text mb-2">
-                    模型名称 (非必填，默认 SiliconFlow 模型)
-                  </label>
-                  <input
-                    type="text"
-                    id="apiModel"
-                    value={apiModel}
-                    onChange={(e) => setApiModel(e.target.value)}
-                    placeholder="gpt-3.5-turbo"
-                    className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
-                  />
-                </div>
-              </>
-            )}
+            <div>
+              <label htmlFor="apiBaseUrl" className="block text-sm font-bold text-x-text mb-2">
+                Base URL
+              </label>
+              <input
+                id="apiBaseUrl"
+                type="text"
+                value={settings.apiBaseUrl}
+                onChange={(e) => update('apiBaseUrl', e.target.value)}
+                placeholder={selectedProvider.defaultUrl || 'https://api.openai.com/v1/chat/completions'}
+                className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="apiModel" className="block text-sm font-bold text-x-text mb-2">
+                Model Name
+              </label>
+              <input
+                id="apiModel"
+                type="text"
+                value={settings.apiModel}
+                onChange={(e) => update('apiModel', e.target.value)}
+                placeholder={selectedProvider.defaultModel || 'gpt-4.1-mini'}
+                className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
+              />
+            </div>
 
             <div>
               <label htmlFor="apiKey" className="block text-sm font-bold text-x-text mb-2">
-                {apiProvider === 'siliconflow' ? 'SiliconFlow API Key' : 'API Key'}
+                API Key
               </label>
               <input
-                type="password"
                 id="apiKey"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+                type="password"
+                value={settings.siliconFlowApiKey}
+                onChange={(e) => update('siliconFlowApiKey', e.target.value)}
                 placeholder="sk-..."
                 className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
               />
             </div>
-
-            <label className="flex items-start gap-3 bg-amber-50/10 border border-amber-200/20 rounded-xl p-3">
-              <input
-                type="checkbox"
-                checked={syncSecretsEnabled}
-                onChange={(e) => setSyncSecretsEnabled(e.target.checked)}
-                className="mt-0.5"
-              />
-              <span className="text-xs text-x-textMuted leading-relaxed">
-                Enable cross-device sync for API Key and Notion Token. Disabled by default for safer local-only secret storage.
-              </span>
-            </label>
           </div>
 
-          {/* Notion API Section */}
           <div className="pt-4 border-t border-x-border space-y-4">
             <h2 className="text-lg font-bold text-x-text">Notion Integration</h2>
-            <p className="text-xs text-x-textMuted mb-2">
-              Configure Notion to sync your bookmarks directly to a database. You need an Internal Integration Token and the target Database ID.
-            </p>
-            <div className="bg-blue-50/10 border border-blue-100/20 p-3 rounded-xl text-xs text-x-textMuted mb-4">
-              <strong>Database Setup Requirements:</strong><br />
-              Your target Notion database MUST have these exact property names and types:<br />
-              <ul className="list-disc pl-4 mt-1">
-                <li><code>Name</code> (Title)</li>
-                <li><code>URL</code> (URL)</li>
-                <li><code>Date</code> (Date)</li>
-                <li><code>Category</code> (Select)</li>
-                <li><code>Tags</code> (Multi-select)</li>
-              </ul>
-            </div>
-
             <div>
-              <label htmlFor="notionToken" className="block text-sm font-bold text-x-text mb-2">
-                Notion Integration Token
-              </label>
+              <label htmlFor="notionToken" className="block text-sm font-bold text-x-text mb-2">Notion Token</label>
               <input
-                type="password"
                 id="notionToken"
-                value={notionToken}
-                onChange={(e) => setNotionToken(e.target.value)}
+                type="password"
+                value={settings.notionToken}
+                onChange={(e) => update('notionToken', e.target.value)}
                 placeholder="secret_..."
                 className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
               />
             </div>
-
             <div>
-              <label htmlFor="notionDatabaseId" className="block text-sm font-bold text-x-text mb-2">
-                Notion Database ID
-              </label>
+              <label htmlFor="notionDatabaseId" className="block text-sm font-bold text-x-text mb-2">Notion Database ID</label>
               <input
-                type="text"
                 id="notionDatabaseId"
-                value={notionDatabaseId}
-                onChange={(e) => setNotionDatabaseId(e.target.value)}
-                placeholder="e.g. 1a2b3c4d5e..."
+                type="text"
+                value={settings.notionDatabaseId}
+                onChange={(e) => update('notionDatabaseId', e.target.value)}
+                placeholder="database id"
                 className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all"
               />
             </div>
           </div>
 
-          {/* Custom Prompt Section */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label htmlFor="customPrompt" className="block text-sm font-bold text-x-text">
-                Custom AI Prompt (System Instructions)
-              </label>
-              <button
-                onClick={handleResetPrompt}
-                className="text-xs text-x-primary hover:text-x-primaryHover font-medium"
-              >
-                Reset to Default
+              <label htmlFor="customPrompt" className="block text-sm font-bold text-x-text">Custom AI Prompt</label>
+              <button onClick={() => update('customAIPrompt', DEFAULT_PROMPT)} className="text-xs text-x-primary hover:text-x-primaryHover font-medium">
+                Reset Default
               </button>
             </div>
-            <p className="text-xs text-x-textMuted mb-2">
-              Customize the instructions sent to the AI. Ensure you ask for the strict JSON structure {"{"}"category":"", "summary":"", "tags":[]{"}"} if you modify this.
-            </p>
             <textarea
               id="customPrompt"
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
+              value={settings.customAIPrompt}
+              onChange={(e) => update('customAIPrompt', e.target.value)}
               placeholder={DEFAULT_PROMPT}
               rows={8}
               className="w-full px-4 py-3 bg-x-bg border border-x-border text-x-text text-sm font-mono rounded-2xl focus:border-x-primary focus:ring-1 focus:ring-x-primary outline-none transition-all resize-y"
             />
           </div>
 
-          {/* Save Button */}
+          <label className="flex items-start gap-3 bg-amber-50/10 border border-amber-200/20 rounded-xl p-3">
+            <input
+              type="checkbox"
+              checked={settings.syncSecretsEnabled}
+              onChange={(e) => update('syncSecretsEnabled', e.target.checked)}
+              className="mt-0.5"
+            />
+            <span className="text-xs text-x-textMuted leading-relaxed">
+              Enable sync storage for secrets across devices (disabled by default).
+            </span>
+          </label>
+
           <button
             onClick={handleSave}
-            className="w-full bg-x-text text-x-bg hover:opacity-90 font-bold py-3 px-4 rounded-full transition-opacity flex justify-center items-center mt-4"
+            className="w-full bg-x-text text-x-bg hover:opacity-90 font-bold py-3 px-4 rounded-full transition-opacity flex justify-center items-center mt-2"
           >
-            {saved ? (
-              <span className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                </svg>
-                Saved Successfully
-              </span>
-            ) : (
-              'Save Settings'
-            )}
+            {saved ? 'Saved' : 'Save Settings'}
           </button>
-        </div>
-
-        <div className="mt-6 pt-6 border-t border-x-border text-sm text-x-textMuted">
-          <p>
-            Don't have an API key? <a href="https://siliconflow.cn/" target="_blank" rel="noreferrer" className="text-x-primary hover:underline">Get one from SiliconFlow</a>
-          </p>
         </div>
       </div>
     </div>
