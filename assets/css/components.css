@@ -1,0 +1,475 @@
+/* X Native Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: var(--radius-full);
+  padding: 0 var(--s-8);
+  height: 44px;
+  transition: background-color 0.2s, transform 0.1s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background-color: var(--x-blue);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--x-blue-hover);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: var(--x-border);
+  color: var(--x-text-main);
+}
+
+.btn-ghost:hover {
+  background-color: rgba(15, 20, 25, 0.1);
+}
+
+[data-theme='dark'] .btn-ghost:hover {
+  background-color: rgba(231, 233, 234, 0.1);
+}
+
+/* Global Link Overrides */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* X-Style Topbar Refinement */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--x-border);
+}
+
+[data-theme='dark'] .topbar {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--s-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.brand-mark {
+  background-color: var(--x-text-main);
+  color: var(--x-bg);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+/* X-Style Segmented Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+
+.seg {
+  display: flex;
+  background-color: var(--x-bg-dim);
+  padding: 2px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--x-border);
+}
+
+.seg button {
+  background: none;
+  border: none;
+  padding: 4px var(--s-3);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--x-text-sub);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  transition: all 0.2s;
+}
+
+.seg button:hover {
+  background-color: rgba(15, 20, 25, 0.05);
+}
+
+.seg button[aria-pressed="true"] {
+  background-color: var(--x-bg);
+  color: var(--x-text-main);
+  box-shadow: var(--x-shadow);
+}
+
+.badge {
+  font-size: 13px;
+  color: var(--x-text-sub);
+  font-weight: 500;
+}
+
+/* X-Style Guides (Discover Cards) */
+.guides {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+
+.guide {
+  background-color: var(--x-bg);
+  border: 1px solid var(--x-border);
+  border-radius: var(--radius-card);
+  padding: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  transition: background-color 0.2s;
+}
+
+.guide:hover {
+  background-color: var(--x-bg-dim);
+}
+
+.guide h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--x-blue);
+}
+
+.guide p {
+  font-size: 14px;
+  color: var(--x-text-sub);
+}
+
+.guide span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--x-text-main);
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+
+/* X-Style Sidebars & Cards */
+.demo-card-native {
+  background-color: var(--x-bg-dim);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--x-border);
+}
+
+.card-header {
+  padding: var(--s-3) var(--s-4);
+}
+
+.card-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.trending-item {
+  padding: var(--s-3) var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.trending-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='dark'] .trending-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.trending-meta {
+  font-size: 13px;
+  color: var(--x-text-sub);
+}
+
+.trending-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--x-text-main);
+}
+
+.card-footer {
+  padding: var(--s-4);
+  color: var(--x-blue);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-footer:hover {
+  background-color: rgba(29, 155, 240, 0.1);
+}
+
+.card {
+  background-color: var(--x-bg);
+  border: 1px solid var(--x-border);
+  border-radius: var(--radius-card);
+  padding: var(--s-4);
+  transition: background-color 0.2s;
+}
+
+.card:hover {
+  background-color: var(--x-bg-dim);
+}
+
+/* X-Style Workflow Thread */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  max-width: 600px;
+}
+
+.step {
+  display: flex;
+  gap: var(--s-4);
+  padding-bottom: var(--s-8);
+  position: relative;
+}
+
+.step::before {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--x-border);
+}
+
+.step:last-child::before {
+  display: none;
+}
+
+.step-node {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--x-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.step-content h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.step-content p {
+  color: var(--x-text-sub);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* X-Style Tabs (Profile Style) */
+.role-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--x-border);
+  margin-bottom: var(--s-6);
+}
+
+.role-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: var(--s-4) 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--x-text-sub);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.role-tab:hover {
+  background-color: rgba(15, 20, 25, 0.03);
+}
+
+[data-theme='dark'] .role-tab:hover {
+  background-color: rgba(231, 233, 234, 0.03);
+}
+
+.role-tab[aria-selected="true"] {
+  color: var(--x-text-main);
+}
+
+.role-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 4px;
+  background-color: var(--x-blue);
+  border-radius: var(--radius-full);
+}
+
+/* Role Panels */
+.role-panel {
+  display: none;
+  padding: var(--s-4);
+  background-color: var(--x-bg-dim);
+  border-radius: var(--radius-card);
+}
+
+.role-panel.active {
+  display: block;
+  animation: x-rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* X-Style Settings List (Compare) */
+.x-list {
+  border: 1px solid var(--x-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.x-list-item {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  padding: var(--s-4);
+  border-bottom: 1px solid var(--x-border);
+  transition: background-color 0.2s;
+}
+
+.x-list-item:last-child {
+  border-bottom: none;
+}
+
+.x-list-header {
+  background-color: var(--x-bg-dim);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--x-text-sub);
+}
+
+.x-list-label {
+  font-weight: 700;
+  color: var(--x-text-main);
+}
+
+.x-list-value {
+  font-size: 15px;
+  color: var(--x-text-sub);
+}
+
+.x-list-value.highlight {
+  color: var(--x-blue);
+  font-weight: 600;
+}
+
+/* X-Style Accordion (FAQ) */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--x-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--x-border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-toggle {
+  width: 100%;
+  padding: var(--s-4);
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--x-text-main);
+  transition: background-color 0.2s;
+}
+
+.faq-toggle:hover {
+  background-color: rgba(15, 20, 25, 0.03);
+}
+
+[data-theme='dark'] .faq-toggle:hover {
+  background-color: rgba(231, 233, 234, 0.03);
+}
+
+.faq-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background-color: var(--x-bg);
+}
+
+.faq-item[data-open="true"] .faq-panel {
+  max-height: 200px;
+}
+
+.faq-panel p {
+  padding: 0 var(--s-4) var(--s-4);
+  color: var(--x-text-sub);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Hero Typography */
+.hero h1 {
+  font-size: clamp(40px, 8vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.2px;
+}
+
+.hero p {
+  font-size: 20px;
+  color: var(--x-text-sub);
+  margin: var(--s-4) 0 var(--s-8);
+}

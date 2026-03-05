@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X-knowledge | Turn X Bookmarks into Searchable Knowledge</title>
+    <meta name="description" content="Convert X/Twitter bookmarks into structured knowledge with AI tags, batch workflows, and exports." />
+    <meta property="og:title" content="X-knowledge | Turn X Bookmarks into Searchable Knowledge" />
+    <meta property="og:image" content="./assets/demo-1.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="./assets/css/tokens.css" />
+    <link rel="stylesheet" href="./assets/css/base.css" />
+    <link rel="stylesheet" href="./assets/css/components.css" />
+    <link rel="stylesheet" href="./assets/css/motion.css" />
+  </head>
+  <body data-page="home">
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="./index.html">
+          <div class="brand-mark">𝕏</div>
+          <span>X-knowledge</span>
+        </a>
+        <div class="controls">
+          <span class="badge" id="repoMeta" data-i18n="nav.repoLoading">Loading...</span>
+          <div class="seg" role="group">
+            <button type="button" data-theme-value="light" data-i18n="controls.light">Light</button>
+            <button type="button" data-theme-value="dark" data-i18n="controls.dark">Dark</button>
+          </div>
+          <div class="seg" role="group">
+            <button type="button" data-lang-value="zh" data-i18n="controls.zh">中文</button>
+            <button type="button" data-lang-value="en" data-i18n="controls.en">EN</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero reveal" data-reveal-delay="1">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="hero-kicker" data-i18n="hero.kicker">X-Native UX</span>
+            <h1 data-i18n="hero.title">Everything from X, now actionable.</h1>
+            <p data-i18n="hero.desc">Turn your chaotic bookmarks into a searchable intelligence hub.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" data-i18n="hero.install">Install Extension</a>
+              <a class="btn btn-ghost" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" data-i18n="hero.viewRepo">View GitHub</a>
+            </div>
+          </div>
+          <aside class="hero-media" id="heroMedia">
+            <div class="demo-card-native">
+              <div class="card-header"><h2 data-i18n="hero.trendingTitle">Trending in your knowledge</h2></div>
+              <div class="trending-item">
+                <span class="trending-meta">Knowledge · Trending</span>
+                <span class="trending-name">#AI-Strategy</span>
+                <span class="trending-meta"><span id="captureCount">1,280</span> <span data-i18n="hero.cap">bookmarks summarized</span></span>
+              </div>
+              <div class="trending-item">
+                <span class="trending-meta">Creator · Trending</span>
+                <span class="trending-name">#Solopreneur-Stack</span>
+                <span class="trending-meta">452 <span data-i18n="hero.ai">insights captured</span></span>
+              </div>
+              <div class="trending-item">
+                <span class="trending-meta">Research · Trending</span>
+                <span class="trending-name">#Web3-Economics</span>
+                <span class="trending-meta">89 <span data-i18n="hero.export">exports to Notion</span></span>
+              </div>
+              <div class="card-footer"><span data-i18n="hero.showMore">Show more</span></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="1">
+        <div class="strip">
+          <div class="strip-item"><b data-counter="1500">0</b><span data-i18n="proof.s1">Bookmarks</span></div>
+          <div class="strip-item"><b data-counter="4">0</b><span data-i18n="proof.s2">Built-in routes</span></div>
+          <div class="strip-item"><b data-counter="2000">0</b><span data-i18n="proof.s3">Delay control</span></div>
+          <div class="strip-item"><b data-counter="100">0</b><span data-i18n="proof.s4">Local policy</span></div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="1">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2 data-i18n="feature.title">Feature Matrix</h2>
+            <p data-i18n="feature.desc">Designed around X-style rhythm.</p>
+          </div>
+          <div class="grid cards">
+            <article class="card"><h3 data-i18n="feature.c1t">Search</h3><p data-i18n="feature.c1d">Semantic retrieval.</p></article>
+            <article class="card"><h3 data-i18n="feature.c2t">Queue</h3><p data-i18n="feature.c2d">Batch control.</p></article>
+            <article class="card"><h3 data-i18n="feature.c3t">Export</h3><p data-i18n="feature.c3d">Markdown & Notion.</p></article>
+            <article class="card"><h3 data-i18n="feature.c4t">Security</h3><p data-i18n="feature.c4d">Local-first keys.</p></article>
+            <article class="card"><h3 data-i18n="feature.c5t">Pipeline</h3><p data-i18n="feature.c5d">Reliable iteration.</p></article>
+            <article class="card"><h3 data-i18n="feature.c6t">Interface</h3><p data-i18n="feature.c6d">Aligned with X.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="2">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2 data-i18n="workflow.title">4-step workflow</h2>
+            <p data-i18n="workflow.desc">Repeated research loop.</p>
+          </div>
+          <div class="steps">
+            <article class="step"><div class="step-node">1</div><div class="step-content"><h3 data-i18n="workflow.s1">Capture</h3><p data-i18n="workflow.d1">Ingest content.</p></div></article>
+            <article class="step"><div class="step-node">2</div><div class="step-content"><h3 data-i18n="workflow.s2">Structure</h3><p data-i18n="workflow.d2">AI tagging.</p></div></article>
+            <article class="step"><div class="step-node">3</div><div class="step-content"><h3 data-i18n="workflow.s3">Operate</h3><p data-i18n="workflow.d3">Review in bulk.</p></div></article>
+            <article class="step"><div class="step-node">4</div><div class="step-content"><h3 data-i18n="workflow.s4">Ship</h3><p data-i18n="workflow.d4">Export notes.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="2" data-component="role-switch">
+        <div class="section-inner">
+          <div class="section-head"><h2 data-i18n="scenes.title">Workflow Lanes</h2><p data-i18n="scenes.desc">Switch roles.</p></div>
+          <div class="role-tabs">
+            <button class="role-tab" data-role-tab="researcher" aria-selected="true" data-i18n="scenes.r1t">Researcher</button>
+            <button class="role-tab" data-role-tab="creator" data-i18n="scenes.r2t">Creator</button>
+            <button class="role-tab" data-role-tab="pm" data-i18n="scenes.r3t">Product Team</button>
+          </div>
+          <div class="role-panels">
+            <article class="role-panel active" data-role-panel="researcher">
+              <h3 data-i18n="scenes.r1h">Researcher</h3><p data-i18n="scenes.r1d">Capture daily.</p>
+              <a class="btn btn-ghost" href="./guides/search-twitter-bookmarks-ai.html" data-i18n="scenes.link">Open Guide</a>
+            </article>
+            <article class="role-panel" data-role-panel="creator">
+              <h3 data-i18n="scenes.r2h">Creator</h3><p data-i18n="scenes.r2d">Backlog posts.</p>
+              <a class="btn btn-ghost" href="./guides/x-bookmarks-to-obsidian.html" data-i18n="scenes.link">Open Guide</a>
+            </article>
+            <article class="role-panel" data-role-panel="pm">
+              <h3 data-i18n="scenes.r3h">Product Team</h3><p data-i18n="scenes.r3d">Notion sync.</p>
+              <a class="btn btn-ghost" href="./guides/x-bookmarks-to-notion.html" data-i18n="scenes.link">Open Guide</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="seo-guides">
+        <div class="section-inner">
+          <div class="section-head"><h2 data-i18n="guides.title">Use-case Guides</h2><p data-i18n="guides.desc">Practical tutorials.</p></div>
+          <div class="guides">
+            <a class="guide" href="./guides/x-bookmarks-to-obsidian.html"><h3 data-i18n="guides.g1t">Obsidian</h3><p data-i18n="guides.g1d">Markdown export.</p><span data-i18n="guides.read">Read Guide</span></a>
+            <a class="guide" href="./guides/x-bookmarks-to-notion.html"><h3 data-i18n="guides.g2t">Notion</h3><p data-i18n="guides.g2d">Sync database.</p><span data-i18n="guides.read">Read Guide</span></a>
+            <a class="guide" href="./guides/search-twitter-bookmarks-ai.html"><h3 data-i18n="guides.g3t">AI Search</h3><p data-i18n="guides.g3d">Find signals.</p><span data-i18n="guides.read">Read Guide</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" data-reveal-delay="2">
+        <div class="section-inner">
+          <div class="section-head"><h2 data-i18n="faq.title">FAQ</h2><p data-i18n="faq.desc">Practical answers.</p></div>
+          <div class="faq-list">
+            <article class="faq-item" data-open="true">
+              <button class="faq-toggle" type="button" aria-expanded="true"><span data-i18n="faq.q1">Domain support?</span><span class="faq-icon">+</span></button>
+              <div class="faq-panel"><p data-i18n="faq.a1">Supports x.com & twitter.com.</p></div>
+            </article>
+            <article class="faq-item" data-open="false">
+              <button class="faq-toggle" type="button" aria-expanded="false"><span data-i18n="faq.q2">Privacy?</span><span class="faq-icon">+</span></button>
+              <div class="faq-panel"><p data-i18n="faq.a2">Keys are local-first.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="section-inner referral">
+          <div><h2 data-i18n="referral.title">Share</h2><p data-i18n="referral.desc">Team sync.</p></div>
+          <button class="btn btn-ghost" id="shareLinkBtn" data-i18n="referral.copy">Copy Link</button>
+        </div>
+      </section>
+
+      <footer class="footer reveal">
+        <p data-i18n="footer.copy">Built by LaplaceYoung.</p>
+        <p><a href="https://github.com/LaplaceYoung/Xknowledge" data-i18n="footer.github">GitHub</a> · <a href="https://github.com/LaplaceYoung/Xknowledge#readme" data-i18n="footer.docs">Docs</a></p>
+      </footer>
+    </main>
+
+    <script src="./assets/js/theme.js"></script>
+    <script src="./assets/js/i18n.js"></script>
+    <script src="./assets/js/app.js"></script>
+  </body>
+</html>

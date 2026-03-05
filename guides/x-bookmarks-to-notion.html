@@ -1,0 +1,131 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How to Sync X Bookmarks to Notion | X-knowledge</title>
+    <meta name="description" content="Configure field mapping and AI metadata to sync X bookmarks into a Notion database." />
+    <meta property="og:title" content="How to Sync X Bookmarks to Notion | X-knowledge" />
+    <meta property="og:description" content="Configure field mapping and AI metadata to sync X bookmarks into a Notion database." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://laplaceyoung.github.io/Xknowledge/guides/x-bookmarks-to-notion.html" />
+    <meta property="og:image" content="https://laplaceyoung.github.io/Xknowledge/assets/demo-2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Sync X Bookmarks to Notion | X-knowledge" />
+    <meta name="twitter:description" content="Configure field mapping and AI metadata to sync X bookmarks into a Notion database." />
+    <link rel="canonical" href="https://laplaceyoung.github.io/Xknowledge/guides/x-bookmarks-to-notion.html" />
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/components.css" />
+    <link rel="stylesheet" href="../assets/css/motion.css" />
+  </head>
+  <body data-page="guide_notion">
+    <div class="guide-progress" id="guideProgress"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html"><span class="brand-mark">X</span><span>X-knowledge</span></a>
+        <div class="controls">
+          <div class="seg">
+            <button type="button" data-theme-value="light" data-i18n="controls.light" aria-pressed="false">Light</button>
+            <button type="button" data-theme-value="dark" data-i18n="controls.dark" aria-pressed="false">Dark</button>
+          </div>
+          <div class="seg">
+            <button type="button" data-lang-value="zh" data-i18n="controls.zh" aria-pressed="false">中文</button>
+            <button type="button" data-lang-value="en" data-i18n="controls.en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="article-top reveal">
+        <a class="back" href="../index.html" data-i18n="nav.back">Back to Home</a>
+        <span class="badge" data-i18n="nav.tag">GUIDE / Notion</span>
+      </div>
+
+      <article class="article-hero reveal">
+        <img src="../assets/demo-2.png" width="960" height="540" alt="X-knowledge Notion sync flow" />
+        <div class="content">
+          <h1 data-i18n="hero.title">How to Sync X Bookmarks to Notion</h1>
+          <p data-i18n="hero.lead">Write tweet content, authors, and AI summaries into a structured Notion database for team-ready knowledge ops.</p>
+        </div>
+      </article>
+
+      <div class="article-layout">
+        <aside class="toc reveal" data-component="guide-toc">
+          <h3 data-i18n="toc.title">Quick Nav</h3>
+          <nav>
+            <a href="#sec-summary" data-section-id="sec-summary" data-i18n="toc.summary">TL;DR</a>
+            <a href="#sec-step1" data-section-id="sec-step1" data-i18n="toc.s1">Step 1</a>
+            <a href="#sec-step2" data-section-id="sec-step2" data-i18n="toc.s2">Step 2</a>
+            <a href="#sec-step3" data-section-id="sec-step3" data-i18n="toc.s3">Step 3</a>
+            <a href="#sec-faq" data-section-id="sec-faq" data-i18n="toc.faq">FAQ</a>
+          </nav>
+        </aside>
+        <div>
+          <section class="article-section reveal" id="sec-summary">
+            <div class="summary-card">
+              <b data-i18n="summary.title">TL;DR</b>
+              <p data-i18n="summary.body">Prepare a clean Notion schema first, then run small-batch sync before full push to keep data quality stable.</p>
+            </div>
+          </section>
+
+          <section class="article-section reveal" id="sec-step1">
+            <h2 data-i18n="s1.title">Step 1: Prepare Notion integration and schema</h2>
+            <ol>
+              <li data-i18n="s1.li1">Create a Notion integration and obtain token.</li>
+              <li data-i18n="s1.li2">Set fields for title, url, author, tags, and summary.</li>
+              <li data-i18n="s1.li3">Share the target database with the integration.</li>
+            </ol>
+          </section>
+
+          <section class="article-section reveal" id="sec-step2">
+            <h2 data-i18n="s2.title">Step 2: Configure Notion in extension settings</h2>
+            <ol>
+              <li data-i18n="s2.li1">Provide token and database ID.</li>
+              <li data-i18n="s2.li2">Run a small batch to verify field mapping.</li>
+              <li data-i18n="s2.li3">Validate formatting against your workspace standard.</li>
+            </ol>
+          </section>
+
+          <section class="article-section reveal" id="sec-step3">
+            <h2 data-i18n="s3.title">Step 3: Push in batch and maintain quality</h2>
+            <ol>
+              <li data-i18n="s3.li1">Select by tags or date range for controlled sync.</li>
+              <li data-i18n="s3.li2">Retry failures and document root causes.</li>
+              <li data-i18n="s3.li3">Use Notion views to surface high-value signals.</li>
+            </ol>
+          </section>
+
+          <section class="article-section reveal" id="sec-faq">
+            <h2 data-i18n="faq.title">FAQ</h2>
+            <ul>
+              <li><strong data-i18n="faq.q1">Can updates overwrite existing entries?</strong> <span data-i18n="faq.a1">Use unique URL-based dedupe to avoid duplicates.</span></li>
+              <li><strong data-i18n="faq.q2">Can I sync only partial fields?</strong> <span data-i18n="faq.a2">Yes, start with a minimal schema and expand later.</span></li>
+            </ul>
+          </section>
+
+          <section class="article-section reveal">
+            <h2 data-i18n="related.title">Related guides</h2>
+            <div class="guides" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+              <a class="guide" href="./x-bookmarks-to-obsidian.html"><h3 data-i18n="related.r1">Export to Obsidian</h3><span>→</span></a>
+              <a class="guide" href="./search-twitter-bookmarks-ai.html"><h3 data-i18n="related.r2">Search with AI</h3><span>→</span></a>
+            </div>
+          </section>
+
+          <section class="article-section reveal cta">
+            <div class="actions" style="justify-content:center;">
+              <a class="btn btn-primary" data-utm="notion_install" href="https://github.com/LaplaceYoung/Xknowledge/tree/main/x-knowledge-extension" target="_blank" rel="noreferrer" data-i18n="cta.install">Install Extension</a>
+              <a class="btn btn-ghost" data-utm="notion_repo" href="https://github.com/LaplaceYoung/Xknowledge" target="_blank" rel="noreferrer" data-i18n="cta.repo">View Source</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script src="../assets/js/theme.js"></script>
+    <script src="../assets/js/i18n.js"></script>
+    <script src="../assets/js/app.js"></script>
+  </body>
+</html>

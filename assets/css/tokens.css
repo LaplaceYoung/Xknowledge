@@ -1,0 +1,51 @@
+:root {
+  /* X Native Colors - Light Mode */
+  --x-blue: #1d9bf0;
+  --x-blue-hover: #1a8cd8;
+  --x-bg: #ffffff;
+  --x-bg-dim: #f7f9f9;
+  --x-border: #eff3f4;
+  --x-text-main: #0f1419;
+  --x-text-sub: #536471;
+  --x-btn-secondary: #0f1419;
+  --x-btn-secondary-hover: #272c30;
+  --x-shadow: rgba(0, 0, 0, 0.08);
+
+  /* Spacing - 8pt Grid */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+
+  --radius-full: 9999px;
+  --radius-card: 16px;
+}
+
+[data-theme='dark'] {
+  /* X Native Colors - Dark Mode */
+  --x-bg: #000000;
+  --x-bg-dim: #16181c;
+  --x-border: #2f3336;
+  --x-text-main: #e7e9ea;
+  --x-text-sub: #71767b;
+  --x-btn-secondary: #eff3f4;
+  --x-btn-secondary-hover: #d7dbdc;
+  --x-shadow: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--x-bg);
+  color: var(--x-text-main);
+  /* Twitter Native Font Stack */
+  font-family: TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, b {
+  font-weight: 800;
+}
